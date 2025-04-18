@@ -1,25 +1,40 @@
 package org.ucfs.parser.context
 
+import org.ucfs.descriptors.Descriptor
 import org.ucfs.descriptors.DescriptorsStorage
-import org.ucfs.gss.GssNode
+import org.ucfs.gss.GraphStructuredStack
 import org.ucfs.input.IInputGraph
 import org.ucfs.input.ILabel
 import org.ucfs.rsm.RsmState
-import org.ucfs.sppf.Sppf
-import org.ucfs.sppf.node.SppfNode
+import org.ucfs.sppf.SppfStorage
+import org.ucfs.sppf.node.RangeSppfNode
+
 
 /**
- * Default context for parsing without error recovery
- * @param VertexType - type of vertex in input graph
+ * @param InputNodeType - type of vertex in input graph
  * @param LabelType - type of label on edges in input graph
  */
-class Context<VertexType, LabelType : ILabel>(
-    override val startState: RsmState, override val input: IInputGraph<VertexType, LabelType>
-) : IContext<VertexType, LabelType> {
-    override val descriptors: DescriptorsStorage<VertexType> = DescriptorsStorage()
-    override val sppf: Sppf<VertexType> = Sppf()
-    override val poppedGssNodes: HashMap<GssNode<VertexType>, HashSet<SppfNode<VertexType>?>> = HashMap()
-    override val createdGssNodes: HashMap<GssNode<VertexType>, GssNode<VertexType>> = HashMap()
-    override val reachabilityPairs: HashMap<Pair<VertexType, VertexType>, Int> = HashMap()
-    override var parseResult: SppfNode<VertexType>? = null
+class Context<InputNodeType, LabelType : ILabel> (
+    /**
+     * Starting state of accepting Nonterminal in RSM
+     */
+    val startState: RsmState,
+    val input: IInputGraph<InputNodeType, LabelType>
+
+
+) {
+
+    /**
+     * Collection of descriptors
+     */
+    val descriptors: DescriptorsStorage<InputNodeType> = DescriptorsStorage()
+
+    /**
+     * Derivation trees storage
+     */
+    val sppfStorage: SppfStorage<InputNodeType> = SppfStorage()
+    
+    val gss: GraphStructuredStack<InputNodeType> = GraphStructuredStack()
+
+    var parseResult: RangeSppfNode<InputNodeType>? = null
 }

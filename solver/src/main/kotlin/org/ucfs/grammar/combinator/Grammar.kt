@@ -5,6 +5,7 @@ import org.ucfs.grammar.combinator.regexp.Regexp
 import org.ucfs.incrementalDfs
 import org.ucfs.rsm.RsmState
 import org.ucfs.rsm.symbol.ITerminal
+import org.ucfs.rsm.symbol.Nonterminal
 
 
 open class Grammar {
@@ -52,11 +53,11 @@ open class Grammar {
         val terms : HashSet<ITerminal> = incrementalDfs(
             rsm,
             { state: RsmState ->
-                state.outgoingEdges.values.flatten() +
-                        state.nonterminalEdges.keys.map { it.startState }
+                state.nonterminalEdgesStorage.map { it.destinationState.nonterminal.startState }  +
+                        state.nonterminalEdgesStorage.map { (it.symbol as Nonterminal).startState }
             },
             hashSetOf(),
-            { state, set -> set.addAll(state.terminalEdges.keys) }
+            { state, set -> set.addAll(state.terminalEdgesStorage.map { it.symbol as ITerminal }) }
         )
         val comparator = terms.firstOrNull()?.getComparator() ?: return emptyList()
         return terms.toSortedSet(comparator).toList()

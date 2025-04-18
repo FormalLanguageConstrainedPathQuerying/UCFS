@@ -24,9 +24,9 @@ data class Nonterminal(val name: String?) : Symbol {
         while (queue.isNotEmpty()) {
             val state = queue.remove()
             used.add(state)
-            for (nextState in state.outgoingEdges.values.flatten()) {
-                if (!used.contains(nextState)) {
-                    queue.add(nextState)
+            for ((_, destinationState) in state.outgoingEdges) {
+                if (!used.contains(destinationState)) {
+                    queue.add(destinationState)
                 }
             }
         }

@@ -1,12 +1,10 @@
 package org.ucfs.sppf
 
 import org.ucfs.sppf.node.*
-import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
 
-fun writeSppfToDot(sppfNode: ISppfNode, filePath: String, label: String = "") {
+fun <InputNode> writeSppfToDot(sppfNode: RangeSppfNode<InputNode>, filePath: String, label: String = "") {
     val genPath = Path.of("gen", "sppf")
     Files.createDirectories(genPath)
     val file = genPath.resolve(filePath).toFile()
@@ -16,11 +14,11 @@ fun writeSppfToDot(sppfNode: ISppfNode, filePath: String, label: String = "") {
     }
 }
 
-fun getSppfDot(sppfNode: ISppfNode, label: String = ""): String {
-    val queue: ArrayDeque<ISppfNode> = ArrayDeque(listOf(sppfNode))
+fun <InputNode> getSppfDot(sppfNode: RangeSppfNode<InputNode>, label: String = ""): String {
+    val queue: ArrayDeque<RangeSppfNode<InputNode>> = ArrayDeque(listOf(sppfNode))
     val edges: HashMap<Int, HashSet<Int>> = HashMap()
     val visited: HashSet<Int> = HashSet()
-    var node: ISppfNode
+    var node: RangeSppfNode<InputNode>
     val sb = StringBuilder()
     sb.append("digraph g {")
     sb.append("labelloc=\"t\"")
@@ -28,34 +26,17 @@ fun getSppfDot(sppfNode: ISppfNode, label: String = ""): String {
 
     while (queue.isNotEmpty()) {
         node = queue.removeFirst()
-        if (!visited.add(node.id)) continue
+        if (!visited.add(node.hashCode())) continue
 
-        sb.append(printNode(node.id, node))
+        sb.append("\n")
+        sb.append(printNode(node.hashCode(), node))
 
-        (node as? NonterminalSppfNode<*>)?.children?.forEach {
+        node.children.forEach {
             queue.addLast(it)
-            if (!edges.containsKey(node.id)) {
-                edges[node.id] = HashSet()
+            if (!edges.containsKey(node.hashCode())) {
+                edges[node.hashCode()] = HashSet()
             }
-            edges.getValue(node.id).add(it.id)
-        }
-
-        val leftChild = (node as? PackedSppfNode<*>)?.leftSppfNode
-        val rightChild = (node as? PackedSppfNode<*>)?.rightSppfNode
-
-        if (leftChild != null) {
-            queue.addLast(leftChild)
-            if (!edges.containsKey(node.id)) {
-                edges[node.id] = HashSet()
-            }
-            edges.getValue(node.id).add(leftChild.id)
-        }
-        if (rightChild != null) {
-            queue.addLast(rightChild)
-            if (!edges.containsKey(node.id)) {
-                edges[node.id] = HashSet()
-            }
-            edges.getValue(node.id).add(rightChild.id)
+            edges.getValue(node.hashCode()).add(it.hashCode())
         }
     }
     for ((head, tails) in edges) {
@@ -68,46 +49,37 @@ fun getSppfDot(sppfNode: ISppfNode, label: String = ""): String {
 
 }
 
-fun getColor(weight: Int): String = if (weight == 0) "black" else "red"
 
 fun printEdge(x: Int, y: Int): String {
     return "${x}->${y}"
 }
 
-fun printNode(nodeId: Int, node: ISppfNode): String {
-    return when (node) {
-        is TerminalSppfNode<*> -> {
-            "${nodeId} [label = \"Terminal ${nodeId} ; ${node.terminal ?: "eps"}, ${node.leftExtent}, ${node.rightExtent}, Weight: ${node.weight}\", shape = ellipse, color = ${
-                getColor(
-                    node.weight
-                )
-            }]"
+fun <InputNode>printNode(nodeId: Int, node: RangeSppfNode<InputNode>): String {
+    val type = node.type
+    return when (type) {
+        is TerminalType<*> -> {
+            "${nodeId} [label = \"Terminal ${nodeId} ; ${type.terminal }," +
+                    " ${node.inputRange?.from}, ${node.inputRange?.to} \", shape = ellipse ]"
         }
 
-        is SymbolSppfNode<*> -> {
-            "${nodeId} [label = \"Symbol ${nodeId} ; ${node.symbol.name}, ${node.leftExtent}, ${node.rightExtent}, Weight: ${node.weight}\", shape = octagon, color = ${
-                getColor(
-                    node.weight
-                )
-            }]"
+        is NonterminalType -> {
+            "${nodeId} [label = \"Symbol ${nodeId} ; ${type.startState.nonterminal.name}," +
+                    " ${node.inputRange?.from}, ${node.inputRange?.to}, shape = octagon]"
         }
 
-        is IntermediateSppfNode<*> -> {
-            "${nodeId} [label = \"Intermediate ${nodeId} ; RSM: ${node.rsmState.nonterminal.name}, ${node.leftExtent}, ${node.rightExtent}, Weight: ${node.weight}\", shape = rectangle, color = ${
-                getColor(
-                    node.weight
-                )
-            }]"
+        is IntermediateType<*> -> {
+            "${nodeId} [label = \"Intermediate ${nodeId} ; RSM: ${type.grammarSlot.nonterminal.name}, " +
+                    "${node.inputRange?.from}, ${node.inputRange?.to}, shape = rectangle]"
+        }
+        is EmptyType -> {
+            "${nodeId} [label = \"Range ${nodeId}\" ; shape = rectangle]"
         }
 
-        is PackedSppfNode<*> -> {
-            "${nodeId} [label = \"Packed ${nodeId} ; Weight: ${node.weight}\", shape = point, width = 0.5, color = ${
-                getColor(
-                    node.weight
-                )
-            }]"
+        is RangeType -> {
+            "${nodeId} [label = \"Range ${nodeId} ; RSM: [${node.rsmRange!!.rsmFrom},${node.rsmRange.rsmTo}] \", " +
+                    "${node.inputRange?.from}, ${node.inputRange?.to}, shape = rectangle]"
         }
+        else -> throw IllegalStateException("Can't write node type $type to DOT")
 
-        else -> ""
     }
 }

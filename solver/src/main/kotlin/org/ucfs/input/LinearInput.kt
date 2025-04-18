@@ -14,7 +14,7 @@ open class LinearInput<VertexType, LabelType : ILabel> : InputGraph<VertexType, 
             val e = edges[v]?.first() ?: break
             sb.append("\n")
             sb.append(e.label)
-            v = e.head
+            v = e.targetVertex
         }
         return sb.toString()
     }

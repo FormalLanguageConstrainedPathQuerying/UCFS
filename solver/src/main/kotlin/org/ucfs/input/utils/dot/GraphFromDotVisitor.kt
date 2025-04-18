@@ -51,6 +51,7 @@ class GraphFromDotVisitor: DotBaseVisitor<InputGraph<Int, TerminalInputLabel>>()
     override fun visitNode_stmt(ctx: DotParser.Node_stmtContext?): InputGraph<Int, TerminalInputLabel> {
         if(ctx?.node_id()?.text == "start"){
             return super.visitNode_stmt(ctx)
+
         }
         //add node info
         super.visitNode_stmt(ctx)

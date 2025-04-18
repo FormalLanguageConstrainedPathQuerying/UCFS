@@ -1,7 +1,6 @@
 package org.ucfs.input.utils
 
 
-import org.ucfs.input.ILabel
 import org.ucfs.input.InputGraph
 import org.ucfs.input.TerminalInputLabel
 import java.lang.StringBuilder
@@ -21,7 +20,7 @@ class DotWriter {
 
         for ((from, edges) in graph.edges) {
             for (edge in edges) {
-                val to = edge.head
+                val to = edge.targetVertex
                 val label = edge.label.terminal.toString()
                 builder.append("    $from $connector $to [label = $label];\n")
             }
