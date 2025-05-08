@@ -54,54 +54,40 @@ interface IGll<InputNodeType, LabelType : ILabel> {
 
             val gssNode = ctx.gss.getOrCreateNode(startVertex, ctx.startState)
             val startDescriptor = Descriptor(
-                startVertex,
-                gssNode,
-                ctx.startState,
-                getEmptyRange()
+                startVertex, gssNode, ctx.startState, getEmptyRange()
             )
             ctx.descriptors.add(startDescriptor)
         }
     }
 
     fun handleNonterminalEdge(
-        descriptor: Descriptor<InputNodeType>,
-        destinationRsmState: RsmState,
-        edgeNonterminal: Nonterminal
+        descriptor: Descriptor<InputNodeType>, destinationRsmState: RsmState, edgeNonterminal: Nonterminal
     ) {
         val rsmStartState = edgeNonterminal.startState
         val (newGssNode, positionToPops) = ctx.gss.addEdge(
-            descriptor.gssNode,
-            destinationRsmState,
-            descriptor.inputPosition,
-            rsmStartState,
-            descriptor.sppfNode
+            descriptor.gssNode, destinationRsmState, descriptor.inputPosition, rsmStartState, descriptor.sppfNode
         )
 
         var newDescriptor = Descriptor(
-            descriptor.inputPosition,
-            newGssNode,
-            rsmStartState,
-            getEmptyRange())
+            descriptor.inputPosition, newGssNode, rsmStartState, getEmptyRange()
+        )
         ctx.descriptors.add(newDescriptor)
 
-        for(rangeToPop in positionToPops){
+        for (rangeToPop in positionToPops) {
             val leftSubRange = descriptor.sppfNode
-            val rightSubRange = ctx.sppfStorage.addNode(RangeSppfNode(
-                rangeToPop.inputRange,
-                RsmRange(
-                    descriptor.rsmState,
-                    destinationRsmState
-                ),
-                NonterminalType(rsmStartState)
-            ))
+            val rightSubRange = ctx.sppfStorage.addNode(
+                RangeSppfNode(
+                    rangeToPop.inputRange, RsmRange(
+                        descriptor.rsmState, destinationRsmState
+                    ), NonterminalType(rsmStartState)
+                )
+            )
             val newSppfNode = ctx.sppfStorage.addNode(leftSubRange, rightSubRange)
 
             //TODO why these parameters???
             newDescriptor = Descriptor(
-                rangeToPop.inputRange!!.to,
-                descriptor.gssNode,
-                destinationRsmState,
-                newSppfNode)
+                rangeToPop.inputRange!!.to, descriptor.gssNode, destinationRsmState, newSppfNode
+            )
             ctx.descriptors.add(newDescriptor)
         }
     }
@@ -113,23 +99,19 @@ interface IGll<InputNodeType, LabelType : ILabel> {
         destinationRsmState: RsmState,
         terminal: ITerminal
     ) {
-        val terminalNode = RangeSppfNode(
+        var terminalSppfNode = ctx.sppfStorage.addNode(
             InputRange(
                 descriptor.inputPosition,
                 inputEdge.targetVertex,
-            ),
-            RsmRange(
+            ), RsmRange(
                 descriptor.rsmState,
                 destinationRsmState,
-            ),
-            TerminalType(terminal)
-            )
+            ), terminal
+        )
+        val intermediateOrTerminalSppf = ctx.sppfStorage.addNode(descriptor.sppfNode, terminalSppfNode)
         val descriptorForTerminal = Descriptor(
-            inputEdge.targetVertex,
-            descriptor.gssNode,
-            destinationRsmState,
-            terminalNode
-            )
+            inputEdge.targetVertex, descriptor.gssNode, destinationRsmState, intermediateOrTerminalSppf
+        )
         ctx.descriptors.add(descriptorForTerminal)
     }
 }

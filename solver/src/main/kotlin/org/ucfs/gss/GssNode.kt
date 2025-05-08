@@ -10,6 +10,8 @@ import kotlin.collections.ArrayList
  * Node in Graph Structured Stack
  * @param InputNodeType - type of vertex in input graph
  */
+var lastId = 0
+
 data class GssNode<InputNodeType>(
     /**
      * RSM corresponding to grammar slot
@@ -18,7 +20,7 @@ data class GssNode<InputNodeType>(
     /**
      * Pointer to vertex in input graph
      */
-    val inputPosition: InputNodeType
+    val inputPosition: InputNodeType, val id: Int = lastId++
 
 ) {
     val popped = ArrayList<RangeSppfNode<InputNodeType>>()
@@ -28,7 +30,7 @@ data class GssNode<InputNodeType>(
     /**
      * Add edge and return popped
      */
-    fun addEdge(edge: GssEdge<InputNodeType>): ArrayList<RangeSppfNode<InputNodeType>>{
+    fun addEdge(edge: GssEdge<InputNodeType>): ArrayList<RangeSppfNode<InputNodeType>> {
         outgoingEdges.add(edge)
         //TODO
         return popped

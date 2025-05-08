@@ -45,22 +45,4 @@ open class Grammar {
         //if nonterminal not initialized -- it will be checked in buildRsmBox()
         return startNt.nonterm.startState
     }
-
-    /**
-     * Get all terminals used in RSM from current state (recursive)
-     */
-    fun getTerminals(): Iterable<ITerminal> {
-        val terms : HashSet<ITerminal> = incrementalDfs(
-            rsm,
-            { state: RsmState ->
-                state.nonterminalEdgesStorage.map { it.destinationState.nonterminal.startState }  +
-                        state.nonterminalEdgesStorage.map { (it.symbol as Nonterminal).startState }
-            },
-            hashSetOf(),
-            { state, set -> set.addAll(state.terminalEdgesStorage.map { it.symbol as ITerminal }) }
-        )
-        val comparator = terms.firstOrNull()?.getComparator() ?: return emptyList()
-        return terms.toSortedSet(comparator).toList()
-    }
-
 }

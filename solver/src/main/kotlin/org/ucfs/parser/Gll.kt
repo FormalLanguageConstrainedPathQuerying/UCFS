@@ -34,58 +34,60 @@ class Gll<VertexType, LabelType : ILabel> private constructor(
     }
 
     private fun getEpsilonRange(descriptor: Descriptor<VertexType>): RangeSppfNode<VertexType> {
-        return RangeSppfNode(
-            InputRange(
-                descriptor.inputPosition,
-                descriptor.inputPosition,
-            ),
-            RsmRange(
-                descriptor.rsmState,
-                descriptor.rsmState,
-            ),
-            EpsilonNonterminalType(descriptor.gssNode.rsm)
+        val input = InputRange(
+            descriptor.inputPosition,
+            descriptor.inputPosition,
         )
+        val rsm = RsmRange(
+            descriptor.rsmState,
+            descriptor.rsmState,
+        )
+        val range = ctx.sppfStorage.addNode(RangeSppfNode(input, rsm, Range))
+        val epsilon = ctx.sppfStorage.addNode(
+            RangeSppfNode(input, rsm, EpsilonNonterminalType(descriptor.gssNode.rsm))
+        )
+        range.children.add(epsilon)
+        return range
     }
 
-    private fun handlePoppedGssEdge(poppedGssEdge: GssEdge<VertexType>, descriptor: Descriptor<VertexType>){
+    private fun handlePoppedGssEdge(
+        poppedGssEdge: GssEdge<VertexType>, descriptor: Descriptor<VertexType>, childSppf: RangeSppfNode<VertexType>
+    ) {
         val leftRange = poppedGssEdge.matchedRange
-        val startRsmState =
-            if (poppedGssEdge.matchedRange.type == EmptyType)
-                poppedGssEdge.gssNode.rsm
-            else
-                poppedGssEdge.matchedRange.rsmRange!!.rsmTo
-        val rightEdge = RangeSppfNode(
+        val startRsmState = if (poppedGssEdge.matchedRange.type == EmptyType) poppedGssEdge.gssNode.rsm
+        else poppedGssEdge.matchedRange.rsmRange!!.to
+        val rightRange = ctx.sppfStorage.addNode(
             InputRange(
-                descriptor.gssNode.inputPosition,
-                descriptor.inputPosition
-            ),
-            RsmRange(
+                descriptor.gssNode.inputPosition, descriptor.inputPosition
+            ), RsmRange(
                 startRsmState,
                 poppedGssEdge.state,
-            ),
-            NonterminalType(descriptor.gssNode.rsm)
+            ), descriptor.gssNode.rsm, childSppf
         )
-        ctx.sppfStorage.addNode(rightEdge)
-        val newRange = ctx.sppfStorage.addNode(leftRange, rightEdge)
+        ctx.sppfStorage.addNode(rightRange)
+        val newRange = ctx.sppfStorage.addNode(leftRange, rightRange)
         val newDescriptor = Descriptor(
-            descriptor.inputPosition,
-            poppedGssEdge.gssNode,
-            poppedGssEdge.state,
-            newRange
+            descriptor.inputPosition, poppedGssEdge.gssNode, poppedGssEdge.state, newRange
         )
         ctx.descriptors.add(newDescriptor)
     }
+
     /**
      * Processes descriptor
      * @param descriptor - descriptor to process
      */
     override fun handleDescriptor(descriptor: Descriptor<VertexType>) {
         ctx.descriptors.addToHandled(descriptor)
-        if(descriptor.rsmState.isFinal){
-            val matchedRange = if(descriptor.sppfNode.type == EmptyType) getEpsilonRange(descriptor) else descriptor.sppfNode
-            val gssEdges = ctx.gss.pop(descriptor, matchedRange)
-            gssEdges.map{::handlePoppedGssEdge}
-            if(descriptor.rsmState == ctx.startState){
+        if (descriptor.rsmState.isFinal) {
+            val matchedRange = if (descriptor.sppfNode.type == EmptyType) {
+                getEpsilonRange(descriptor)
+            } else {
+                descriptor.sppfNode
+            }
+            for (poppedEdge in ctx.gss.pop(descriptor, matchedRange)) {
+                handlePoppedGssEdge(poppedEdge, descriptor, matchedRange)
+            }
+            if (descriptor.gssNode.outgoingEdges.isEmpty() && descriptor.gssNode.rsm.isStart) {
                 ctx.parseResult = matchedRange
             }
         }

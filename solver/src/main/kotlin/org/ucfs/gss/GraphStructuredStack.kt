@@ -9,18 +9,20 @@ class GraphStructuredStack<InputNode> {
 
     fun getOrCreateNode(input: InputNode, rsm: RsmState): GssNode<InputNode> {
         val node = findNode(input, rsm)
-        return if(node == null) GssNode(rsm, input) else node
+        return if (node == null) GssNode(rsm, input) else node
     }
 
-    fun findNode(input: InputNode, rsm: RsmState): GssNode<InputNode>?{
-        return nodes.find{ node -> node.inputPosition == input && node.rsm == rsm}
+    fun findNode(input: InputNode, rsm: RsmState): GssNode<InputNode>? {
+        return nodes.find { node -> node.inputPosition == input && node.rsm == rsm }
     }
 
-    fun addEdge(gssNode: GssNode<InputNode>,
-                rsmStateToReturn: RsmState,
-                inputToContinue: InputNode,
-                rsmStateToContinue: RsmState,
-                matcherRange: RangeSppfNode<InputNode>): GssResult<InputNode> {
+    fun addEdge(
+        gssNode: GssNode<InputNode>,
+        rsmStateToReturn: RsmState,
+        inputToContinue: InputNode,
+        rsmStateToContinue: RsmState,
+        matcherRange: RangeSppfNode<InputNode>
+    ): GssResult<InputNode> {
         val addedNode = getOrCreateNode(inputToContinue, rsmStateToContinue)
         val edge = GssEdge(gssNode, rsmStateToReturn, matcherRange)
 
@@ -37,8 +39,9 @@ class GraphStructuredStack<InputNode> {
     /**
      * return outgoing edges
      */
-    fun pop(descriptor: Descriptor<InputNode>, range: RangeSppfNode<InputNode>):
-            ArrayList<GssEdge<InputNode>> {
+    fun pop(
+        descriptor: Descriptor<InputNode>, range: RangeSppfNode<InputNode>
+    ): ArrayList<GssEdge<InputNode>> {
         val gssNode = descriptor.gssNode
         gssNode.popped.add(range)
         return gssNode.outgoingEdges
@@ -47,8 +50,7 @@ class GraphStructuredStack<InputNode> {
 }
 
 data class GssResult<InputNodeType>(
-    val gssNode: GssNode<InputNodeType>,
-    val popped: ArrayList<RangeSppfNode<InputNodeType>>
+    val gssNode: GssNode<InputNodeType>, val popped: ArrayList<RangeSppfNode<InputNodeType>>
 )
 
 

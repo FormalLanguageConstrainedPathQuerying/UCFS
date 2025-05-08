@@ -1,10 +1,10 @@
 package org.ucfs.input.utils.dot
 
-import org.ucfs.input.DotParser.StringTerminal
 import org.ucfs.input.InputGraph
 import org.ucfs.input.TerminalInputLabel
+import org.ucfs.rsm.symbol.Term
 
-class GraphFromDotVisitor: DotBaseVisitor<InputGraph<Int, TerminalInputLabel>>() {
+class GraphFromDotVisitor : DotBaseVisitor<InputGraph<Int, TerminalInputLabel>>() {
     lateinit var graph: InputGraph<Int, TerminalInputLabel>
 
     override fun visitGraph(ctx: DotParser.GraphContext?): InputGraph<Int, TerminalInputLabel> {
@@ -20,7 +20,8 @@ class GraphFromDotVisitor: DotBaseVisitor<InputGraph<Int, TerminalInputLabel>>()
     }
 
     private fun parseSimpleEdge(edgeView: String): TerminalInputLabel {
-        return TerminalInputLabel(StringTerminal(edgeView))
+        val viewWithoutQuotes = edgeView.substring(1, edgeView.length - 1)
+        return TerminalInputLabel(Term(viewWithoutQuotes))
     }
 
     override fun visitEdge_stmt(ctx: DotParser.Edge_stmtContext?): InputGraph<Int, TerminalInputLabel> {
@@ -49,7 +50,7 @@ class GraphFromDotVisitor: DotBaseVisitor<InputGraph<Int, TerminalInputLabel>>()
     }
 
     override fun visitNode_stmt(ctx: DotParser.Node_stmtContext?): InputGraph<Int, TerminalInputLabel> {
-        if(ctx?.node_id()?.text == "start"){
+        if (ctx?.node_id()?.text == "start") {
             return super.visitNode_stmt(ctx)
 
         }

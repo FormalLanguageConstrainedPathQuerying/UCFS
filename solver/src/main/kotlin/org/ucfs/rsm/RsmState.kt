@@ -17,8 +17,8 @@ data class RsmState(
     val nonterminal: Nonterminal,
     val isStart: Boolean = false,
     val isFinal: Boolean = false,
+    var numId: Int = nonterminal.getNextRsmStateId()
 ) {
-    val numId: Int = nonterminal.getNextRsmStateId()
     val id: String = "${nonterminal.name}_${(numId)}"
 
     val outgoingEdges

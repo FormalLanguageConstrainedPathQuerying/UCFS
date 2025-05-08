@@ -8,6 +8,7 @@ import org.ucfs.rsm.symbol.Nonterminal
 
 object IntersectionEngine : IIntersectionEngine {
 
+
     /**
      * Process outgoing edges from input position in given descriptor, according to processing logic, represented as
      * separate functions for both outgoing terminal and nonterminal edges from rsmState in descriptor
@@ -21,18 +22,20 @@ object IntersectionEngine : IIntersectionEngine {
 
         for (inputEdge in gll.ctx.input.getEdges(descriptor.inputPosition)) {
             val inputTerminal = inputEdge.label.terminal
-            descriptor.rsmState.terminalEdgesStorage.find { rsmEdge -> rsmEdge.symbol == inputTerminal }?. let {
-                    rsmEdge -> gll.handleTerminalEdge(
-                    descriptor,
-                    inputEdge,
-                    rsmEdge.destinationState,
-                    rsmEdge.symbol as ITerminal
-            )
+            val rsmEdge = descriptor.rsmState.terminalEdgesStorage.find {
+                it.symbol == inputTerminal
+            }
+            if (rsmEdge != null) {
+                gll.handleTerminalEdge(
+                    descriptor, inputEdge, rsmEdge.destinationState, rsmEdge.symbol as ITerminal
+                )
             }
         }
 
         for (nonterminalEdge in descriptor.rsmState.nonterminalEdgesStorage) {
-            gll.handleNonterminalEdge(descriptor, nonterminalEdge.destinationState, nonterminalEdge.symbol as Nonterminal)
+            gll.handleNonterminalEdge(
+                descriptor, nonterminalEdge.destinationState, nonterminalEdge.symbol as Nonterminal
+            )
         }
     }
 }

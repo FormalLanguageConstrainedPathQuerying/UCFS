@@ -16,70 +16,112 @@ fun <InputNode> writeSppfToDot(sppfNode: RangeSppfNode<InputNode>, filePath: Str
 
 fun <InputNode> getSppfDot(sppfNode: RangeSppfNode<InputNode>, label: String = ""): String {
     val queue: ArrayDeque<RangeSppfNode<InputNode>> = ArrayDeque(listOf(sppfNode))
-    val edges: HashMap<Int, HashSet<Int>> = HashMap()
+    val edges: HashMap<RangeSppfNode<InputNode>, HashSet<RangeSppfNode<InputNode>>> = HashMap()
     val visited: HashSet<Int> = HashSet()
     var node: RangeSppfNode<InputNode>
     val sb = StringBuilder()
-    sb.append("digraph g {")
-    sb.append("labelloc=\"t\"")
-    sb.append("label=\"$label\"")
-
+    sb.appendLine("digraph g {")
+    sb.appendLine("labelloc=\"t\"")
+    sb.appendLine("label=\"$label\"")
+    var nextNodeId = 0
+    val nodeViews = HashMap<RangeSppfNode<InputNode>, String>()
     while (queue.isNotEmpty()) {
         node = queue.removeFirst()
         if (!visited.add(node.hashCode())) continue
 
-        sb.append("\n")
-        sb.append(printNode(node.hashCode(), node))
+        nodeViews[node] = getNodeView(node)
 
         node.children.forEach {
             queue.addLast(it)
-            if (!edges.containsKey(node.hashCode())) {
-                edges[node.hashCode()] = HashSet()
-            }
-            edges.getValue(node.hashCode()).add(it.hashCode())
+            edges.getOrPut(node, { HashSet() }).add(it)
         }
     }
+    val sortedViews = nodeViews.values.sorted()
+    val nodeIds = HashMap<RangeSppfNode<InputNode>, Int>()
+    for ((node, view) in nodeViews) {
+        nodeIds[node] = sortedViews.indexOf(view)
+    }
+    for (i in sortedViews.indices) {
+        sb.appendLine("$i ${sortedViews[i]}")
+    }
+
+    val sortedEdges = ArrayList<String>()
     for ((head, tails) in edges) {
         for (tail in tails) {
-            sb.append(printEdge(head, tail))
+            sortedEdges.add("${nodeIds[head]}->${nodeIds[tail]}")
         }
     }
-    sb.append("}")
+    for (edge in sortedEdges.sorted()) {
+        sb.appendLine(edge)
+    }
+    sb.appendLine("}")
     return sb.toString()
 
 }
 
-
-fun printEdge(x: Int, y: Int): String {
-    return "${x}->${y}"
+enum class NodeShape(val view: String) {
+    Terminal("rectangle"), Nonterminal("invtrapezium"), Intermediate("plain"), Empty("ellipse"), Range("ellipse"), Epsilon(
+        "invhouse"
+    )
 }
 
-fun <InputNode>printNode(nodeId: Int, node: RangeSppfNode<InputNode>): String {
+fun fillNodeTemplate(
+    nodeInfo: String, inputRange: InputRange<*>?, shape: NodeShape, rsmRange: RsmRange? = null
+): String {
+    val inputRangeView = if (inputRange != null) "input: [${inputRange.from}, ${inputRange.to}]" else null
+    val rsmRangeView = if (rsmRange != null) "rsm: [${rsmRange.from.id}, ${rsmRange.to.id}]" else null
+    val view = listOfNotNull(nodeInfo, inputRangeView, rsmRangeView).joinToString(", ")
+    return "[label = \"${shape.name} $view\", shape = ${shape.view}]"
+}
+
+
+fun <InputNode> getNodeView(node: RangeSppfNode<InputNode>): String {
     val type = node.type
     return when (type) {
         is TerminalType<*> -> {
-            "${nodeId} [label = \"Terminal ${nodeId} ; ${type.terminal }," +
-                    " ${node.inputRange?.from}, ${node.inputRange?.to} \", shape = ellipse ]"
+            fillNodeTemplate(
+                "'${type.terminal}'", node.inputRange, NodeShape.Terminal
+            )
         }
 
         is NonterminalType -> {
-            "${nodeId} [label = \"Symbol ${nodeId} ; ${type.startState.nonterminal.name}," +
-                    " ${node.inputRange?.from}, ${node.inputRange?.to}, shape = octagon]"
+            fillNodeTemplate(
+                "${type.startState.nonterminal.name}", node.inputRange, NodeShape.Nonterminal
+            )
         }
 
         is IntermediateType<*> -> {
-            "${nodeId} [label = \"Intermediate ${nodeId} ; RSM: ${type.grammarSlot.nonterminal.name}, " +
-                    "${node.inputRange?.from}, ${node.inputRange?.to}, shape = rectangle]"
+            fillNodeTemplate(
+                "input: ${type.inputPosition}, rsm: ${type.grammarSlot.id}", null, NodeShape.Intermediate
+            )
         }
+
         is EmptyType -> {
-            "${nodeId} [label = \"Range ${nodeId}\" ; shape = rectangle]"
+            fillNodeTemplate(
+                "", null, NodeShape.Empty
+            )
+        }
+
+        is EpsilonNonterminalType -> {
+            fillNodeTemplate(
+                "RSM: ${type.startState.id}", node.inputRange, NodeShape.Epsilon
+            )
         }
 
         is RangeType -> {
-            "${nodeId} [label = \"Range ${nodeId} ; RSM: [${node.rsmRange!!.rsmFrom},${node.rsmRange.rsmTo}] \", " +
-                    "${node.inputRange?.from}, ${node.inputRange?.to}, shape = rectangle]"
+            fillNodeTemplate(
+                "", node.inputRange, NodeShape.Range, node.rsmRange
+            )
         }
+
         else -> throw IllegalStateException("Can't write node type $type to DOT")
 
     }
+
+
+}
+
+private fun getView(range: RsmRange?): String {
+    if (range == null) return ""
+    return "rsm: [(${range.from.nonterminal.name}:${range.from.numId}), " + "(${range.to.nonterminal.name}:${range.to.numId})]"
 }
