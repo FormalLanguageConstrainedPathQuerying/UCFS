@@ -5,6 +5,7 @@ import org.ucfs.grammar.combinator.regexp.Regexp
 import org.ucfs.incrementalDfs
 import org.ucfs.rsm.RsmState
 import org.ucfs.rsm.symbol.ITerminal
+import org.ucfs.rsm.symbol.Nonterminal
 
 
 open class Grammar {
@@ -44,22 +45,4 @@ open class Grammar {
         //if nonterminal not initialized -- it will be checked in buildRsmBox()
         return startNt.nonterm.startState
     }
-
-    /**
-     * Get all terminals used in RSM from current state (recursive)
-     */
-    fun getTerminals(): Iterable<ITerminal> {
-        val terms : HashSet<ITerminal> = incrementalDfs(
-            rsm,
-            { state: RsmState ->
-                state.outgoingEdges.values.flatten() +
-                        state.nonterminalEdges.keys.map { it.startState }
-            },
-            hashSetOf(),
-            { state, set -> set.addAll(state.terminalEdges.keys) }
-        )
-        val comparator = terms.firstOrNull()?.getComparator() ?: return emptyList()
-        return terms.toSortedSet(comparator).toList()
-    }
-
 }

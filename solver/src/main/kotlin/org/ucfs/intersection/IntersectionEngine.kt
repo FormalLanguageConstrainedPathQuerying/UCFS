@@ -3,45 +3,40 @@ package org.ucfs.intersection
 import org.ucfs.descriptors.Descriptor
 import org.ucfs.input.ILabel
 import org.ucfs.parser.IGll
-import org.ucfs.sppf.node.SppfNode
+import org.ucfs.rsm.symbol.ITerminal
+import org.ucfs.rsm.symbol.Nonterminal
 
 object IntersectionEngine : IIntersectionEngine {
+
 
     /**
      * Process outgoing edges from input position in given descriptor, according to processing logic, represented as
      * separate functions for both outgoing terminal and nonterminal edges from rsmState in descriptor
      * @param gll - Gll parser instance
      * @param descriptor - descriptor, represents current parsing stage
-     * @param sppfNode - root node of derivation tree, corresponds to already parsed portion of input
      */
     override fun <VertexType, LabelType : ILabel> handleEdges(
         gll: IGll<VertexType, LabelType>,
         descriptor: Descriptor<VertexType>,
-        sppfNode: SppfNode<VertexType>?
     ) {
-        val rsmState = descriptor.rsmState
-        val inputPosition = descriptor.inputPosition
-        val terminalEdges = rsmState.terminalEdges
-        val nonterminalEdges = rsmState.nonterminalEdges
 
-        //input contains only terminal edges
-        for (inputEdge in gll.ctx.input.getEdges(inputPosition)) {
-            val terminal = inputEdge.label.terminal
-            if (terminal == null) {
-                gll.handleTerminalOrEpsilonEdge(descriptor, sppfNode, null, descriptor.rsmState, inputEdge.head, 0)
+        for (inputEdge in gll.ctx.input.getEdges(descriptor.inputPosition)) {
+            val inputTerminal = inputEdge.label.terminal
+            val rsmEdge = descriptor.rsmState.terminalEdgesStorage.find {
+                it.symbol == inputTerminal
             }
-            else{
-                val targetStates = terminalEdges[inputEdge.label.terminal]
-                if (targetStates != null) {
-                    for (targetState in targetStates) {
-                        gll.handleTerminalOrEpsilonEdge(descriptor, sppfNode, terminal, targetState, inputEdge.head, 0)
-                    }
-                }
+            if (rsmEdge != null) {
+                gll.handleTerminalEdge(
+                    descriptor, inputEdge, rsmEdge.destinationState, rsmEdge.symbol as ITerminal
+                )
             }
         }
 
-        for ((edgeNonterminal, targetStates) in nonterminalEdges) {
-            gll.handleNonterminalEdge(descriptor, edgeNonterminal, targetStates, sppfNode)
+        for (nonterminalEdge in descriptor.rsmState.nonterminalEdgesStorage) {
+            gll.handleNonterminalEdge(
+                descriptor, nonterminalEdge.destinationState, nonterminalEdge.symbol as Nonterminal
+            )
         }
     }
 }
+

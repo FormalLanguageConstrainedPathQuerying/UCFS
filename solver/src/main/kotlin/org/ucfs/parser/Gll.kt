@@ -1,17 +1,14 @@
 package org.ucfs.parser
 
 import org.ucfs.descriptors.Descriptor
+import org.ucfs.gss.GssEdge
 import org.ucfs.input.IInputGraph
 import org.ucfs.input.ILabel
 import org.ucfs.intersection.IIntersectionEngine
 import org.ucfs.intersection.IntersectionEngine
-import org.ucfs.intersection.RecoveryIntersection
 import org.ucfs.parser.context.Context
-import org.ucfs.parser.context.IContext
-import org.ucfs.parser.context.RecoveryContext
 import org.ucfs.rsm.RsmState
-import org.ucfs.sppf.node.ISppfNode
-import org.ucfs.sppf.node.SppfNode
+import org.ucfs.sppf.node.*
 
 /**
  * Gll Factory
@@ -19,7 +16,7 @@ import org.ucfs.sppf.node.SppfNode
  * @param LabelType - type of label on edges in input graph
  */
 class Gll<VertexType, LabelType : ILabel> private constructor(
-    override var ctx: IContext<VertexType, LabelType>, val engine: IIntersectionEngine
+    override var ctx: Context<VertexType, LabelType>, private val engine: IIntersectionEngine
 ) : IGll<VertexType, LabelType> {
 
     companion object {
@@ -34,60 +31,68 @@ class Gll<VertexType, LabelType : ILabel> private constructor(
         ): Gll<VertexType, LabelType> {
             return Gll(Context(startState, inputGraph), IntersectionEngine)
         }
-
-        /**
-         * Part of error recovery mechanism
-         * Creates instance of incremental Gll with error recovery
-         * @param startState - starting state of accepting nonterminal in RSM
-         * @param inputGraph - input graph
-         * @return recovery instance of gll parser
-         */
-        fun <VertexType, LabelType : ILabel> recoveryGll(
-            startState: RsmState, inputGraph: IInputGraph<VertexType, LabelType>
-        ): Gll<VertexType, LabelType> {
-            return Gll(RecoveryContext(startState, inputGraph), RecoveryIntersection)
-        }
     }
 
-    /**
-     * Part of incrementality mechanism.
-     * Perform incremental parsing, via restoring and adding to handling already processed descriptors,
-     * which contain given vertex as their field
-     * @param vertex - vertex in input graph, which outgoing edges were modified
-     */
-    fun parse(vertex: VertexType): Pair<SppfNode<VertexType>?, HashMap<Pair<VertexType, VertexType>, Int>> {
-        ctx.descriptors.restoreDescriptors(vertex)
-        ctx.sppf.invalidate(vertex, ctx.parseResult as ISppfNode)
-        ctx.parseResult = null
-        return parse()
+    private fun getEpsilonRange(descriptor: Descriptor<VertexType>): RangeSppfNode<VertexType> {
+        val input = InputRange(
+            descriptor.inputPosition,
+            descriptor.inputPosition,
+        )
+        val rsm = RsmRange(
+            descriptor.rsmState,
+            descriptor.rsmState,
+        )
+        val range = ctx.sppfStorage.addNode(RangeSppfNode(input, rsm, Range))
+        val epsilon = ctx.sppfStorage.addNode(
+            RangeSppfNode(input, rsm, EpsilonNonterminalType(descriptor.gssNode.rsm))
+        )
+        range.children.add(epsilon)
+        return range
+    }
+
+    private fun handlePoppedGssEdge(
+        poppedGssEdge: GssEdge<VertexType>, descriptor: Descriptor<VertexType>, childSppf: RangeSppfNode<VertexType>
+    ) {
+        val leftRange = poppedGssEdge.matchedRange
+        val startRsmState = if (poppedGssEdge.matchedRange.type == EmptyType) poppedGssEdge.gssNode.rsm
+        else poppedGssEdge.matchedRange.rsmRange!!.to
+        val rightRange = ctx.sppfStorage.addNode(
+            InputRange(
+                descriptor.gssNode.inputPosition, descriptor.inputPosition
+            ), RsmRange(
+                startRsmState,
+                poppedGssEdge.state,
+            ), descriptor.gssNode.rsm, childSppf
+        )
+        ctx.sppfStorage.addNode(rightRange)
+        val newRange = ctx.sppfStorage.addNode(leftRange, rightRange)
+        val newDescriptor = Descriptor(
+            descriptor.inputPosition, poppedGssEdge.gssNode, poppedGssEdge.state, newRange
+        )
+        ctx.descriptors.add(newDescriptor)
     }
 
     /**
      * Processes descriptor
      * @param descriptor - descriptor to process
      */
-    override fun parse(descriptor: Descriptor<VertexType>) {
-        val state = descriptor.rsmState
-        val pos = descriptor.inputPosition
-        val sppfNode = descriptor.sppfNode
-        val epsilonSppfNode = ctx.sppf.getEpsilonSppfNode(descriptor)
-        val leftExtent = sppfNode?.leftExtent
-        val rightExtent = sppfNode?.rightExtent
-
-        if (state.isFinal) {
-            pop(descriptor.gssNode, sppfNode ?: epsilonSppfNode, pos)
-        }
-
+    override fun handleDescriptor(descriptor: Descriptor<VertexType>) {
         ctx.descriptors.addToHandled(descriptor)
-
-        if (state.isStart && state.isFinal) {
-            checkAcceptance(
-                epsilonSppfNode, epsilonSppfNode!!.leftExtent, epsilonSppfNode!!.rightExtent, state.nonterminal
-            )
+        if (descriptor.rsmState.isFinal) {
+            val matchedRange = if (descriptor.sppfNode.type == EmptyType) {
+                getEpsilonRange(descriptor)
+            } else {
+                descriptor.sppfNode
+            }
+            for (poppedEdge in ctx.gss.pop(descriptor, matchedRange)) {
+                handlePoppedGssEdge(poppedEdge, descriptor, matchedRange)
+            }
+            if (descriptor.gssNode.outgoingEdges.isEmpty() && descriptor.gssNode.rsm.isStart) {
+                ctx.parseResult = matchedRange
+            }
         }
-        checkAcceptance(sppfNode, leftExtent, rightExtent, state.nonterminal)
 
-        engine.handleEdges(this, descriptor, sppfNode)
+        engine.handleEdges(this, descriptor)
     }
 }
 

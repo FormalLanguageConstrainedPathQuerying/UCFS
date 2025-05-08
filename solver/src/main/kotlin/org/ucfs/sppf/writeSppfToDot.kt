@@ -1,90 +1,127 @@
 package org.ucfs.sppf
 
 import org.ucfs.sppf.node.*
-import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
 
-fun writeSppfToDot(sppfNode: ISppfNode, filePath: String, label: String = "") {
-    val queue: ArrayDeque<ISppfNode> = ArrayDeque(listOf(sppfNode))
-    val edges: HashMap<Int, HashSet<Int>> = HashMap()
-    val visited: HashSet<Int> = HashSet()
-    var node: ISppfNode
+fun <InputNode> writeSppfToDot(sppfNode: RangeSppfNode<InputNode>, filePath: String, label: String = "") {
     val genPath = Path.of("gen", "sppf")
     Files.createDirectories(genPath)
     val file = genPath.resolve(filePath).toFile()
 
-
     file.printWriter().use { out ->
-        out.println("digraph g {")
-        out.println("labelloc=\"t\"")
-        out.println("label=\"$label\"")
-
-        while (queue.isNotEmpty()) {
-            node = queue.removeFirst()
-            if (!visited.add(node.id)) continue
-
-            out.println(printNode(node.id, node))
-
-            (node as? NonterminalSppfNode<*>)?.children?.forEach {
-                queue.addLast(it)
-                if (!edges.containsKey(node.id)) {
-                    edges[node.id] = HashSet()
-                }
-                edges.getValue(node.id).add(it.id)
-            }
-
-            val leftChild = (node as? PackedSppfNode<*>)?.leftSppfNode
-            val rightChild = (node as? PackedSppfNode<*>)?.rightSppfNode
-
-            if (leftChild != null) {
-                queue.addLast(leftChild)
-                if (!edges.containsKey(node.id)) {
-                    edges[node.id] = HashSet()
-                }
-                edges.getValue(node.id).add(leftChild.id)
-            }
-            if (rightChild != null) {
-                queue.addLast(rightChild)
-                if (!edges.containsKey(node.id)) {
-                    edges[node.id] = HashSet()
-                }
-                edges.getValue(node.id).add(rightChild.id)
-            }
-        }
-        for (kvp in edges) {
-            val head = kvp.key
-            for (tail in kvp.value) out.println(printEdge(head, tail))
-        }
-        out.println("}")
+        out.println(getSppfDot(sppfNode, label))
     }
 }
 
-fun getColor(weight: Int): String = if (weight == 0) "black" else "red"
+fun <InputNode> getSppfDot(sppfNode: RangeSppfNode<InputNode>, label: String = ""): String {
+    val queue: ArrayDeque<RangeSppfNode<InputNode>> = ArrayDeque(listOf(sppfNode))
+    val edges: HashMap<RangeSppfNode<InputNode>, HashSet<RangeSppfNode<InputNode>>> = HashMap()
+    val visited: HashSet<Int> = HashSet()
+    var node: RangeSppfNode<InputNode>
+    val sb = StringBuilder()
+    sb.appendLine("digraph g {")
+    sb.appendLine("labelloc=\"t\"")
+    sb.appendLine("label=\"$label\"")
+    var nextNodeId = 0
+    val nodeViews = HashMap<RangeSppfNode<InputNode>, String>()
+    while (queue.isNotEmpty()) {
+        node = queue.removeFirst()
+        if (!visited.add(node.hashCode())) continue
 
-fun printEdge(x: Int, y: Int): String {
-    return "${x}->${y}"
+        nodeViews[node] = getNodeView(node)
+
+        node.children.forEach {
+            queue.addLast(it)
+            edges.getOrPut(node, { HashSet() }).add(it)
+        }
+    }
+    val sortedViews = nodeViews.values.sorted()
+    val nodeIds = HashMap<RangeSppfNode<InputNode>, Int>()
+    for ((node, view) in nodeViews) {
+        nodeIds[node] = sortedViews.indexOf(view)
+    }
+    for (i in sortedViews.indices) {
+        sb.appendLine("$i ${sortedViews[i]}")
+    }
+
+    val sortedEdges = ArrayList<String>()
+    for ((head, tails) in edges) {
+        for (tail in tails) {
+            sortedEdges.add("${nodeIds[head]}->${nodeIds[tail]}")
+        }
+    }
+    for (edge in sortedEdges.sorted()) {
+        sb.appendLine(edge)
+    }
+    sb.appendLine("}")
+    return sb.toString()
+
 }
 
-fun printNode(nodeId: Int, node: ISppfNode): String {
-    return when (node) {
-        is TerminalSppfNode<*> -> {
-            "${nodeId} [label = \"Terminal ${nodeId} ; ${node.terminal ?: "eps"}, ${node.leftExtent}, ${node.rightExtent}, Weight: ${node.weight}\", shape = ellipse, color = ${getColor(node.weight)}]"
+enum class NodeShape(val view: String) {
+    Terminal("rectangle"), Nonterminal("invtrapezium"), Intermediate("plain"), Empty("ellipse"), Range("ellipse"), Epsilon(
+        "invhouse"
+    )
+}
+
+fun fillNodeTemplate(
+    nodeInfo: String, inputRange: InputRange<*>?, shape: NodeShape, rsmRange: RsmRange? = null
+): String {
+    val inputRangeView = if (inputRange != null) "input: [${inputRange.from}, ${inputRange.to}]" else null
+    val rsmRangeView = if (rsmRange != null) "rsm: [${rsmRange.from.id}, ${rsmRange.to.id}]" else null
+    val view = listOfNotNull(nodeInfo, inputRangeView, rsmRangeView).joinToString(", ")
+    return "[label = \"${shape.name} $view\", shape = ${shape.view}]"
+}
+
+
+fun <InputNode> getNodeView(node: RangeSppfNode<InputNode>): String {
+    val type = node.type
+    return when (type) {
+        is TerminalType<*> -> {
+            fillNodeTemplate(
+                "'${type.terminal}'", node.inputRange, NodeShape.Terminal
+            )
         }
 
-        is SymbolSppfNode<*> -> {
-            "${nodeId} [label = \"Symbol ${nodeId} ; ${node.symbol.name}, ${node.leftExtent}, ${node.rightExtent}, Weight: ${node.weight}\", shape = octagon, color = ${getColor(node.weight)}]"
+        is NonterminalType -> {
+            fillNodeTemplate(
+                "${type.startState.nonterminal.name}", node.inputRange, NodeShape.Nonterminal
+            )
         }
 
-        is IntermediateSppfNode<*> -> {
-            "${nodeId} [label = \"Intermediate ${nodeId} ; RSM: ${node.rsmState.nonterminal.name}, ${node.leftExtent}, ${node.rightExtent}, Weight: ${node.weight}\", shape = rectangle, color = ${getColor(node.weight)}]"
+        is IntermediateType<*> -> {
+            fillNodeTemplate(
+                "input: ${type.inputPosition}, rsm: ${type.grammarSlot.id}", null, NodeShape.Intermediate
+            )
         }
 
-        is PackedSppfNode<*> -> {
-            "${nodeId} [label = \"Packed ${nodeId} ; Weight: ${node.weight}\", shape = point, width = 0.5, color = ${getColor(node.weight)}]"
+        is EmptyType -> {
+            fillNodeTemplate(
+                "", null, NodeShape.Empty
+            )
         }
 
-        else -> ""
+        is EpsilonNonterminalType -> {
+            fillNodeTemplate(
+                "RSM: ${type.startState.id}", node.inputRange, NodeShape.Epsilon
+            )
+        }
+
+        is RangeType -> {
+            fillNodeTemplate(
+                "", node.inputRange, NodeShape.Range, node.rsmRange
+            )
+        }
+
+        else -> throw IllegalStateException("Can't write node type $type to DOT")
+
     }
+
+
+}
+
+private fun getView(range: RsmRange?): String {
+    if (range == null) return ""
+    return "rsm: [(${range.from.nonterminal.name}:${range.from.numId}), " + "(${range.to.nonterminal.name}:${range.to.numId})]"
 }

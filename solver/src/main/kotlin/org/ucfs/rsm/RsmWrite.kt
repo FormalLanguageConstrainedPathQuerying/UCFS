@@ -1,6 +1,5 @@
 package org.ucfs.rsm
 
-import org.ucfs.rsm.symbol.ITerminal
 import org.ucfs.rsm.symbol.Nonterminal
 import org.ucfs.rsm.symbol.Symbol
 import org.ucfs.rsm.symbol.Term
@@ -17,14 +16,12 @@ private fun getAllStates(startState: RsmState): HashSet<RsmState> {
         if (!states.contains(state)) {
             states.add(state)
 
-            for ((symbol, destStates) in state.outgoingEdges) {
+            for ((symbol, destState) in state.outgoingEdges) {
                 if (symbol is Nonterminal) {
                     queue.addLast(symbol.startState)
                 }
-                for (destState in destStates) {
-                    queue.addLast(destState)
-                    queue.addLast(destState.nonterminal.startState)
-                }
+                queue.addLast(destState)
+                queue.addLast(destState.nonterminal.startState)
             }
         }
     }
@@ -75,9 +72,8 @@ fun writeRsmToTxt(startState: RsmState, pathToTXT: String) {
         }
 
         for (state in states) {
-            for ((symbol, destStates) in state.outgoingEdges) {
+            for ((symbol, destState) in state.outgoingEdges) {
                 val (typeView, symbolView, typeLabel) = getSymbolView(symbol)
-                for (destState in destStates) {
                     out.println(
                         """${typeView}Edge(
                         |tail=${state.id},
@@ -85,7 +81,6 @@ fun writeRsmToTxt(startState: RsmState, pathToTXT: String) {
                         |$typeLabel=$typeView("$symbolView")
                         |)""".trimMargin().replace("\n", "")
                     )
-                }
             }
         }
     }
@@ -118,10 +113,8 @@ fun writeRsmToDot(startState: RsmState, filePath: String) {
         }
 
         states.forEach { state ->
-            state.outgoingEdges.forEach { (symbol, destStates) ->
-                destStates.forEach { destState ->
+            state.outgoingEdges.forEach { (symbol, destState) ->
                     out.println("${state.id} -> ${destState.id} [label = \"${getView(symbol)}\"]")
-                }
             }
         }
 
