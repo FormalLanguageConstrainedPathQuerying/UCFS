@@ -5,15 +5,11 @@ import org.ucfs.rsm.RsmState
 import org.ucfs.sppf.node.RangeSppfNode
 
 class GraphStructuredStack<InputNode> {
-    val nodes = ArrayList<GssNode<InputNode>>()
+    val nodes = HashMap<GssNode<InputNode>, GssNode<InputNode>>()
 
     fun getOrCreateNode(input: InputNode, rsm: RsmState): GssNode<InputNode> {
-        val node = findNode(input, rsm)
-        return if (node == null) GssNode(rsm, input) else node
-    }
-
-    fun findNode(input: InputNode, rsm: RsmState): GssNode<InputNode>? {
-        return nodes.find { node -> node.inputPosition == input && node.rsm == rsm }
+        val node = GssNode(rsm, input)
+        return nodes.getOrPut(node, {node})
     }
 
     fun addEdge(

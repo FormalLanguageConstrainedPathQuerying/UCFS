@@ -1,27 +1,26 @@
 digraph g {
 labelloc="t"
 label=""
-0 [label = "Epsilon RSM: S_0, input: [1, 1]", shape = invhouse]
-1 [label = "Intermediate input: 1, rsm: S_1", shape = plain]
-2 [label = "Intermediate input: 1, rsm: S_2", shape = plain]
-3 [label = "Nonterminal S, input: [1, 1]", shape = invtrapezium]
-4 [label = "Range , input: [0, 1], rsm: [S_0, S_1]", shape = ellipse]
-5 [label = "Range , input: [0, 1], rsm: [S_0, S_2]", shape = ellipse]
-6 [label = "Range , input: [0, 2], rsm: [S_0, S_3]", shape = ellipse]
-7 [label = "Range , input: [1, 1], rsm: [S_0, S_0]", shape = ellipse]
-8 [label = "Range , input: [1, 1], rsm: [S_1, S_2]", shape = ellipse]
-9 [label = "Range , input: [1, 2], rsm: [S_2, S_3]", shape = ellipse]
-10 [label = "Terminal '(', input: [0, 1]", shape = rectangle]
-11 [label = "Terminal ')', input: [1, 2]", shape = rectangle]
-1->4
-1->8
-2->5
-2->9
-3->7
-4->10
-5->1
-6->2
-7->0
-8->3
-9->11
+0 [label = "  Epsilon RSM: S_0, input: [0, 0]", shape = invhouse]
+1 [label = "  Intermediate input: 0, rsm: S_1", shape = plain]
+2 [label = "  Intermediate input: 0, rsm: S_2", shape = plain]
+3 [label = "  Nonterminal S, input: [0, 0]", shape = invtrapezium]
+4 [label = "  Range , input: [0, 0], rsm: [S_0, S_0]", shape = ellipse]
+5 [label = "  Range , input: [0, 0], rsm: [S_0, S_1]", shape = ellipse]
+6 [label = "  Range , input: [0, 0], rsm: [S_0, S_2]", shape = ellipse]
+7 [label = "  Range , input: [0, 0], rsm: [S_1, S_2]", shape = ellipse]
+8 [label = "  Range , input: [0, 0], rsm: [S_2, S_0]", shape = ellipse]
+9 [label = "  Terminal '(', input: [0, 0]", shape = rectangle]
+10 [label = "  Terminal ')', input: [0, 0]", shape = rectangle]
+1->5
+1->7
+2->6
+2->8
+3->4
+4->0
+4->2
+5->9
+6->1
+7->3
+8->10
 }

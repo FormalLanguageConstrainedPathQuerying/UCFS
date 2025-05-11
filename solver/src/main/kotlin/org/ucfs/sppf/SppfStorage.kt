@@ -14,17 +14,30 @@ open class SppfStorage<InputEdgeType> {
     private val createdSppfNodes: HashMap<RangeSppfNode<InputEdgeType>, RangeSppfNode<InputEdgeType>> = HashMap()
 
 
-    fun addNode(node: RangeSppfNode<InputEdgeType>): RangeSppfNode<InputEdgeType> {
+    private fun addNode(node: RangeSppfNode<InputEdgeType>): RangeSppfNode<InputEdgeType> {
         return createdSppfNodes.getOrPut(node, { node })
     }
 
     /**
      * Add nonterminal node after pop
      */
-    fun addNode(
-        input: InputRange<InputEdgeType>, rsm: RsmRange, startState: RsmState, childSppf: RangeSppfNode<InputEdgeType>
+    fun addNonterminalNode(
+        input: InputRange<InputEdgeType>,
+        rsm: RsmRange,
+        startState: RsmState,
+        childSppf: RangeSppfNode<InputEdgeType>? = null
     ): RangeSppfNode<InputEdgeType> {
-        return addNode(input, rsm, NonterminalType(startState), listOf(childSppf))
+        return if (childSppf == null) addNode(input, rsm, NonterminalType(startState))
+        else addNode(input, rsm, NonterminalType(startState), listOf(childSppf))
+    }
+
+    fun addEpsilonNode(
+        input: InputRange<InputEdgeType>,
+        rsmRange: RsmRange,
+        rsmState: RsmState
+    ): RangeSppfNode<InputEdgeType> {
+        return addNode(
+            input, rsmRange, EpsilonNonterminalType(rsmState))
     }
 
     /**
@@ -36,11 +49,11 @@ open class SppfStorage<InputEdgeType> {
         return addNode(input, rsm, TerminalType(terminal))
     }
 
-    fun addNode(
+    fun addIntermediateNode(
         leftSubtree: RangeSppfNode<InputEdgeType>,
         rightSubtree: RangeSppfNode<InputEdgeType>
     ): RangeSppfNode<InputEdgeType> {
-        if (leftSubtree.type == EmptyType) {
+        if (leftSubtree.type is EmptyType) {
             return rightSubtree
         }
         return addNode(

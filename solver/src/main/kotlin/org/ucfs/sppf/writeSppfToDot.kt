@@ -23,13 +23,12 @@ fun <InputNode> getSppfDot(sppfNode: RangeSppfNode<InputNode>, label: String = "
     sb.appendLine("digraph g {")
     sb.appendLine("labelloc=\"t\"")
     sb.appendLine("label=\"$label\"")
-    var nextNodeId = 0
     val nodeViews = HashMap<RangeSppfNode<InputNode>, String>()
     while (queue.isNotEmpty()) {
         node = queue.removeFirst()
         if (!visited.add(node.hashCode())) continue
 
-        nodeViews[node] = getNodeView(node)
+        nodeViews[node] = getNodeView(node, )
 
         node.children.forEach {
             queue.addLast(it)
@@ -66,51 +65,51 @@ enum class NodeShape(val view: String) {
 }
 
 fun fillNodeTemplate(
-    nodeInfo: String, inputRange: InputRange<*>?, shape: NodeShape, rsmRange: RsmRange? = null
+    id: String? = null, nodeInfo: String, inputRange: InputRange<*>?, shape: NodeShape, rsmRange: RsmRange? = null
 ): String {
     val inputRangeView = if (inputRange != null) "input: [${inputRange.from}, ${inputRange.to}]" else null
     val rsmRangeView = if (rsmRange != null) "rsm: [${rsmRange.from.id}, ${rsmRange.to.id}]" else null
     val view = listOfNotNull(nodeInfo, inputRangeView, rsmRangeView).joinToString(", ")
-    return "[label = \"${shape.name} $view\", shape = ${shape.view}]"
+    return "[label = \" ${id ?: ""} ${shape.name} $view\", shape = ${shape.view}]"
 }
 
 
-fun <InputNode> getNodeView(node: RangeSppfNode<InputNode>): String {
+fun <InputNode> getNodeView(node: RangeSppfNode<InputNode>, id: String? = null): String {
     val type = node.type
     return when (type) {
         is TerminalType<*> -> {
             fillNodeTemplate(
-                "'${type.terminal}'", node.inputRange, NodeShape.Terminal
+                id, "'${type.terminal}'", node.inputRange, NodeShape.Terminal
             )
         }
 
         is NonterminalType -> {
             fillNodeTemplate(
-                "${type.startState.nonterminal.name}", node.inputRange, NodeShape.Nonterminal
+                id, "${type.startState.nonterminal.name}", node.inputRange, NodeShape.Nonterminal
             )
         }
 
         is IntermediateType<*> -> {
             fillNodeTemplate(
-                "input: ${type.inputPosition}, rsm: ${type.grammarSlot.id}", null, NodeShape.Intermediate
+                id, "input: ${type.inputPosition}, rsm: ${type.grammarSlot.id}", null, NodeShape.Intermediate
             )
         }
 
         is EmptyType -> {
             fillNodeTemplate(
-                "", null, NodeShape.Empty
+                id, "", null, NodeShape.Empty
             )
         }
 
         is EpsilonNonterminalType -> {
             fillNodeTemplate(
-                "RSM: ${type.startState.id}", node.inputRange, NodeShape.Epsilon
+                id, "RSM: ${type.startState.id}", node.inputRange, NodeShape.Epsilon
             )
         }
 
         is RangeType -> {
             fillNodeTemplate(
-                "", node.inputRange, NodeShape.Range, node.rsmRange
+                id, "", node.inputRange, NodeShape.Range, node.rsmRange
             )
         }
 

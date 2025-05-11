@@ -1,6 +1,5 @@
 package org.ucfs.gss
 
-import org.ucfs.descriptors.Descriptor
 import org.ucfs.rsm.RsmState
 import org.ucfs.sppf.node.RangeSppfNode
 import java.util.*
@@ -20,9 +19,10 @@ data class GssNode<InputNodeType>(
     /**
      * Pointer to vertex in input graph
      */
-    val inputPosition: InputNodeType, val id: Int = lastId++
+    val inputPosition: InputNodeType,
 
 ) {
+    val id: Int = lastId++
     val popped = ArrayList<RangeSppfNode<InputNodeType>>()
 
     val outgoingEdges = ArrayList<GssEdge<InputNodeType>>()
@@ -32,7 +32,6 @@ data class GssNode<InputNodeType>(
      */
     fun addEdge(edge: GssEdge<InputNodeType>): ArrayList<RangeSppfNode<InputNodeType>> {
         outgoingEdges.add(edge)
-        //TODO
         return popped
     }
 

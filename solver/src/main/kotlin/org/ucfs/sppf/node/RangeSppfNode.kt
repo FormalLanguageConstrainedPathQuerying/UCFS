@@ -26,7 +26,7 @@ data class RangeSppfNode<VertexType>(
     val children = ArrayList<RangeSppfNode<VertexType>>()
 }
 
-fun <VertexType> getEmptyRange(): RangeSppfNode<VertexType> = RangeSppfNode(null, null, EmptyType)
+fun <VertexType> getEmptyRange(): RangeSppfNode<VertexType> = RangeSppfNode(null, null, EmptyType())
 
 data class InputRange<VertexType>(
     val from: VertexType,
@@ -39,10 +39,10 @@ data class RsmRange(
 )
 
 interface RangeType
-
+var lastEmptyId = 0
 object Range : RangeType
 data class TerminalType<T : ITerminal>(val terminal: T) : RangeType
 data class NonterminalType(val startState: RsmState) : RangeType
 data class EpsilonNonterminalType(val startState: RsmState) : RangeType
 data class IntermediateType<VertexType>(val grammarSlot: RsmState, val inputPosition: VertexType) : RangeType
-object EmptyType : RangeType
+data class EmptyType(private val id: Int = lastEmptyId++) : RangeType
