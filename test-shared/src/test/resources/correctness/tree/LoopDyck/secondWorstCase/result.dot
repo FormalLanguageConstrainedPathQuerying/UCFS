@@ -1,0 +1,122 @@
+digraph g {
+labelloc="t"
+label=""
+0 [label = "Epsilon RSM: S_0, input: [0, 0]", shape = invhouse]
+1 [label = "Intermediate input: 0, rsm: S_0, input: [3, 3]", shape = plain]
+2 [label = "Intermediate input: 0, rsm: S_1, input: [3, 0]", shape = plain]
+3 [label = "Intermediate input: 0, rsm: S_1, input: [3, 1]", shape = plain]
+4 [label = "Intermediate input: 0, rsm: S_1, input: [3, 2]", shape = plain]
+5 [label = "Intermediate input: 0, rsm: S_2, input: [0, 1]", shape = plain]
+6 [label = "Intermediate input: 0, rsm: S_2, input: [3, 1]", shape = plain]
+7 [label = "Intermediate input: 1, rsm: S_2, input: [0, 2]", shape = plain]
+8 [label = "Intermediate input: 1, rsm: S_2, input: [3, 2]", shape = plain]
+9 [label = "Intermediate input: 2, rsm: S_2, input: [0, 0]", shape = plain]
+10 [label = "Intermediate input: 2, rsm: S_2, input: [3, 0]", shape = plain]
+11 [label = "Intermediate input: 3, rsm: S_1, input: [0, 0]", shape = plain]
+12 [label = "Intermediate input: 3, rsm: S_1, input: [0, 1]", shape = plain]
+13 [label = "Intermediate input: 3, rsm: S_1, input: [0, 2]", shape = plain]
+14 [label = "Intermediate input: 3, rsm: S_1, input: [3, 0]", shape = plain]
+15 [label = "Intermediate input: 3, rsm: S_1, input: [3, 1]", shape = plain]
+16 [label = "Intermediate input: 3, rsm: S_1, input: [3, 2]", shape = plain]
+17 [label = "Nonterminal S, input: [0, 0]", shape = invtrapezium]
+18 [label = "Nonterminal S, input: [0, 1]", shape = invtrapezium]
+19 [label = "Nonterminal S, input: [0, 2]", shape = invtrapezium]
+20 [label = "Nonterminal S, input: [3, 0]", shape = invtrapezium]
+21 [label = "Nonterminal S, input: [3, 1]", shape = invtrapezium]
+22 [label = "Nonterminal S, input: [3, 2]", shape = invtrapezium]
+23 [label = "Range , input: [0, 0], rsm: [S_0, S_0]", shape = ellipse]
+24 [label = "Range , input: [0, 0], rsm: [S_0, S_2]", shape = ellipse]
+25 [label = "Range , input: [0, 0], rsm: [S_1, S_2]", shape = ellipse]
+26 [label = "Range , input: [0, 1], rsm: [S_0, S_0]", shape = ellipse]
+27 [label = "Range , input: [0, 1], rsm: [S_0, S_2]", shape = ellipse]
+28 [label = "Range , input: [0, 1], rsm: [S_1, S_2]", shape = ellipse]
+29 [label = "Range , input: [0, 1], rsm: [S_2, S_0]", shape = ellipse]
+30 [label = "Range , input: [0, 2], rsm: [S_0, S_0]", shape = ellipse]
+31 [label = "Range , input: [0, 2], rsm: [S_0, S_2]", shape = ellipse]
+32 [label = "Range , input: [0, 2], rsm: [S_1, S_2]", shape = ellipse]
+33 [label = "Range , input: [0, 3], rsm: [S_0, S_1]", shape = ellipse]
+34 [label = "Range , input: [1, 2], rsm: [S_2, S_0]", shape = ellipse]
+35 [label = "Range , input: [2, 0], rsm: [S_2, S_0]", shape = ellipse]
+36 [label = "Range , input: [3, 0], rsm: [S_0, S_0]", shape = ellipse]
+37 [label = "Range , input: [3, 0], rsm: [S_0, S_1]", shape = ellipse]
+38 [label = "Range , input: [3, 0], rsm: [S_0, S_2]", shape = ellipse]
+39 [label = "Range , input: [3, 0], rsm: [S_1, S_2]", shape = ellipse]
+40 [label = "Range , input: [3, 1], rsm: [S_0, S_0]", shape = ellipse]
+41 [label = "Range , input: [3, 1], rsm: [S_0, S_2]", shape = ellipse]
+42 [label = "Range , input: [3, 1], rsm: [S_1, S_2]", shape = ellipse]
+43 [label = "Range , input: [3, 2], rsm: [S_0, S_0]", shape = ellipse]
+44 [label = "Range , input: [3, 2], rsm: [S_0, S_2]", shape = ellipse]
+45 [label = "Range , input: [3, 2], rsm: [S_1, S_2]", shape = ellipse]
+46 [label = "Range , input: [3, 3], rsm: [S_0, S_1]", shape = ellipse]
+47 [label = "Terminal '(', input: [0, 3]", shape = rectangle]
+48 [label = "Terminal '(', input: [3, 0]", shape = rectangle]
+49 [label = "Terminal ')', input: [0, 1]", shape = rectangle]
+50 [label = "Terminal ')', input: [1, 2]", shape = rectangle]
+51 [label = "Terminal ')', input: [2, 0]", shape = rectangle]
+1->36
+1->33
+2->37
+2->25
+3->37
+3->28
+4->37
+4->32
+5->24
+5->29
+6->38
+6->29
+7->27
+7->34
+8->41
+8->34
+9->31
+9->35
+10->44
+10->35
+11->33
+11->39
+12->33
+12->42
+13->33
+13->45
+14->46
+14->39
+15->46
+15->42
+16->46
+16->45
+17->23
+18->26
+19->30
+20->36
+21->40
+22->43
+23->0
+23->9
+24->11
+25->17
+26->5
+27->12
+28->18
+29->49
+30->7
+31->13
+32->19
+33->47
+34->50
+35->51
+36->10
+37->48
+38->2
+38->14
+39->20
+40->6
+41->15
+41->3
+42->21
+43->8
+44->4
+44->16
+45->22
+46->1
+}
