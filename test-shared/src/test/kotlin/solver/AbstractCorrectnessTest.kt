@@ -14,7 +14,7 @@ abstract class AbstractCorrectnessTest {
     abstract fun getRootDataFolder(): Path
 
     val grammars = listOf(SimplifiedDyck(), ABGrammar(), SALang(), Epsilon(), LoopDyck())
-
+    val regenerate = false
     //@TestFactory
     //TODO make it abstract by used grammar
     @Test

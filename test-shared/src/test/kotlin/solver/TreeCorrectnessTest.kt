@@ -22,7 +22,7 @@ class TreeCorrectnessTest : AbstractCorrectnessTest() {
         val input = inputFile.readText()
         val expectedResult = expectedFile.readText()
         val actualResult = runTest(input, grammar)
-        if (expectedResult.isEmpty()) {
+        if (expectedResult.isEmpty() || regenerate) {
             expectedFile.writeText(actualResult)
         } else {
             assertEquals(expectedResult, actualResult)

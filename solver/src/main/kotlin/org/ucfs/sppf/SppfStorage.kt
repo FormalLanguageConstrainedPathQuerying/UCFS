@@ -79,7 +79,11 @@ open class SppfStorage<InputEdgeType> {
         if (!rangeNode.children.contains(valueNode)) {
             rangeNode.children.add(valueNode)
         }
-        valueNode.children.addAll(children)
+        for(child in children){
+            if (!valueNode.children.contains(child)){
+                valueNode.children.add(child)
+            }
+        }
         return rangeNode
     }
 }

@@ -16,7 +16,6 @@ fun <InputNode> writeSppfToDot(sppfNode: RangeSppfNode<InputNode>, filePath: Str
 
 fun <InputNode> getSppfDot(sppfNode: RangeSppfNode<InputNode>, label: String = ""): String {
     val queue: ArrayDeque<RangeSppfNode<InputNode>> = ArrayDeque(listOf(sppfNode))
-    val edges: HashMap<RangeSppfNode<InputNode>, HashSet<RangeSppfNode<InputNode>>> = HashMap()
     val visited: HashSet<Int> = HashSet()
     var node: RangeSppfNode<InputNode>
     val sb = StringBuilder()
@@ -32,31 +31,38 @@ fun <InputNode> getSppfDot(sppfNode: RangeSppfNode<InputNode>, label: String = "
 
         node.children.forEach {
             queue.addLast(it)
-            edges.getOrPut(node, { HashSet() }).add(it)
         }
     }
     val sortedViews = nodeViews.values.sorted()
     val nodeIds = HashMap<RangeSppfNode<InputNode>, Int>()
+    val nodeById = HashMap<Int, RangeSppfNode<InputNode>>()
     for ((node, view) in nodeViews) {
-        nodeIds[node] = sortedViews.indexOf(view)
+        val id = sortedViews.indexOf(view)
+        nodeIds[node] = id
+        nodeById[id] = node
     }
+
     for (i in sortedViews.indices) {
         sb.appendLine("$i ${sortedViews[i]}")
     }
 
-    val sortedEdges = ArrayList<String>()
-    for ((head, tails) in edges) {
-        for (tail in tails) {
-            sortedEdges.add("${nodeIds[head]}->${nodeIds[tail]}")
+    for (i in nodeById.keys) {
+        val node = nodeById[i]
+        for(child in node!!.children) {
+            sb.appendLine("${nodeIds[node]}->${nodeIds[child]}")
         }
+       // if(node.children.size < 2){
+       //     continue
+       // }
+       // val cs = node.children.map({nodeIds[it]}).joinToString("->")
+       // sb.appendLine("{ rank = same; $cs [style=invis]}")
     }
-    for (edge in sortedEdges.sorted()) {
-        sb.appendLine(edge)
-    }
+
     sb.appendLine("}")
     return sb.toString()
 
 }
+
 
 enum class NodeShape(val view: String) {
     Terminal("rectangle"), Nonterminal("invtrapezium"), Intermediate("plain"), Empty("ellipse"), Range("ellipse"), Epsilon(
@@ -70,7 +76,7 @@ fun fillNodeTemplate(
     val inputRangeView = if (inputRange != null) "input: [${inputRange.from}, ${inputRange.to}]" else null
     val rsmRangeView = if (rsmRange != null) "rsm: [${rsmRange.from.id}, ${rsmRange.to.id}]" else null
     val view = listOfNotNull(nodeInfo, inputRangeView, rsmRangeView).joinToString(", ")
-    return "[label = \" ${id ?: ""} ${shape.name} $view\", shape = ${shape.view}]"
+    return "[label = \"${id?: ""}${shape.name} $view\", shape = ${shape.view}]"
 }
 
 
@@ -91,7 +97,7 @@ fun <InputNode> getNodeView(node: RangeSppfNode<InputNode>, id: String? = null):
 
         is IntermediateType<*> -> {
             fillNodeTemplate(
-                id, "input: ${type.inputPosition}, rsm: ${type.grammarSlot.id}", null, NodeShape.Intermediate
+                id, "input: ${type.inputPosition}, rsm: ${type.grammarSlot.id}", node.inputRange, NodeShape.Intermediate
             )
         }
 
