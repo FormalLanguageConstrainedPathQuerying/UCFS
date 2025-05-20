@@ -75,14 +75,13 @@ interface IGll<InputNodeType, LabelType : ILabel> {
 
         for (rangeToPop in positionToPops) {
             val leftSubRange = descriptor.sppfNode
-            val rightSubRange = ctx.sppfStorage.addNode(
-                RangeSppfNode(
-                    rangeToPop.inputRange, RsmRange(
+            val rightSubRange = ctx.sppfStorage.addNonterminalNode(
+                    rangeToPop.inputRange!!, RsmRange(
                         descriptor.rsmState, destinationRsmState
-                    ), NonterminalType(rsmStartState)
+                    ), rsmStartState
                 )
-            )
-            val newSppfNode = ctx.sppfStorage.addNode(leftSubRange, rightSubRange)
+
+            val newSppfNode = ctx.sppfStorage.addIntermediateNode(leftSubRange, rightSubRange)
 
             //TODO why these parameters???
             newDescriptor = Descriptor(
@@ -108,7 +107,7 @@ interface IGll<InputNodeType, LabelType : ILabel> {
                 destinationRsmState,
             ), terminal
         )
-        val intermediateOrTerminalSppf = ctx.sppfStorage.addNode(descriptor.sppfNode, terminalSppfNode)
+        val intermediateOrTerminalSppf = ctx.sppfStorage.addIntermediateNode(descriptor.sppfNode, terminalSppfNode)
         val descriptorForTerminal = Descriptor(
             inputEdge.targetVertex, descriptor.gssNode, destinationRsmState, intermediateOrTerminalSppf
         )

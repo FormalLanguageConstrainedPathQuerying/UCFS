@@ -42,21 +42,16 @@ class Gll<VertexType, LabelType : ILabel> private constructor(
             descriptor.rsmState,
             descriptor.rsmState,
         )
-        val range = ctx.sppfStorage.addNode(RangeSppfNode(input, rsm, Range))
-        val epsilon = ctx.sppfStorage.addNode(
-            RangeSppfNode(input, rsm, EpsilonNonterminalType(descriptor.gssNode.rsm))
-        )
-        range.children.add(epsilon)
-        return range
+        return ctx.sppfStorage.addEpsilonNode(input, rsm, descriptor.gssNode.rsm)
     }
 
     private fun handlePoppedGssEdge(
         poppedGssEdge: GssEdge<VertexType>, descriptor: Descriptor<VertexType>, childSppf: RangeSppfNode<VertexType>
     ) {
         val leftRange = poppedGssEdge.matchedRange
-        val startRsmState = if (poppedGssEdge.matchedRange.type == EmptyType) poppedGssEdge.gssNode.rsm
+        val startRsmState = if (poppedGssEdge.matchedRange.type is EmptyType) poppedGssEdge.gssNode.rsm
         else poppedGssEdge.matchedRange.rsmRange!!.to
-        val rightRange = ctx.sppfStorage.addNode(
+        val rightRange = ctx.sppfStorage.addNonterminalNode(
             InputRange(
                 descriptor.gssNode.inputPosition, descriptor.inputPosition
             ), RsmRange(
@@ -64,8 +59,7 @@ class Gll<VertexType, LabelType : ILabel> private constructor(
                 poppedGssEdge.state,
             ), descriptor.gssNode.rsm, childSppf
         )
-        ctx.sppfStorage.addNode(rightRange)
-        val newRange = ctx.sppfStorage.addNode(leftRange, rightRange)
+        val newRange = ctx.sppfStorage.addIntermediateNode(leftRange, rightRange)
         val newDescriptor = Descriptor(
             descriptor.inputPosition, poppedGssEdge.gssNode, poppedGssEdge.state, newRange
         )
@@ -79,8 +73,14 @@ class Gll<VertexType, LabelType : ILabel> private constructor(
     override fun handleDescriptor(descriptor: Descriptor<VertexType>) {
         ctx.descriptors.addToHandled(descriptor)
         if (descriptor.rsmState.isFinal) {
-            val matchedRange = if (descriptor.sppfNode.type == EmptyType) {
-                getEpsilonRange(descriptor)
+            val matchedRange = if (descriptor.sppfNode.type is EmptyType) {
+                val node = getEpsilonRange(descriptor)
+                //TODO fix
+                // dirty hack: in fact it's equivavelnt descriptors
+                // but only initial was added in handlet set
+                ctx.descriptors.addToHandled(Descriptor(descriptor.inputPosition,
+                    descriptor.gssNode, descriptor.rsmState, node))
+                node
             } else {
                 descriptor.sppfNode
             }

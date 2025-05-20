@@ -18,7 +18,7 @@ class LoopDyck : Grammar() {
     val S by Nt().asStart()
 
     init {
-        S /= Option("(" * S * ")")
+        S /= Many( "(" * S * ")")
     }
 }
 
