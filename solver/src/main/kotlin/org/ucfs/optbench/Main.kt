@@ -25,9 +25,9 @@ fun main() {
                 val result = src.run()
                 yield(result)
                 println(result)
-                if (result.totalRuntime > 10000) break
+                if (result.totalRuntime > 10000000000) break
                 size = size * 3 / 2
             }
         }
-    }.toList().dumpToCsv(File("unoptimized.csv"))
+    }.toList().dumpToCsv(File("cache_hash.csv"))
 }

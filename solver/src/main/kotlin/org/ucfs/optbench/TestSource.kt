@@ -7,7 +7,7 @@ import org.ucfs.input.TerminalInputLabel
 import org.ucfs.parser.Gll
 import org.ucfs.sppf.node.RangeSppfNode
 import java.io.File
-import kotlin.system.measureTimeMillis
+import kotlin.system.measureNanoTime
 
 data class Test(val input: String, val size: Int, val output: RecognizerOutput)
 
@@ -31,7 +31,7 @@ fun runTest(
 ): Triple<Long, ParserOutput<Int>, RecognizerOutput> {
     var result: ParserOutput<Int>
     val input = LinearInput.buildFromString(test.input)
-    val time = measureTimeMillis { result = runGll(input, grammar) }
+    val time = measureNanoTime { result = runGll(input, grammar) }
     return Triple(time, result, result.checkRecognize(input))
 }
 
@@ -58,7 +58,7 @@ data class TestResult(
         return "name: ${name.chars(20)} | " +
             "size: ${size.chars(6)} | " +
             "tests: ${tests.chars(4)} | " +
-            "initial: ${totalRuntime.chars(8)}ms | " +
+            "initial: ${totalRuntime.chars(15)}ns | " +
             missesString
     }
 }

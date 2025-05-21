@@ -3,6 +3,7 @@ package org.ucfs.descriptors
 import org.ucfs.gss.GssNode
 import org.ucfs.rsm.RsmState
 import org.ucfs.sppf.node.RangeSppfNode
+import java.util.Objects
 
 /**
  * Descriptor represents current parsing stage
@@ -26,6 +27,8 @@ data class Descriptor<InputNodeType>(
      * to derivation trees, stored on edges of GSS, it corresponds to return from recursive function
      */
     val sppfNode: RangeSppfNode<InputNodeType>,
+) {
+    private val hash = Objects.hash(inputPosition, gssNode, rsmState, sppfNode)
 
-)
-
+    override fun hashCode() = hash
+}
