@@ -20,7 +20,6 @@ data class GssNode<InputNodeType>(
      * Pointer to vertex in input graph
      */
     val inputPosition: InputNodeType,
-
 ) {
     val id: Int = lastId++
     val popped = ArrayList<RangeSppfNode<InputNodeType>>()
@@ -34,5 +33,4 @@ data class GssNode<InputNodeType>(
         outgoingEdges.add(edge)
         return popped
     }
-
 }

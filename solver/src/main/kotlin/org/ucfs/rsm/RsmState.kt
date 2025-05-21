@@ -7,42 +7,57 @@ import org.ucfs.rsm.symbol.ITerminal
 import org.ucfs.rsm.symbol.Nonterminal
 import org.ucfs.rsm.symbol.Symbol
 import java.util.*
-import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
-data class RsmEdge(val symbol: Symbol, val destinationState: RsmState)
-//data class TerminalRsmEdge<Term: ITerminal>(val terminal: Term, val destinationState: RsmState)
-//data class NonterminalRsmEdge(val nonterminal: Nonterminal, val destinationState: RsmState)
+// data class TerminalRsmEdge<Term: ITerminal>(val terminal: Term, val destinationState: RsmState)
+// data class NonterminalRsmEdge(val nonterminal: Nonterminal, val destinationState: RsmState)
 
 data class RsmState(
     val nonterminal: Nonterminal,
     val isStart: Boolean = false,
     val isFinal: Boolean = false,
-    var numId: Int = nonterminal.getNextRsmStateId()
+    var numId: Int = nonterminal.getNextRsmStateId(),
 ) {
     val id: String = "${nonterminal.name}_${(numId)}"
 
     val outgoingEdges
         get() = terminalEdgesStorage.plus(nonterminalEdgesStorage)
 
-    val terminalEdgesStorage = ArrayList<RsmEdge>()
+    val terminalEdgesStorage = HashMap<ITerminal, RsmState>()
 
-    val nonterminalEdgesStorage = ArrayList<RsmEdge>()
-
+    val nonterminalEdgesStorage = HashMap<Nonterminal, RsmState>()
 
     /**
      * Adds edge from current rsmState to given destinationState via given symbol, terminal or nonterminal
      * @param symbol - symbol to store on edge
      * @param destinationState
      */
-    fun addEdge(symbol: Symbol, destinationState: RsmState) {
+    fun addEdge(
+        symbol: Symbol,
+        destinationState: RsmState,
+    ) {
         when (symbol) {
-            is ITerminal -> terminalEdgesStorage.add(RsmEdge(symbol, destinationState))
-            is Nonterminal -> nonterminalEdgesStorage.add(RsmEdge(symbol, destinationState))
+            is ITerminal -> addTerminalEdge(symbol, destinationState)
+            is Nonterminal -> addNonterminalEdge(symbol, destinationState)
             else -> throw RsmException("Unsupported type of symbol")
         }
     }
 
-    protected fun getNewState(regex: Regexp): RsmState {
+    private fun addTerminalEdge(
+        terminal: ITerminal,
+        destination: RsmState,
+    ) {
+        terminalEdgesStorage[terminal] = destination
+    }
+
+    private fun addNonterminalEdge(
+        nonterminal: Nonterminal,
+        destinationState: RsmState,
+    ) {
+        nonterminalEdgesStorage[nonterminal] = destinationState
+    }
+
+    private fun getNewState(regex: Regexp): RsmState {
         return RsmState(this.nonterminal, isStart = false, regex.acceptEpsilon())
     }
 
