@@ -53,12 +53,14 @@ data class TestResult(
     val totalRuntime: Long,
     val misses: List<SingleTest>,
 ) {
+    val averageRuntime = totalRuntime / tests
+
     override fun toString(): String {
         val missesString = if (isOk()) "" else " | misses: ${misses.size}"
         return "name: ${name.chars(20)} | " +
             "size: ${size.chars(6)} | " +
             "tests: ${tests.chars(4)} | " +
-            "initial: ${totalRuntime.chars(15)}ns | " +
+            "initial: ${averageRuntime.chars(15)}ns | " +
             missesString
     }
 }
@@ -94,7 +96,7 @@ fun List<TestResult>.dumpToCsv(file: File) {
         bw.write(",")
         bw.write(it.size.toString())
         bw.write(",")
-        bw.write(it.totalRuntime.toString())
+        bw.write(it.averageRuntime.toString())
         bw.write("\r\n")
     }
 
