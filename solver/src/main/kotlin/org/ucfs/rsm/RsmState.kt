@@ -3,6 +3,8 @@ package org.ucfs.rsm
 import org.ucfs.grammar.combinator.regexp.Empty
 import org.ucfs.grammar.combinator.regexp.Nt
 import org.ucfs.grammar.combinator.regexp.Regexp
+import org.ucfs.input.LightSymbol
+import org.ucfs.input.SymbolRegistry
 import org.ucfs.rsm.symbol.ITerminal
 import org.ucfs.rsm.symbol.Nonterminal
 import org.ucfs.rsm.symbol.Symbol
@@ -23,9 +25,9 @@ data class RsmState(
     val outgoingEdges
         get() = terminalEdgesStorage.plus(nonterminalEdgesStorage)
 
-    val terminalEdgesStorage = HashMap<ITerminal, RsmState>()
+    val terminalEdgesStorage = HashMap<LightSymbol, RsmState>()
 
-    val nonterminalEdgesStorage = HashMap<Nonterminal, RsmState>()
+    val nonterminalEdgesStorage = ArrayList<Pair<LightSymbol, RsmState>>()
 
     /**
      * Adds edge from current rsmState to given destinationState via given symbol, terminal or nonterminal
@@ -47,14 +49,16 @@ data class RsmState(
         terminal: ITerminal,
         destination: RsmState,
     ) {
-        terminalEdgesStorage[terminal] = destination
+        val light = SymbolRegistry.registerTerminal(terminal)
+        terminalEdgesStorage[light] = destination
     }
 
     private fun addNonterminalEdge(
         nonterminal: Nonterminal,
         destinationState: RsmState,
     ) {
-        nonterminalEdgesStorage[nonterminal] = destinationState
+        val light = SymbolRegistry.registerNonterminal(nonterminal)
+        nonterminalEdgesStorage.add(light to destinationState)
     }
 
     private fun getNewState(regex: Regexp): RsmState {
@@ -88,14 +92,14 @@ data class RsmState(
 
                     when (symbol) {
                         is ITerminal -> {
-                            state?.addEdge(symbol, destinationState)
+                            state?.addTerminalEdge(symbol, destinationState)
                         }
 
                         is Nt -> {
                             if (!symbol.isInitialized()) {
                                 throw IllegalArgumentException("Not initialized Nt used in description of \"${symbol.nonterm.name}\"")
                             }
-                            state?.addEdge(symbol.nonterm, destinationState)
+                            state?.addNonterminalEdge(symbol.nonterm, destinationState)
                         }
                     }
                 }

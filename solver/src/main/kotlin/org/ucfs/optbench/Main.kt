@@ -51,5 +51,5 @@ fun main() {
             benchPalindrome() +
             benchUnequalBlocks() +
             benchNonSquare()
-    ).dumpToCsv(File("cache_hash.csv"))
+    ).dumpToCsv(File("symbol_registry.csv"))
 }

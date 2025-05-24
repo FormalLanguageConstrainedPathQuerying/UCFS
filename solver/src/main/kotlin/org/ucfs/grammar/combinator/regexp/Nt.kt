@@ -6,7 +6,7 @@ import org.ucfs.rsm.symbol.Nonterminal
 import kotlin.reflect.KProperty
 
 open class Nt() : DerivedSymbol {
-    private lateinit var name : String
+    private lateinit var name: String
     constructor(lhs: Regexp) : this() {
         rsmDescription = lhs
     }
@@ -25,7 +25,10 @@ open class Nt() : DerivedSymbol {
         nonterm.startState.buildRsmBox(rsmDescription)
     }
 
-    operator fun getValue(grammar: Grammar, property: KProperty<*>): Nt = this
+    operator fun getValue(
+        grammar: Grammar,
+        property: KProperty<*>,
+    ): Nt = this
 
     operator fun divAssign(lhs: Regexp) {
         if (isInitialized()) {
@@ -35,7 +38,8 @@ open class Nt() : DerivedSymbol {
     }
 
     operator fun provideDelegate(
-        grammar: Grammar, property: KProperty<*>
+        grammar: Grammar,
+        property: KProperty<*>,
     ): Nt {
         name = property.name
         nonterm = Nonterminal(property.name)

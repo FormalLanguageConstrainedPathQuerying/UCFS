@@ -3,7 +3,6 @@ package org.ucfs.optbench
 import org.ucfs.grammar.combinator.Grammar
 import org.ucfs.input.IInputGraph
 import org.ucfs.input.LinearInput
-import org.ucfs.input.TerminalInputLabel
 import org.ucfs.parser.Gll
 import org.ucfs.sppf.node.RangeSppfNode
 import java.io.File
@@ -13,7 +12,7 @@ data class Test(val input: String, val size: Int, val output: RecognizerOutput)
 
 typealias ParserOutput<T> = RangeSppfNode<T>?
 
-fun <T> ParserOutput<T>.checkRecognize(input: IInputGraph<T, TerminalInputLabel>): RecognizerOutput =
+fun <T> ParserOutput<T>.checkRecognize(input: IInputGraph<T>): RecognizerOutput =
     if (this == null || inputRange == null) {
         RecognizerOutput.Reject
     } else {
@@ -21,7 +20,7 @@ fun <T> ParserOutput<T>.checkRecognize(input: IInputGraph<T, TerminalInputLabel>
     }
 
 fun runGll(
-    input: IInputGraph<Int, TerminalInputLabel>,
+    input: IInputGraph<Int>,
     grammar: Grammar,
 ) = Gll.gll(grammar.rsm, input).parse()
 
@@ -75,7 +74,9 @@ data class TestSource(val grammar: Grammar, val inputs: Collection<Test>, val na
             val actual = runTest(it, grammar)
             totalRuntime += actual.first
             val test = SingleTest(name, it.input, it.output, actual.third)
-            if (actual.third != it.output) misses.add(test)
+            if (actual.third != it.output) {
+                misses.add(test)
+            }
         }
         return TestResult(
             name,

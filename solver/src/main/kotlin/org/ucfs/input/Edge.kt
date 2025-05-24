@@ -1,6 +1,6 @@
 package org.ucfs.input
 
-data class Edge<VertexType, LabelType : ILabel>(
-    val label: LabelType,
+data class Edge<VertexType>(
+    val label: LightSymbol,
     val targetVertex: VertexType,
 )

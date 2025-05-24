@@ -3,9 +3,8 @@ package org.ucfs.input
 /**
  * Input graph interface
  * @param VertexType - type of vertex in input graph
- * @param LabelType - type of label on edges in input graph
  */
-interface IInputGraph<VertexType, LabelType : ILabel> {
+interface IInputGraph<VertexType> {
     /**
      * @return collection of all starting vertices
      */
@@ -23,13 +22,12 @@ interface IInputGraph<VertexType, LabelType : ILabel> {
      */
     fun addVertex(vertex: VertexType)
 
-
     /**
      * Returns all outgoing edges from given vertex
      * @param from - vertex to retrieve outgoing edges from
      * @return Collection of outgoing edges
      */
-    fun getEdges(from: VertexType): MutableList<Edge<VertexType, LabelType>>
+    fun getEdges(from: VertexType): MutableList<Edge<VertexType>>
 
     /**
      * Adds edge to graph
@@ -37,7 +35,11 @@ interface IInputGraph<VertexType, LabelType : ILabel> {
      * @param label - value to store on the edge
      * @param to - head of the edge
      */
-    fun addEdge(from: VertexType, label: LabelType, to: VertexType)
+    fun addEdge(
+        from: VertexType,
+        label: LightSymbol,
+        to: VertexType,
+    )
 
     /**
      * Removes edge from graph
@@ -45,7 +47,11 @@ interface IInputGraph<VertexType, LabelType : ILabel> {
      * @param label - value, stored on the edge
      * @param to - head of the edge
      */
-    fun removeEdge(from: VertexType, label: LabelType, to: VertexType)
+    fun removeEdge(
+        from: VertexType,
+        label: LightSymbol,
+        to: VertexType,
+    )
 
     /**
      * @param vertex - vertex to check

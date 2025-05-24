@@ -1,7 +1,8 @@
 package org.ucfs.sppf
 
+import org.ucfs.input.LightSymbol
+import org.ucfs.input.terminal
 import org.ucfs.rsm.RsmState
-import org.ucfs.rsm.symbol.ITerminal
 import org.ucfs.sppf.node.*
 
 /**
@@ -13,9 +14,8 @@ open class SppfStorage<InputEdgeType> {
      */
     private val createdSppfNodes: HashMap<RangeSppfNode<InputEdgeType>, RangeSppfNode<InputEdgeType>> = HashMap()
 
-
     private fun addNode(node: RangeSppfNode<InputEdgeType>): RangeSppfNode<InputEdgeType> {
-        return createdSppfNodes.getOrPut(node, { node })
+        return createdSppfNodes.getOrPut(node) { node }
     }
 
     /**
@@ -25,45 +25,59 @@ open class SppfStorage<InputEdgeType> {
         input: InputRange<InputEdgeType>,
         rsm: RsmRange,
         startState: RsmState,
-        childSppf: RangeSppfNode<InputEdgeType>? = null
+        childSppf: RangeSppfNode<InputEdgeType>? = null,
     ): RangeSppfNode<InputEdgeType> {
-        return if (childSppf == null) addNode(input, rsm, NonterminalType(startState))
-        else addNode(input, rsm, NonterminalType(startState), listOf(childSppf))
+        return if (childSppf == null) {
+            addNode(input, rsm, NonterminalType(startState))
+        } else {
+            addNode(input, rsm, NonterminalType(startState), listOf(childSppf))
+        }
     }
 
     fun addEpsilonNode(
         input: InputRange<InputEdgeType>,
         rsmRange: RsmRange,
-        rsmState: RsmState
+        rsmState: RsmState,
     ): RangeSppfNode<InputEdgeType> {
         return addNode(
-            input, rsmRange, EpsilonNonterminalType(rsmState))
+            input,
+            rsmRange,
+            EpsilonNonterminalType(rsmState),
+        )
     }
 
     /**
      * Add temrminal node
      */
     fun addNode(
-        input: InputRange<InputEdgeType>, rsm: RsmRange, terminal: ITerminal
+        input: InputRange<InputEdgeType>,
+        rsm: RsmRange,
+        terminal: LightSymbol,
     ): RangeSppfNode<InputEdgeType> {
-        return addNode(input, rsm, TerminalType(terminal))
+        return addNode(input, rsm, TerminalType(terminal.terminal))
     }
 
     fun addIntermediateNode(
         leftSubtree: RangeSppfNode<InputEdgeType>,
-        rightSubtree: RangeSppfNode<InputEdgeType>
+        rightSubtree: RangeSppfNode<InputEdgeType>,
     ): RangeSppfNode<InputEdgeType> {
         if (leftSubtree.type is EmptyType) {
             return rightSubtree
         }
         return addNode(
             InputRange(
-                leftSubtree.inputRange!!.from, rightSubtree.inputRange!!.to
-            ), RsmRange(
-                leftSubtree.rsmRange!!.from, rightSubtree.rsmRange!!.to
-            ), IntermediateType(
-                leftSubtree.rsmRange.to, leftSubtree.inputRange.to
-            ), listOf(leftSubtree, rightSubtree)
+                leftSubtree.inputRange!!.from,
+                rightSubtree.inputRange!!.to,
+            ),
+            RsmRange(
+                leftSubtree.rsmRange!!.from,
+                rightSubtree.rsmRange!!.to,
+            ),
+            IntermediateType(
+                leftSubtree.rsmRange.to,
+                leftSubtree.inputRange.to,
+            ),
+            listOf(leftSubtree, rightSubtree),
         )
     }
 
@@ -71,7 +85,7 @@ open class SppfStorage<InputEdgeType> {
         input: InputRange<InputEdgeType>,
         rsm: RsmRange,
         rangeType: RangeType,
-        children: List<RangeSppfNode<InputEdgeType>> = listOf()
+        children: List<RangeSppfNode<InputEdgeType>> = listOf(),
     ): RangeSppfNode<InputEdgeType> {
         val rangeNode = addNode(RangeSppfNode(input, rsm, Range))
         val valueRsm = if (rangeType is TerminalType<*>) null else rsm
@@ -79,8 +93,8 @@ open class SppfStorage<InputEdgeType> {
         if (!rangeNode.children.contains(valueNode)) {
             rangeNode.children.add(valueNode)
         }
-        for(child in children){
-            if (!valueNode.children.contains(child)){
+        for (child in children) {
+            if (!valueNode.children.contains(child)) {
                 valueNode.children.add(child)
             }
         }

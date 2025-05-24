@@ -1,13 +1,9 @@
 package org.ucfs.parser
 
 import org.ucfs.descriptors.Descriptor
-import org.ucfs.input.Edge
-import org.ucfs.input.IInputGraph
-import org.ucfs.input.ILabel
+import org.ucfs.input.*
 import org.ucfs.parser.context.Context
 import org.ucfs.rsm.RsmState
-import org.ucfs.rsm.symbol.ITerminal
-import org.ucfs.rsm.symbol.Nonterminal
 import org.ucfs.sppf.node.*
 
 /**
@@ -15,11 +11,11 @@ import org.ucfs.sppf.node.*
  * @param InputNodeType - type of vertex in input graph
  * @param LabelType - type of label on edges in input graph
  */
-interface IGll<InputNodeType, LabelType : ILabel> {
+interface IGll<InputNodeType> {
     /**
      * Parser configuration
      */
-    var ctx: Context<InputNodeType, LabelType>
+    var ctx: Context<InputNodeType>
 
     /**
      * Main parsing loop. Iterates over available descriptors and processes them
@@ -49,68 +45,96 @@ interface IGll<InputNodeType, LabelType : ILabel> {
      * Creates descriptors for all starting vertices in input graph
      * @param input - input graph
      */
-    fun initDescriptors(input: IInputGraph<InputNodeType, LabelType>) {
+    fun initDescriptors(input: IInputGraph<InputNodeType>) {
         for (startVertex in input.getInputStartVertices()) {
-
             val gssNode = ctx.gss.getOrCreateNode(startVertex, ctx.startState)
-            val startDescriptor = Descriptor(
-                startVertex, gssNode, ctx.startState, getEmptyRange()
-            )
+            val startDescriptor =
+                Descriptor(
+                    startVertex,
+                    gssNode,
+                    ctx.startState,
+                    getEmptyRange(),
+                )
             ctx.descriptors.add(startDescriptor)
         }
     }
 
     fun handleNonterminalEdge(
-        descriptor: Descriptor<InputNodeType>, destinationRsmState: RsmState, edgeNonterminal: Nonterminal
+        descriptor: Descriptor<InputNodeType>,
+        destinationRsmState: RsmState,
+        edgeNonterminal: LightSymbol,
     ) {
-        val rsmStartState = edgeNonterminal.startState
-        val (newGssNode, positionToPops) = ctx.gss.addEdge(
-            descriptor.gssNode, destinationRsmState, descriptor.inputPosition, rsmStartState, descriptor.sppfNode
-        )
+        val rsmStartState = edgeNonterminal.nonTerminal.startState
+        val (newGssNode, positionToPops) =
+            ctx.gss.addEdge(
+                descriptor.gssNode,
+                destinationRsmState,
+                descriptor.inputPosition,
+                rsmStartState,
+                descriptor.sppfNode,
+            )
 
-        var newDescriptor = Descriptor(
-            descriptor.inputPosition, newGssNode, rsmStartState, getEmptyRange()
-        )
+        var newDescriptor =
+            Descriptor(
+                descriptor.inputPosition,
+                newGssNode,
+                rsmStartState,
+                getEmptyRange(),
+            )
         ctx.descriptors.add(newDescriptor)
 
         for (rangeToPop in positionToPops) {
             val leftSubRange = descriptor.sppfNode
-            val rightSubRange = ctx.sppfStorage.addNonterminalNode(
-                    rangeToPop.inputRange!!, RsmRange(
-                        descriptor.rsmState, destinationRsmState
-                    ), rsmStartState
+            val rightSubRange =
+                ctx.sppfStorage.addNonterminalNode(
+                    rangeToPop.inputRange!!,
+                    RsmRange(
+                        descriptor.rsmState,
+                        destinationRsmState,
+                    ),
+                    rsmStartState,
                 )
 
             val newSppfNode = ctx.sppfStorage.addIntermediateNode(leftSubRange, rightSubRange)
 
-            //TODO why these parameters???
-            newDescriptor = Descriptor(
-                rangeToPop.inputRange!!.to, descriptor.gssNode, destinationRsmState, newSppfNode
-            )
+            // TODO why these parameters???
+            newDescriptor =
+                Descriptor(
+                    rangeToPop.inputRange.to,
+                    descriptor.gssNode,
+                    destinationRsmState,
+                    newSppfNode,
+                )
             ctx.descriptors.add(newDescriptor)
         }
     }
 
-
     fun handleTerminalEdge(
         descriptor: Descriptor<InputNodeType>,
-        inputEdge: Edge<InputNodeType, *>,
+        inputEdge: Edge<InputNodeType>,
         destinationRsmState: RsmState,
-        terminal: ITerminal
+        terminal: LightSymbol,
     ) {
-        var terminalSppfNode = ctx.sppfStorage.addNode(
-            InputRange(
-                descriptor.inputPosition,
-                inputEdge.targetVertex,
-            ), RsmRange(
-                descriptor.rsmState,
-                destinationRsmState,
-            ), terminal
-        )
+        val terminalSppfNode =
+            ctx.sppfStorage.addNode(
+                InputRange(
+                    descriptor.inputPosition,
+                    inputEdge.targetVertex,
+                ),
+                RsmRange(
+                    descriptor.rsmState,
+                    destinationRsmState,
+                ),
+                terminal,
+            )
         val intermediateOrTerminalSppf = ctx.sppfStorage.addIntermediateNode(descriptor.sppfNode, terminalSppfNode)
-        val descriptorForTerminal = Descriptor(
-            inputEdge.targetVertex, descriptor.gssNode, destinationRsmState, intermediateOrTerminalSppf
-        )
+        val descriptorForTerminal =
+            Descriptor(
+                inputEdge.targetVertex,
+                descriptor.gssNode,
+                destinationRsmState,
+                intermediateOrTerminalSppf,
+            )
         ctx.descriptors.add(descriptorForTerminal)
     }
 }

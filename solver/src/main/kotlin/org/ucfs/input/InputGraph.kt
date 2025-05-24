@@ -1,12 +1,11 @@
 package org.ucfs.input
 
-open class InputGraph<VertexType, LabelType : ILabel> : IInputGraph<VertexType, LabelType> {
-
+open class InputGraph<VertexType> : IInputGraph<VertexType> {
     var name = "G"
 
     val vertices: MutableSet<VertexType> = HashSet()
 
-    val edges: MutableMap<VertexType, MutableList<Edge<VertexType, LabelType>>> = HashMap()
+    val edges: MutableMap<VertexType, MutableList<Edge<VertexType>>> = HashMap()
 
     val startVertices: MutableSet<VertexType> = HashSet()
 
@@ -28,11 +27,15 @@ open class InputGraph<VertexType, LabelType : ILabel> : IInputGraph<VertexType, 
         vertices.remove(vertex)
     }
 
-    override fun getEdges(from: VertexType): MutableList<Edge<VertexType, LabelType>> {
+    override fun getEdges(from: VertexType): MutableList<Edge<VertexType>> {
         return edges.getOrDefault(from, ArrayList())
     }
 
-    override fun addEdge(from: VertexType, label: LabelType, to: VertexType) {
+    override fun addEdge(
+        from: VertexType,
+        label: LightSymbol,
+        to: VertexType,
+    ) {
         val edge = Edge(label, to)
 
         if (!edges.containsKey(from)) edges[from] = ArrayList()
@@ -40,12 +43,16 @@ open class InputGraph<VertexType, LabelType : ILabel> : IInputGraph<VertexType, 
         edges.getValue(from).add(edge)
     }
 
-
-    override fun removeEdge(from: VertexType, label: LabelType, to: VertexType) {
+    override fun removeEdge(
+        from: VertexType,
+        label: LightSymbol,
+        to: VertexType,
+    ) {
         val edge = Edge(label, to)
         edges.getValue(from).remove(edge)
     }
 
     override fun isStart(vertex: VertexType) = startVertices.contains(vertex)
+
     override fun isFinal(vertex: VertexType) = getEdges(vertex).isEmpty()
 }

@@ -9,8 +9,7 @@ import java.io.File
 import java.io.IOException
 
 class DotParser {
-
-    fun parseDotFile(filePath: String): InputGraph<Int, TerminalInputLabel> {
+    fun parseDotFile(filePath: String): InputGraph<Int> {
         val file = File(filePath)
 
         if (!file.exists()) {
@@ -19,15 +18,15 @@ class DotParser {
         return parseDot(file.readText())
     }
 
-
-    fun parseDot(dotView: String): InputGraph<Int, TerminalInputLabel> {
-        val realParser = DotParser(
-            CommonTokenStream(
-                DotLexer(
-                    CharStreams.fromString(dotView)
-                )
+    fun parseDot(dotView: String): InputGraph<Int> {
+        val realParser =
+            DotParser(
+                CommonTokenStream(
+                    DotLexer(
+                        CharStreams.fromString(dotView),
+                    ),
+                ),
             )
-        )
         return GraphFromDotVisitor().visitGraph(realParser.graph())
     }
 }

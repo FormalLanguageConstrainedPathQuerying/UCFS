@@ -1,13 +1,14 @@
 package org.ucfs.input.utils
 
-
 import org.ucfs.input.InputGraph
-import org.ucfs.input.TerminalInputLabel
+import org.ucfs.input.terminal
 import java.lang.StringBuilder
 
 class DotWriter {
-
-    fun getDotView(graph: InputGraph<Int, TerminalInputLabel>, isDirected: Boolean = true): String {
+    fun getDotView(
+        graph: InputGraph<Int>,
+        isDirected: Boolean = true,
+    ): String {
         val builder = StringBuilder()
         val graphType = if (isDirected) "digraph" else "graph"
         val connector = if (isDirected) "->" else "--"

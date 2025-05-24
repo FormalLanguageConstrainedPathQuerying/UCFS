@@ -1,7 +1,7 @@
 package org.ucfs.intersection
 
 import org.ucfs.descriptors.Descriptor
-import org.ucfs.input.ILabel
+import org.ucfs.input.Eps
 import org.ucfs.parser.IGll
 
 object IntersectionEngine : IIntersectionEngine {
@@ -11,12 +11,13 @@ object IntersectionEngine : IIntersectionEngine {
      * @param gll - Gll parser instance
      * @param descriptor - descriptor, represents current parsing stage
      */
-    override fun <VertexType, LabelType : ILabel> handleEdges(
-        gll: IGll<VertexType, LabelType>,
+    override fun <VertexType> handleEdges(
+        gll: IGll<VertexType>,
         descriptor: Descriptor<VertexType>,
     ) {
         for (inputEdge in gll.ctx.input.getEdges(descriptor.inputPosition)) {
-            val terminal = inputEdge.label.terminal ?: continue
+            val terminal = inputEdge.label
+            if (terminal == Eps) continue
             val destination = descriptor.rsmState.terminalEdgesStorage[terminal] ?: continue
             gll.handleTerminalEdge(descriptor, inputEdge, destination, terminal)
         }
@@ -24,8 +25,8 @@ object IntersectionEngine : IIntersectionEngine {
         for (nonterminalEdge in descriptor.rsmState.nonterminalEdgesStorage) {
             gll.handleNonterminalEdge(
                 descriptor,
-                nonterminalEdge.value,
-                nonterminalEdge.key,
+                nonterminalEdge.second,
+                nonterminalEdge.first,
             )
         }
     }

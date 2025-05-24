@@ -3,10 +3,22 @@ package org.ucfs.rsm.symbol
 import org.ucfs.rsm.RsmState
 import java.util.*
 
+private object NonterminalIdGenerator {
+    private var id = 0
+
+    fun getId() = id++
+}
+
 data class Nonterminal(val name: String?) : Symbol {
     lateinit var startState: RsmState
     private var rsmStateLastId = 0
-    override fun toString() = "Nonterminal(${name ?: this.hashCode()})"
+    private val id = NonterminalIdGenerator.getId()
+
+    override fun toString() = "Nonterminal(${name ?: this.hashCode()}@$id)"
+
+    override fun hashCode() = id
+
+    override fun equals(other: Any?) = other != null && other is Nonterminal && other.id == id
 
     fun getNextRsmStateId(): Int {
         val id = rsmStateLastId

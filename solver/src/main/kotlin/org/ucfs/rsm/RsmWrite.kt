@@ -1,5 +1,8 @@
 package org.ucfs.rsm
 
+import org.ucfs.input.isNonterminal
+import org.ucfs.input.nonTerminal
+import org.ucfs.input.symbol
 import org.ucfs.rsm.symbol.Nonterminal
 import org.ucfs.rsm.symbol.Symbol
 import org.ucfs.rsm.symbol.Term
@@ -17,8 +20,8 @@ private fun getAllStates(startState: RsmState): HashSet<RsmState> {
             states.add(state)
 
             for ((symbol, destState) in state.outgoingEdges) {
-                if (symbol is Nonterminal) {
-                    queue.addLast(symbol.startState)
+                if (symbol.isNonterminal()) {
+                    queue.addLast(symbol.nonTerminal.startState)
                 }
                 queue.addLast(destState)
                 queue.addLast(destState.nonterminal.startState)
@@ -36,7 +39,10 @@ fun getView(symbol: Symbol): String {
     }
 }
 
-fun writeRsmToTxt(startState: RsmState, pathToTXT: String) {
+fun writeRsmToTxt(
+    startState: RsmState,
+    pathToTXT: String,
+) {
     val states = getAllStates(startState)
     File(pathToTXT).printWriter().use { out ->
         out.println(
@@ -47,7 +53,7 @@ fun writeRsmToTxt(startState: RsmState, pathToTXT: String) {
             |isFinal=${startState.isFinal}
             |)"""
                 .trimMargin()
-                .replace("\n", "")
+                .replace("\n", ""),
         )
 
         states.forEach { state ->
@@ -59,7 +65,7 @@ fun writeRsmToTxt(startState: RsmState, pathToTXT: String) {
                 |isFinal=${state.isFinal}
                 |)"""
                     .trimMargin()
-                    .replace("\n", "")
+                    .replace("\n", ""),
             )
         }
 
@@ -73,20 +79,24 @@ fun writeRsmToTxt(startState: RsmState, pathToTXT: String) {
 
         for (state in states) {
             for ((symbol, destState) in state.outgoingEdges) {
-                val (typeView, symbolView, typeLabel) = getSymbolView(symbol)
-                    out.println(
-                        """${typeView}Edge(
+                val (typeView, symbolView, typeLabel) = getSymbolView(symbol.symbol)
+                out.println(
+                    """${typeView}Edge(
                         |tail=${state.id},
                         |head=${destState.id},
                         |$typeLabel=$typeView("$symbolView")
-                        |)""".trimMargin().replace("\n", "")
-                    )
+                        |)
+                    """.trimMargin().replace("\n", ""),
+                )
             }
         }
     }
 }
 
-fun writeRsmToDot(startState: RsmState, filePath: String) {
+fun writeRsmToDot(
+    startState: RsmState,
+    filePath: String,
+) {
     val states = getAllStates(startState)
     val boxes: HashMap<Nonterminal, HashSet<RsmState>> = HashMap()
 
@@ -106,7 +116,15 @@ fun writeRsmToDot(startState: RsmState, filePath: String) {
         states.forEach { state ->
             val shape = if (state.isFinal) "doublecircle" else "circle"
             val color =
-                if (state == startState) "purple" else if (state.isStart) "green" else if (state.isFinal) "red" else "black"
+                if (state == startState) {
+                    "purple"
+                } else if (state.isStart) {
+                    "green"
+                } else if (state.isFinal) {
+                    "red"
+                } else {
+                    "black"
+                }
             val id = state.id
             val name = state.nonterminal.name
             out.println("$id [label = \"$name,$id\", shape = $shape, color = $color]")
@@ -114,7 +132,7 @@ fun writeRsmToDot(startState: RsmState, filePath: String) {
 
         states.forEach { state ->
             state.outgoingEdges.forEach { (symbol, destState) ->
-                    out.println("${state.id} -> ${destState.id} [label = \"${getView(symbol)}\"]")
+                out.println("${state.id} -> ${destState.id} [label = \"${getView(symbol.symbol)}\"]")
             }
         }
 
