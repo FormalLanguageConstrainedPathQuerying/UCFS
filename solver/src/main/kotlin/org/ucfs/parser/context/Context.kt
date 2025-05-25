@@ -21,14 +21,14 @@ class Context<InputNodeType>(
     /**
      * Collection of descriptors
      */
-    val descriptors: DescriptorsStorage<InputNodeType> = DescriptorsStorage()
+    val descriptors: DescriptorsStorage<InputNodeType> = DescriptorsStorage(input.verticesNumber() * 3)
 
     /**
      * Derivation trees storage
      */
     val sppfStorage: SppfStorage<InputNodeType> = SppfStorage()
 
-    val gss: GraphStructuredStack<InputNodeType> = GraphStructuredStack()
+    val gss: GraphStructuredStack<InputNodeType> = GraphStructuredStack(input.verticesNumber() * 3)
 
     var parseResult: RangeSppfNode<InputNodeType>? = null
 }

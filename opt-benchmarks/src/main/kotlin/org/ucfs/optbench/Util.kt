@@ -14,7 +14,9 @@ fun String.repeat(n: Int) =
 
 fun String.chars(n: Int) = if (length < n) " ".repeat(n - length) + this else this
 
-fun Number.chars(n: Int) = format("%${n}d", this)
+fun Int.chars(n: Int) = format("%${n}d", this)
+
+fun Double.chars(n: Int) = format("%.0f", this).chars(n)
 
 fun <T> parserOutputSame(
     left: ParserOutput<T>,

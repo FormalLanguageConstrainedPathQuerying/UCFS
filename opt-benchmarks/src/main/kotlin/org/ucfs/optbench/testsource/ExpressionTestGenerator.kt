@@ -40,14 +40,14 @@ class ExpressionGrammar : Grammar() {
     }
 }
 
-class ExpressionTestGenerator : TestGenerator {
+class ExpressionAcceptTestGenerator : TestGenerator {
     override val grammar = ExpressionGrammar()
     override val name = "Expression"
-    override val generator =
-        TrivialGenerator {
-                seed, size ->
-            (generateStatement(seed, size) + lineEndToken) with RecognizerOutput.Accept
-        }
+
+    override fun generate(
+        seed: Int,
+        size: Int,
+    ) = (generateStatement(seed, size) + lineEndToken) with RecognizerOutput.Accept
 }
 
 val lineEndToken = lineEndSymbol of 1

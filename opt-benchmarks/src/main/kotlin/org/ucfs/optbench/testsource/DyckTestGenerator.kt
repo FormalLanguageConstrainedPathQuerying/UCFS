@@ -19,14 +19,24 @@ class DyckGrammar : Grammar() {
     }
 }
 
-class DyckTestGenerator : TestGenerator {
+class DyckAcceptTestGenerator : TestGenerator {
     override val grammar = DyckGrammar()
-    override val name = "Dyck-1"
-    override val generator =
-        AcceptRejectUniformGenerator(
-            { seed, size -> genDyckOk(seed, size) + lineEndToken with RecognizerOutput.Accept },
-            { seed, size -> genDyckFail(seed, size) + lineEndToken with RecognizerOutput.Reject },
-        )
+    override val name = "Dyck-1 Accept"
+
+    override fun generate(
+        seed: Int,
+        size: Int,
+    ) = genDyckOk(seed, size) + lineEndToken with RecognizerOutput.Accept
+}
+
+class DyckRejectTestGenerator : TestGenerator {
+    override val grammar = DyckGrammar()
+    override val name = "Dyck-1 Reject"
+
+    override fun generate(
+        seed: Int,
+        size: Int,
+    ) = genDyckFail(seed, size) + lineEndToken with RecognizerOutput.Reject
 }
 
 private val lBrace = "( " of 1

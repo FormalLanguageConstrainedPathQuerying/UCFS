@@ -6,6 +6,11 @@ package org.ucfs.input
  */
 interface IInputGraph<VertexType> {
     /**
+     * @return number of vertices in the graph
+     */
+    fun verticesNumber(): Int
+
+    /**
      * @return collection of all starting vertices
      */
     fun getInputStartVertices(): MutableSet<VertexType>

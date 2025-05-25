@@ -4,12 +4,15 @@ import org.ucfs.descriptors.Descriptor
 import org.ucfs.rsm.RsmState
 import org.ucfs.sppf.node.RangeSppfNode
 
-class GraphStructuredStack<InputNode> {
-    val nodes = HashMap<GssNode<InputNode>, GssNode<InputNode>>()
+class GraphStructuredStack<InputNode>(initialCapacity: Int = 10) {
+    val nodes = HashMap<GssNode<InputNode>, GssNode<InputNode>>(initialCapacity)
 
-    fun getOrCreateNode(input: InputNode, rsm: RsmState): GssNode<InputNode> {
+    fun getOrCreateNode(
+        input: InputNode,
+        rsm: RsmState,
+    ): GssNode<InputNode> {
         val node = GssNode(rsm, input)
-        return nodes.getOrPut(node, {node})
+        return nodes.getOrPut(node) { node }
     }
 
     fun addEdge(
@@ -17,11 +20,10 @@ class GraphStructuredStack<InputNode> {
         rsmStateToReturn: RsmState,
         inputToContinue: InputNode,
         rsmStateToContinue: RsmState,
-        matcherRange: RangeSppfNode<InputNode>
+        matcherRange: RangeSppfNode<InputNode>,
     ): GssResult<InputNode> {
         val addedNode = getOrCreateNode(inputToContinue, rsmStateToContinue)
         val edge = GssEdge(gssNode, rsmStateToReturn, matcherRange)
-
 
         // There is no need to check GSS edges duplication.
         // "Faster, Practical GLL Parsing", Ali Afroozeh and Anastasia Izmaylova
@@ -31,22 +33,20 @@ class GraphStructuredStack<InputNode> {
         return GssResult(addedNode, popped)
     }
 
-
     /**
      * return outgoing edges
      */
     fun pop(
-        descriptor: Descriptor<InputNode>, range: RangeSppfNode<InputNode>
+        descriptor: Descriptor<InputNode>,
+        range: RangeSppfNode<InputNode>,
     ): ArrayList<GssEdge<InputNode>> {
         val gssNode = descriptor.gssNode
         gssNode.popped.add(range)
         return gssNode.outgoingEdges
     }
-
 }
 
 data class GssResult<InputNodeType>(
-    val gssNode: GssNode<InputNodeType>, val popped: ArrayList<RangeSppfNode<InputNodeType>>
+    val gssNode: GssNode<InputNodeType>,
+    val popped: ArrayList<RangeSppfNode<InputNodeType>>,
 )
-
-

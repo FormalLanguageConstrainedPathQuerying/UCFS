@@ -9,6 +9,8 @@ open class InputGraph<VertexType> : IInputGraph<VertexType> {
 
     val startVertices: MutableSet<VertexType> = HashSet()
 
+    override fun verticesNumber(): Int = vertices.size
+
     override fun getInputStartVertices(): MutableSet<VertexType> {
         return startVertices
     }

@@ -26,14 +26,24 @@ class UnequalBlocksGrammar : Grammar() {
     }
 }
 
-class UnequalBlocksTestGenerator : TestGenerator {
-    override val name = "Unequal blocks"
+class UnequalBlocksAcceptTestGenerator : TestGenerator {
+    override val name = "Unequal Blocks Accept"
     override val grammar = UnequalBlocksGrammar()
-    override val generator =
-        AcceptRejectUniformGenerator(
-            { seed, size -> generateUBSuccess(seed, size) + lineEndToken with RecognizerOutput.Accept },
-            { seed, size -> generateUBFail(seed, size) + lineEndToken with RecognizerOutput.Reject },
-        )
+
+    override fun generate(
+        seed: Int,
+        size: Int,
+    ) = generateUBSuccess(seed, size) + lineEndToken with RecognizerOutput.Accept
+}
+
+class UnequalBlocksRejectTestGenerator : TestGenerator {
+    override val name = "Unequal blocks Reject"
+    override val grammar = UnequalBlocksGrammar()
+
+    override fun generate(
+        seed: Int,
+        size: Int,
+    ) = generateUBSuccess(seed, size) + lineEndToken with RecognizerOutput.Accept
 }
 
 private val a = "a " of 1

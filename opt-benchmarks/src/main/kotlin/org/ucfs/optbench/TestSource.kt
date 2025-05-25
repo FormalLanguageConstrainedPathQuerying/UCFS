@@ -6,6 +6,7 @@ import org.ucfs.input.LinearInput
 import org.ucfs.parser.Gll
 import org.ucfs.sppf.node.RangeSppfNode
 import java.io.File
+import kotlin.math.sqrt
 import kotlin.system.measureNanoTime
 
 data class Test(val input: String, val size: Int, val output: RecognizerOutput)
@@ -16,7 +17,7 @@ fun <T> ParserOutput<T>.checkRecognize(input: IInputGraph<T>): RecognizerOutput 
     if (this == null || inputRange == null) {
         RecognizerOutput.Reject
     } else {
-        (input.isFinal(inputRange.to) && input.isStart(inputRange.from)).toRecognizerOutput()
+        (input.isFinal(inputRange!!.to) && input.isStart(inputRange!!.from)).toRecognizerOutput()
     }
 
 fun runGll(
@@ -49,17 +50,19 @@ data class TestResult(
     val name: String,
     val tests: Int,
     val size: Int,
-    val totalRuntime: Long,
+    val runtimes: List<Double>,
     val misses: List<SingleTest>,
 ) {
-    val averageRuntime = totalRuntime / tests
+    val averageRuntime = runtimes.sum() / tests
+    val mse = sqrt(runtimes.sumOf { it * it }) / runtimes.size
 
     override fun toString(): String {
         val missesString = if (isOk()) "" else " | misses: ${misses.size}"
         return "name: ${name.chars(20)} | " +
             "size: ${size.chars(6)} | " +
             "tests: ${tests.chars(4)} | " +
-            "initial: ${averageRuntime.chars(15)}ns | " +
+            "average: ${averageRuntime.chars(15)}ns | " +
+            "mse: ${mse.chars(15)}ns" +
             missesString
     }
 }
@@ -68,11 +71,11 @@ fun TestResult.isOk() = misses.isEmpty()
 
 data class TestSource(val grammar: Grammar, val inputs: Collection<Test>, val name: String, val size: Int) {
     fun run(): TestResult {
-        var totalRuntime: Long = 0
+        val runtimes = mutableListOf<Double>()
         val misses = mutableListOf<SingleTest>()
         inputs.forEach {
             val actual = runTest(it, grammar)
-            totalRuntime += actual.first
+            runtimes.add(actual.first.toDouble())
             val test = SingleTest(name, it.input, it.output, actual.third)
             if (actual.third != it.output) {
                 misses.add(test)
@@ -82,7 +85,7 @@ data class TestSource(val grammar: Grammar, val inputs: Collection<Test>, val na
             name,
             inputs.size,
             size,
-            totalRuntime,
+            runtimes,
             misses,
         )
     }
@@ -90,15 +93,10 @@ data class TestSource(val grammar: Grammar, val inputs: Collection<Test>, val na
 
 fun List<TestResult>.dumpToCsv(file: File) {
     val bw = file.bufferedWriter()
-    bw.write("name,size,runtime\r\n")
+    bw.write("name,size,avg,mse\r\n")
 
     forEach {
-        bw.write(it.name)
-        bw.write(",")
-        bw.write(it.size.toString())
-        bw.write(",")
-        bw.write(it.averageRuntime.toString())
-        bw.write("\r\n")
+        bw.write("${it.name},${it.size},${it.averageRuntime},${it.mse}\r\n")
     }
 
     bw.close()

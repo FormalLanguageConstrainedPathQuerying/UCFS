@@ -18,14 +18,24 @@ class StrangeAStar : Grammar() {
     }
 }
 
-class StrangeAStarTestGenerator : TestGenerator {
+class StrangeAStarAcceptTestGenerator : TestGenerator {
     override val grammar = StrangeAStar()
-    override val name = "Strange A*"
-    override val generator =
-        AcceptRejectUniformGenerator(
-            { seed, size -> Test(genAStarAccept(seed, size) + lineEndSymbol, size + 1, RecognizerOutput.Accept) },
-            { seed, size -> Test(genAStartReject(seed, size) + lineEndSymbol, size + 1, RecognizerOutput.Reject) },
-        )
+    override val name = "Strange A* Accept"
+
+    override fun generate(
+        seed: Int,
+        size: Int,
+    ) = Test(genAStarAccept(seed, size) + lineEndSymbol, size + 1, RecognizerOutput.Accept)
+}
+
+class StrangeAStarRejectTestGenerator : TestGenerator {
+    override val grammar = StrangeAStar()
+    override val name = "Strange A* Reject"
+
+    override fun generate(
+        seed: Int,
+        size: Int,
+    ) = Test(genAStartReject(seed, size) + lineEndSymbol, size + 1, RecognizerOutput.Reject)
 }
 
 fun genAStarAccept(

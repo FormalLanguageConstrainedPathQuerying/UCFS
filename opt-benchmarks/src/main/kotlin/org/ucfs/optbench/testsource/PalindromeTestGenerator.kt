@@ -24,14 +24,24 @@ class PalindromeGrammar : Grammar() {
     }
 }
 
-class PalindromeTestGenerator : TestGenerator {
+class PalindromeAcceptTestGenerator : TestGenerator {
     override val grammar = PalindromeGrammar()
-    override val name = "Palindrome"
-    override val generator =
-        AcceptRejectUniformGenerator(
-            { seed, size -> generatePalindrome(seed, size) + lineEndToken with RecognizerOutput.Accept },
-            { seed, size -> generatePalindromeFail(seed, size) + lineEndToken with RecognizerOutput.Reject },
-        )
+    override val name = "Palindrome Accept"
+
+    override fun generate(
+        seed: Int,
+        size: Int,
+    ) = generatePalindrome(seed, size) + lineEndToken with RecognizerOutput.Accept
+}
+
+class PalindromeRejectTestGenerator : TestGenerator {
+    override val grammar = PalindromeGrammar()
+    override val name = "Palindrome Reject"
+
+    override fun generate(
+        seed: Int,
+        size: Int,
+    ) = generatePalindromeFail(seed, size) + lineEndToken with RecognizerOutput.Reject
 }
 
 private val letters = listOf("a " of 1, "b " of 1, "c " of 1)

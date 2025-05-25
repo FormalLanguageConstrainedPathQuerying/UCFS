@@ -26,14 +26,24 @@ class NonSquareGrammar : Grammar() {
     }
 }
 
-class NonSquareTestGenerator : TestGenerator {
-    override val name = "Non square"
+class NonSquareAcceptTestGenerator : TestGenerator {
+    override val name = "Non Square Accept"
     override val grammar = NonSquareGrammar()
-    override val generator =
-        AcceptRejectUniformGenerator(
-            { seed, size -> generateNonSquareAccept(seed, size) + lineEndToken with RecognizerOutput.Accept },
-            { seed, size -> generateNonSquareReject(seed, size) + lineEndToken with RecognizerOutput.Reject },
-        )
+
+    override fun generate(
+        seed: Int,
+        size: Int,
+    ) = generateNonSquareAccept(seed, size) + lineEndToken with RecognizerOutput.Accept
+}
+
+class NonSquareRejectTestGenerator : TestGenerator {
+    override val name = "Non Square Reject"
+    override val grammar = NonSquareGrammar()
+
+    override fun generate(
+        seed: Int,
+        size: Int,
+    ) = generateNonSquareReject(seed, size) + lineEndToken with RecognizerOutput.Reject
 }
 
 private val a = "a " of 1

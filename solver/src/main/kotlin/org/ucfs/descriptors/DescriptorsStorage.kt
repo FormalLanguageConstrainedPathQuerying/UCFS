@@ -6,11 +6,11 @@ import org.ucfs.parser.ParsingException
  * Collection of default descriptors
  * @param VertexType - type of vertex in input graph
  */
-open class DescriptorsStorage<VertexType> {
+open class DescriptorsStorage<VertexType>(initialCapacity: Int = 10) {
     /**
      * Collection of already handled descriptors, accessible via descriptor's hashcode
      */
-    private val handledDescriptors = HashSet<Descriptor<VertexType>>()
+    private val handledDescriptors = HashSet<Descriptor<VertexType>>(initialCapacity)
 
     private val descriptorsToHandle = ArrayDeque<Descriptor<VertexType>>()
 
@@ -31,10 +31,12 @@ open class DescriptorsStorage<VertexType> {
     }
 
     fun add(descriptor: Descriptor<VertexType>) {
-        if(!handledDescriptors.contains(descriptor)){
-            descriptorsToHandle.addLast(descriptor)
-        }
+        if (!handledDescriptors.contains(descriptor))
+            {
+                descriptorsToHandle.addLast(descriptor)
+            }
     }
+
     /**
      * Gets next descriptor to handle
      * @return default descriptor if there is available one, null otherwise
@@ -46,4 +48,3 @@ open class DescriptorsStorage<VertexType> {
         return null
     }
 }
-
