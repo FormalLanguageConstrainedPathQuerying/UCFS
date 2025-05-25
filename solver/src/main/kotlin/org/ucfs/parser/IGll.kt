@@ -36,7 +36,9 @@ interface IGll<InputNodeType, LabelType : ILabel> {
             curDescriptor = ctx.descriptors.nextToHandle()
         }
 
-        return ctx.parseResult
+       // assert(ctx.parseResult != null)
+       // assert(ctx.parseResult!!.children.size == 1)
+        return ctx.parseResult!!.children.get(0)
     }
 
     /**
@@ -52,9 +54,9 @@ interface IGll<InputNodeType, LabelType : ILabel> {
     fun initDescriptors(input: IInputGraph<InputNodeType, LabelType>) {
         for (startVertex in input.getInputStartVertices()) {
 
-            val gssNode = ctx.gss.getOrCreateNode(startVertex, ctx.startState)
+            val gssNode = ctx.gss.getOrCreateNode(startVertex, ctx.fictiveStartState)
             val startDescriptor = Descriptor(
-                startVertex, gssNode, ctx.startState, getEmptyRange()
+                startVertex, gssNode, ctx.fictiveStartState, getEmptyRange(true)
             )
             ctx.descriptors.add(startDescriptor)
         }

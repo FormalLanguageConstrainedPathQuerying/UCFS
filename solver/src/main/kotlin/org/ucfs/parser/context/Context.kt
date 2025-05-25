@@ -1,6 +1,5 @@
 package org.ucfs.parser.context
 
-import org.ucfs.descriptors.Descriptor
 import org.ucfs.descriptors.DescriptorsStorage
 import org.ucfs.gss.GraphStructuredStack
 import org.ucfs.input.IInputGraph
@@ -18,7 +17,8 @@ class Context<InputNodeType, LabelType : ILabel> (
     /**
      * Starting state of accepting Nonterminal in RSM
      */
-    val startState: RsmState,
+    val fictiveStartState: RsmState,
+    val fictiveFinalState: RsmState,
     val input: IInputGraph<InputNodeType, LabelType>
 
 
@@ -37,4 +37,5 @@ class Context<InputNodeType, LabelType : ILabel> (
     val gss: GraphStructuredStack<InputNodeType> = GraphStructuredStack()
 
     var parseResult: RangeSppfNode<InputNodeType>? = null
+    var parseResults = ArrayList<RangeSppfNode<InputNodeType>>()
 }

@@ -27,7 +27,7 @@ fun <InputNode> getSppfDot(sppfNode: RangeSppfNode<InputNode>, label: String = "
         node = queue.removeFirst()
         if (!visited.add(node.hashCode())) continue
 
-        nodeViews[node] = getNodeView(node, )
+        nodeViews[node] = getNodeView(node,)// node.id.toString())
 
         node.children.forEach {
             queue.addLast(it)

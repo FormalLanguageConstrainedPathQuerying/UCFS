@@ -12,6 +12,7 @@ open class Grammar {
     val nonTerms = ArrayList<Nt>()
 
     private lateinit var startNt: Nt
+    private lateinit var fictitiousStartNt: Nt
 
     private var _rsm: RsmState? = null
     val rsm: RsmState
@@ -21,12 +22,6 @@ open class Grammar {
             }
             return _rsm!!
         }
-
-    fun setStart(expr: Regexp) {
-        if (expr is Nt) {
-            startNt = expr
-        } else throw IllegalArgumentException("Only NT object can be start state for Grammar")
-    }
 
     fun Nt.asStart(): Nt {
         if (this@Grammar::startNt.isInitialized) {
@@ -43,6 +38,8 @@ open class Grammar {
     private fun buildRsm(): RsmState {
         nonTerms.forEach { it.buildRsmBox() }
         //if nonterminal not initialized -- it will be checked in buildRsmBox()
-        return startNt.nonterm.startState
+        fictitiousStartNt = Nt(startNt, "fictiveStart")
+        fictitiousStartNt.buildRsmBox()
+        return fictitiousStartNt.nonterm.startState
     }
 }

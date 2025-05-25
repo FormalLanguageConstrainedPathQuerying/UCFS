@@ -1,0 +1,10 @@
+digraph g {
+labelloc="t"
+label=""
+0 [label = "Nonterminal S, input: [0, 1]", shape = invtrapezium]
+1 [label = "Range , input: [0, 1], rsm: [S_0, S_1]", shape = ellipse]
+2 [label = "Terminal 'a', input: [0, 1]", shape = rectangle]
+0->1
+1->2
+1->0
+}

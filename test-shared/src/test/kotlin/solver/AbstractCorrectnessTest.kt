@@ -13,7 +13,9 @@ abstract class AbstractCorrectnessTest {
 
     abstract fun getRootDataFolder(): Path
 
-    val grammars = listOf(SimplifiedDyck(), ABGrammar(), SALang(), Epsilon(), LoopDyck())
+   val grammars = listOf(SimplifiedDyck(), ABGrammar(), SALang(), Epsilon(), LoopDyck(), AmbiguousAStar2(), AmbiguousAStar1())
+    //TODO return only one result for ambiguous AmbiguousAStar2(), AmbiguousAStar1()
+    // TODO fix worst case for loopdyck
     val regenerate = false
     //@TestFactory
     //TODO make it abstract by used grammar

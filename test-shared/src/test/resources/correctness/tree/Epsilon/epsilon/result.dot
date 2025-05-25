@@ -2,6 +2,8 @@ digraph g {
 labelloc="t"
 label=""
 0 [label = "Epsilon RSM: S_0, input: [0, 0]", shape = invhouse]
-1 [label = "Range , input: [0, 0], rsm: [S_0, S_0]", shape = ellipse]
-1->0
+1 [label = "Nonterminal S, input: [0, 0]", shape = invtrapezium]
+2 [label = "Range , input: [0, 0], rsm: [S_0, S_0]", shape = ellipse]
+1->2
+2->0
 }

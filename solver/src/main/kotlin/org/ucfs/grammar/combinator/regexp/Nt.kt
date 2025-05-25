@@ -10,6 +10,11 @@ open class Nt() : DerivedSymbol {
     constructor(lhs: Regexp) : this() {
         rsmDescription = lhs
     }
+    constructor(lhs: Regexp, name: String) : this() {
+        rsmDescription = lhs
+        this.nonterm = Nonterminal(name)
+    }
+
 
     lateinit var nonterm: Nonterminal
         private set

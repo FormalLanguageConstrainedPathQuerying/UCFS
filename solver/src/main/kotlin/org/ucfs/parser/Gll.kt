@@ -29,7 +29,8 @@ class Gll<VertexType, LabelType : ILabel> private constructor(
         fun <VertexType, LabelType : ILabel> gll(
             startState: RsmState, inputGraph: IInputGraph<VertexType, LabelType>
         ): Gll<VertexType, LabelType> {
-            return Gll(Context(startState, inputGraph), IntersectionEngine)
+            val finalState = startState.outgoingEdges.get(0).destinationState
+            return Gll(Context(startState, finalState, inputGraph), IntersectionEngine)
         }
     }
 
@@ -66,6 +67,11 @@ class Gll<VertexType, LabelType : ILabel> private constructor(
         ctx.descriptors.add(newDescriptor)
     }
 
+    fun isParseResult(descriptor: Descriptor<VertexType>, matchedRange: RangeSppfNode<VertexType>): Boolean {
+        return matchedRange.inputRange!!.from in ctx.input.getInputStartVertices()
+                && matchedRange.rsmRange!!.from == ctx.fictiveStartState
+                && matchedRange.rsmRange.to == ctx.fictiveFinalState
+    }
     /**
      * Processes descriptor
      * @param descriptor - descriptor to process
@@ -77,7 +83,7 @@ class Gll<VertexType, LabelType : ILabel> private constructor(
                 val node = getEpsilonRange(descriptor)
                 //TODO fix
                 // dirty hack: in fact it's equivavelnt descriptors
-                // but only initial was added in handlet set
+                // but only initial was added in handled set
                 ctx.descriptors.addToHandled(Descriptor(descriptor.inputPosition,
                     descriptor.gssNode, descriptor.rsmState, node))
                 node
@@ -87,11 +93,14 @@ class Gll<VertexType, LabelType : ILabel> private constructor(
             for (poppedEdge in ctx.gss.pop(descriptor, matchedRange)) {
                 handlePoppedGssEdge(poppedEdge, descriptor, matchedRange)
             }
-            if (descriptor.gssNode.outgoingEdges.isEmpty() && descriptor.gssNode.rsm.isStart) {
-                ctx.parseResult = matchedRange
+            if (isParseResult(descriptor, matchedRange)) {
+
+                if(ctx.parseResult == null) {
+                    ctx.parseResult = matchedRange
+                }
+                ctx.parseResults.add(matchedRange)
             }
         }
-
         engine.handleEdges(this, descriptor)
     }
 }

@@ -4,17 +4,19 @@ label=""
 0 [label = "Nonterminal A, input: [0, 1]", shape = invtrapezium]
 1 [label = "Nonterminal B, input: [0, 1]", shape = invtrapezium]
 2 [label = "Nonterminal C, input: [0, 1]", shape = invtrapezium]
-3 [label = "Range , input: [0, 1], rsm: [A_0, A_1]", shape = ellipse]
-4 [label = "Range , input: [0, 1], rsm: [B_0, B_1]", shape = ellipse]
-5 [label = "Range , input: [0, 1], rsm: [C_0, C_1]", shape = ellipse]
-6 [label = "Range , input: [0, 1], rsm: [S_0, S_1]", shape = ellipse]
-7 [label = "Terminal 'a', input: [0, 1]", shape = rectangle]
-0->3
-1->4
-2->5
+3 [label = "Nonterminal S, input: [0, 1]", shape = invtrapezium]
+4 [label = "Range , input: [0, 1], rsm: [A_0, A_1]", shape = ellipse]
+5 [label = "Range , input: [0, 1], rsm: [B_0, B_1]", shape = ellipse]
+6 [label = "Range , input: [0, 1], rsm: [C_0, C_1]", shape = ellipse]
+7 [label = "Range , input: [0, 1], rsm: [S_0, S_1]", shape = ellipse]
+8 [label = "Terminal 'a', input: [0, 1]", shape = rectangle]
+0->4
+1->5
+2->6
 3->7
-4->2
-5->7
-6->1
-6->0
+4->8
+5->2
+6->8
+7->1
+7->0
 }

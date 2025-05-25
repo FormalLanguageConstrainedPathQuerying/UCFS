@@ -8,48 +8,50 @@ label=""
 4 [label = "Intermediate input: 2, rsm: S_0, input: [0, 3]", shape = plain]
 5 [label = "Intermediate input: 3, rsm: S_1, input: [0, 3]", shape = plain]
 6 [label = "Intermediate input: 3, rsm: S_2, input: [0, 4]", shape = plain]
-7 [label = "Nonterminal S, input: [1, 1]", shape = invtrapezium]
-8 [label = "Nonterminal S, input: [3, 3]", shape = invtrapezium]
-9 [label = "Range , input: [0, 1], rsm: [S_0, S_1]", shape = ellipse]
-10 [label = "Range , input: [0, 1], rsm: [S_0, S_2]", shape = ellipse]
-11 [label = "Range , input: [0, 2], rsm: [S_0, S_0]", shape = ellipse]
-12 [label = "Range , input: [0, 3], rsm: [S_0, S_1]", shape = ellipse]
-13 [label = "Range , input: [0, 3], rsm: [S_0, S_2]", shape = ellipse]
-14 [label = "Range , input: [0, 4], rsm: [S_0, S_0]", shape = ellipse]
-15 [label = "Range , input: [1, 1], rsm: [S_0, S_0]", shape = ellipse]
-16 [label = "Range , input: [1, 1], rsm: [S_1, S_2]", shape = ellipse]
-17 [label = "Range , input: [1, 2], rsm: [S_2, S_0]", shape = ellipse]
-18 [label = "Range , input: [2, 3], rsm: [S_0, S_1]", shape = ellipse]
-19 [label = "Range , input: [3, 3], rsm: [S_0, S_0]", shape = ellipse]
-20 [label = "Range , input: [3, 3], rsm: [S_1, S_2]", shape = ellipse]
-21 [label = "Range , input: [3, 4], rsm: [S_2, S_0]", shape = ellipse]
-22 [label = "Terminal '(', input: [0, 1]", shape = rectangle]
-23 [label = "Terminal '(', input: [2, 3]", shape = rectangle]
-24 [label = "Terminal ')', input: [1, 2]", shape = rectangle]
-25 [label = "Terminal ')', input: [3, 4]", shape = rectangle]
-2->9
-2->16
-3->10
-3->17
-4->11
-4->18
-5->12
-5->20
-6->13
-6->21
+7 [label = "Nonterminal S, input: [0, 4]", shape = invtrapezium]
+8 [label = "Nonterminal S, input: [1, 1]", shape = invtrapezium]
+9 [label = "Nonterminal S, input: [3, 3]", shape = invtrapezium]
+10 [label = "Range , input: [0, 1], rsm: [S_0, S_1]", shape = ellipse]
+11 [label = "Range , input: [0, 1], rsm: [S_0, S_2]", shape = ellipse]
+12 [label = "Range , input: [0, 2], rsm: [S_0, S_0]", shape = ellipse]
+13 [label = "Range , input: [0, 3], rsm: [S_0, S_1]", shape = ellipse]
+14 [label = "Range , input: [0, 3], rsm: [S_0, S_2]", shape = ellipse]
+15 [label = "Range , input: [0, 4], rsm: [S_0, S_0]", shape = ellipse]
+16 [label = "Range , input: [1, 1], rsm: [S_0, S_0]", shape = ellipse]
+17 [label = "Range , input: [1, 1], rsm: [S_1, S_2]", shape = ellipse]
+18 [label = "Range , input: [1, 2], rsm: [S_2, S_0]", shape = ellipse]
+19 [label = "Range , input: [2, 3], rsm: [S_0, S_1]", shape = ellipse]
+20 [label = "Range , input: [3, 3], rsm: [S_0, S_0]", shape = ellipse]
+21 [label = "Range , input: [3, 3], rsm: [S_1, S_2]", shape = ellipse]
+22 [label = "Range , input: [3, 4], rsm: [S_2, S_0]", shape = ellipse]
+23 [label = "Terminal '(', input: [0, 1]", shape = rectangle]
+24 [label = "Terminal '(', input: [2, 3]", shape = rectangle]
+25 [label = "Terminal ')', input: [1, 2]", shape = rectangle]
+26 [label = "Terminal ')', input: [3, 4]", shape = rectangle]
+2->10
+2->17
+3->11
+3->18
+4->12
+4->19
+5->13
+5->21
+6->14
+6->22
 7->15
-8->19
-9->22
-10->2
-11->3
-12->4
-13->5
-14->6
-15->0
-16->7
-17->24
-18->23
-19->1
-20->8
-21->25
+8->16
+9->20
+10->23
+11->2
+12->3
+13->4
+14->5
+15->6
+16->0
+17->8
+18->25
+19->24
+20->1
+21->9
+22->26
 }
