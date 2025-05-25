@@ -87,7 +87,7 @@ fun writeRsmToTxt(startState: RsmState, pathToTXT: String) {
 }
 
 fun writeRsmToDot(startState: RsmState, filePath: String) {
-    val states = getAllStates(startState)
+    val states = getAllStates((startState.outgoingEdges.get(0).symbol as Nonterminal).startState)
     val boxes: HashMap<Nonterminal, HashSet<RsmState>> = HashMap()
 
     for (state in states) {
