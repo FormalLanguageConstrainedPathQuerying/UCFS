@@ -2,39 +2,17 @@ package org.ucfs.optbench
 
 import org.ucfs.optbench.testsource.*
 import java.io.File
-import kotlin.random.Random
-
-fun warmup() {
-    ExpressionAcceptTestGenerator().generateSource(100, 1000, 100).run()
-}
-
-fun bench(
-    generator: TestGenerator,
-    config: TestConfiguration,
-): List<TestResult> {
-    val seed = Random.nextInt()
-
-    return sequence {
-        config.runs.forEach { run ->
-            generator.generateSource(seed, run.first, run.second).run().also { println(it) }.also { yield(it) }
-        }
-    }.toList()
-}
-
-fun benchMany(
-    generators: List<TestGenerator>,
-    config: TestConfiguration,
-) = generators.fold(listOf<TestResult>()) { acc, it -> acc + bench(it, config) }
 
 object Configurations {
     val longBig = sizesOf(500, 1000, 2000, 5000, 10000, 20000, 50000) with 200
+    val longBigCapped = sizesOf(500, 1000, 5000, 10000, 15000) with 200
     val longMedium = sizesOf(500, 1000, 2000, 5000, 10000, 20000) with 100
-    val longSmall = sizesOf(500, 1000, 2000, 5000, 10000, 20000) with 25
-    val longTiny = sizesOf(500, 1000, 2000, 5000, 10000) with 25
+    val longSmall = sizesOf(500, 1000, 2000, 5000, 10000, 20000, 50000) with 25
+    val longTiny = sizesOf(500, 1000, 5000, 10000, 15000) with 25
     val shortBig = sizesOf(100, 200, 300, 400, 500, 800, 1000) with 200
     val shortMedium = sizesOf(100, 200, 300, 400, 500) with 100
     val shortSmall = sizesOf(100, 200, 300, 400, 500) with 25
-    val shortTiny = sizesOf(100, 200, 300, 400) with 10
+    val shortTiny = sizesOf(100, 200, 300, 400, 500) with 10
     val veryShortTiny = sizesOf(50, 60, 70, 80, 90) with 10
 }
 
@@ -60,11 +38,10 @@ object Generators {
 }
 
 fun main() {
-    warmup()
-    (
-        benchMany(Generators.fast, Configurations.longSmall) +
-            benchMany(Generators.medium, Configurations.longTiny) +
-            benchMany(Generators.slow, Configurations.shortTiny)
-        // benchMany(Generators.verySlow, Configurations.veryShortTiny)
-    ).dumpToCsv(File("optimized.csv"))
+    benchmark {
+        warmup()
+        benchMany(Generators.fast, Configurations.longBig)
+        benchMany(Generators.medium, Configurations.longBigCapped)
+        benchMany(Generators.slow, Configurations.shortMedium)
+    }.dump(File("optimized.csv"))
 }

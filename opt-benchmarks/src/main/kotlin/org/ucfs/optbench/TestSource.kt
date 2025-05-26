@@ -54,7 +54,7 @@ data class TestResult(
     val misses: List<SingleTest>,
 ) {
     val averageRuntime = runtimes.sum() / tests
-    val mse = sqrt(runtimes.sumOf { it * it }) / runtimes.size
+    val mse = sqrt(runtimes.sumOf { (it - averageRuntime) * (it - averageRuntime) }) / runtimes.size
 
     override fun toString(): String {
         val missesString = if (isOk()) "" else " | misses: ${misses.size}"
