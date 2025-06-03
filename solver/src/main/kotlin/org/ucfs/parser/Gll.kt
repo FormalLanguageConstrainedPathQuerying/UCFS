@@ -77,7 +77,7 @@ class Gll<VertexType, LabelType : ILabel> private constructor(
      * @param descriptor - descriptor to process
      */
     override fun handleDescriptor(descriptor: Descriptor<VertexType>) {
-        ctx.descriptors.addToHandled(descriptor)
+        if (!ctx.descriptors.addToHandled(descriptor)) return
         if (descriptor.rsmState.isFinal) {
             val matchedRange = if (descriptor.sppfNode.type is EmptyType) {
                 val node = getEpsilonRange(descriptor)
