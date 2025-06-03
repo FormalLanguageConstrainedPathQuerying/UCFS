@@ -26,8 +26,8 @@ open class DescriptorsStorage<VertexType> {
         return descriptorsToHandle.removeLast()
     }
 
-    fun addToHandled(descriptor: Descriptor<VertexType>) {
-        handledDescriptors.add(descriptor)
+    fun addToHandled(descriptor: Descriptor<VertexType>): Boolean {
+        return handledDescriptors.add(descriptor)
     }
 
     fun add(descriptor: Descriptor<VertexType>) {
