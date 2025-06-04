@@ -25,8 +25,8 @@ interface IGll<InputNodeType, LabelType : ILabel> {
      * Main parsing loop. Iterates over available descriptors and processes them
      * @return Pair of derivation tree root and collection of reachability pairs
      */
-    fun parse(): RangeSppfNode<InputNodeType>? {
-        ctx.parseResult = null
+    fun parse(): Set<RangeSppfNode<InputNodeType>> {
+        ctx.parseResults = HashSet()
         initDescriptors(ctx.input)
 
         var curDescriptor = ctx.descriptors.nextToHandle()
@@ -36,9 +36,7 @@ interface IGll<InputNodeType, LabelType : ILabel> {
             curDescriptor = ctx.descriptors.nextToHandle()
         }
 
-       // assert(ctx.parseResult != null)
-       // assert(ctx.parseResult!!.children.size == 1)
-        return ctx.parseResult!!.children.get(0)
+        return ctx.parseResults
     }
 
     /**
@@ -56,7 +54,7 @@ interface IGll<InputNodeType, LabelType : ILabel> {
 
             val gssNode = ctx.gss.getOrCreateNode(startVertex, ctx.fictiveStartState)
             val startDescriptor = Descriptor(
-                startVertex, gssNode, ctx.fictiveStartState, getEmptyRange(true)
+                startVertex, gssNode, ctx.fictiveStartState, getEmptyRange()
             )
             ctx.descriptors.add(startDescriptor)
         }
@@ -78,16 +76,16 @@ interface IGll<InputNodeType, LabelType : ILabel> {
         for (rangeToPop in positionToPops) {
             val leftSubRange = descriptor.sppfNode
             val rightSubRange = ctx.sppfStorage.addNonterminalNode(
-                    rangeToPop.inputRange!!, RsmRange(
-                        descriptor.rsmState, destinationRsmState
-                    ), rsmStartState
-                )
+                rangeToPop.inputRange!!, RsmRange(
+                    descriptor.rsmState, destinationRsmState
+                ), rsmStartState
+            )
 
             val newSppfNode = ctx.sppfStorage.addIntermediateNode(leftSubRange, rightSubRange)
 
             //TODO why these parameters???
             newDescriptor = Descriptor(
-                rangeToPop.inputRange!!.to, descriptor.gssNode, destinationRsmState, newSppfNode
+                rangeToPop.inputRange.to, descriptor.gssNode, destinationRsmState, newSppfNode
             )
             ctx.descriptors.add(newDescriptor)
         }
@@ -100,7 +98,7 @@ interface IGll<InputNodeType, LabelType : ILabel> {
         destinationRsmState: RsmState,
         terminal: ITerminal
     ) {
-        var terminalSppfNode = ctx.sppfStorage.addNode(
+        val terminalSppfNode = ctx.sppfStorage.addNode(
             InputRange(
                 descriptor.inputPosition,
                 inputEdge.targetVertex,

@@ -15,8 +15,6 @@ import org.ucfs.rsm.symbol.ITerminal
  * May be used as extended packed sppfNode.
  * @param VertexType - type of vertex in input graph
  */
-var lastId = 0
-
 data class RangeSppfNode<VertexType>(
     val inputRange: InputRange<VertexType>?,
     val rsmRange: RsmRange?,
@@ -24,43 +22,44 @@ data class RangeSppfNode<VertexType>(
 ) {
     val id: Int = lastId++
     val children = ArrayList<RangeSppfNode<VertexType>>()
+    override fun toString(): String {
+        return when (type) {
+            is TerminalType<*> -> "Terminal $inputRange ${type.terminal}"
+            is Range -> "Range $inputRange $rsmRange"
+            is NonterminalType -> "Nonterminal ${type.startState.nonterminal.name} $inputRange $rsmRange"
+            is IntermediateType<*> -> "Intermediate i:${type.inputPosition} rsm:${type.grammarSlot.id}"
+            is EpsilonNonterminalType -> "Epsilon ${type.startState.id}"
+            is EmptyType -> "Empty node"
+            else -> "Unknown sppf node type!"
+        }
+    }
 }
 
-fun <VertexType> getEmptyRange(isStart: Boolean = false): RangeSppfNode<VertexType>  {
-    val type = EmptyType()
-    if(isStart) {
-        type.isStart = isStart
-    }
-    return RangeSppfNode(null, null, type)
+fun <VertexType> getEmptyRange(): RangeSppfNode<VertexType> {
+    return RangeSppfNode(null, null, EmptyType())
 }
 
 data class InputRange<VertexType>(
     val from: VertexType,
     val to: VertexType,
-)
+) {
+    override fun toString(): String = "input:[$from;$to]"
+}
 
 data class RsmRange(
     val from: RsmState,
     val to: RsmState,
-)
+) {
+    override fun toString(): String = "rsm:[${from.id};${to.id}]"
+}
 
 interface RangeType
-var lastEmptyId = 0
+
 object Range : RangeType
 data class TerminalType<T : ITerminal>(val terminal: T) : RangeType
 data class NonterminalType(val startState: RsmState) : RangeType
 data class EpsilonNonterminalType(val startState: RsmState) : RangeType
 data class IntermediateType<VertexType>(val grammarSlot: RsmState, val inputPosition: VertexType) : RangeType
-class EmptyType : RangeType {
-    var isStart = false
+class EmptyType : RangeType
 
-    @Override
-    override fun equals(other: Any?): Boolean {
-        return other is EmptyType
-    }
-
-    @Override
-    override fun hashCode(): Int {
-        return 12
-    }
-}
+var lastId = 0

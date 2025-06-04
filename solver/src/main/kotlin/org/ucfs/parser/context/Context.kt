@@ -13,7 +13,7 @@ import org.ucfs.sppf.node.RangeSppfNode
  * @param InputNodeType - type of vertex in input graph
  * @param LabelType - type of label on edges in input graph
  */
-class Context<InputNodeType, LabelType : ILabel> (
+class Context<InputNodeType, LabelType : ILabel>(
     /**
      * Starting state of accepting Nonterminal in RSM
      */
@@ -33,9 +33,8 @@ class Context<InputNodeType, LabelType : ILabel> (
      * Derivation trees storage
      */
     val sppfStorage: SppfStorage<InputNodeType> = SppfStorage()
-    
+
     val gss: GraphStructuredStack<InputNodeType> = GraphStructuredStack()
 
-    var parseResult: RangeSppfNode<InputNodeType>? = null
-    var parseResults = ArrayList<RangeSppfNode<InputNodeType>>()
+    var parseResults = HashSet<RangeSppfNode<InputNodeType>>()
 }

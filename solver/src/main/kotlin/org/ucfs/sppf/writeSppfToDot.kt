@@ -14,20 +14,34 @@ fun <InputNode> writeSppfToDot(sppfNode: RangeSppfNode<InputNode>, filePath: Str
     }
 }
 
-fun <InputNode> getSppfDot(sppfNode: RangeSppfNode<InputNode>, label: String = ""): String {
-    val queue: ArrayDeque<RangeSppfNode<InputNode>> = ArrayDeque(listOf(sppfNode))
-    val visited: HashSet<Int> = HashSet()
-    var node: RangeSppfNode<InputNode>
+fun <InputNode> getSppfDot(sppfNodes: Set<RangeSppfNode<InputNode>>, label: String = ""): String {
     val sb = StringBuilder()
     sb.appendLine("digraph g {")
     sb.appendLine("labelloc=\"t\"")
     sb.appendLine("label=\"$label\"")
+    var idx = 0
+    val results = sppfNodes.map { sppf -> getSppfDot(sppf, idx++.toString()) }
+    for (sppf in results.sorted()) {
+        sb.appendLine(sppf)
+    }
+    sb.appendLine("}")
+    return sb.toString()
+}
+
+fun <InputNode> getSppfDot(sppfNode: RangeSppfNode<InputNode>, label: String): String {
+    val prefix = sppfNode.hashCode().toString()
+    val queue: ArrayDeque<RangeSppfNode<InputNode>> = ArrayDeque(listOf(sppfNode))
+    val visited: HashSet<Int> = HashSet()
+    var node: RangeSppfNode<InputNode>
+    val sb = StringBuilder()
+    sb.appendLine("subgraph cluster_$label{")
+    sb.appendLine("labelloc=\"t\"")
     val nodeViews = HashMap<RangeSppfNode<InputNode>, String>()
     while (queue.isNotEmpty()) {
         node = queue.removeFirst()
         if (!visited.add(node.hashCode())) continue
 
-        nodeViews[node] = getNodeView(node,)// node.id.toString())
+        nodeViews[node] = getNodeView(node, node.id.toString())
 
         node.children.forEach {
             queue.addLast(it)
@@ -36,31 +50,26 @@ fun <InputNode> getSppfDot(sppfNode: RangeSppfNode<InputNode>, label: String = "
     val sortedViews = nodeViews.values.sorted()
     val nodeIds = HashMap<RangeSppfNode<InputNode>, Int>()
     val nodeById = HashMap<Int, RangeSppfNode<InputNode>>()
-    for ((node, view) in nodeViews) {
+    for ((nodeInstance, view) in nodeViews) {
         val id = sortedViews.indexOf(view)
-        nodeIds[node] = id
-        nodeById[id] = node
+        nodeIds[nodeInstance] = id
+        nodeById[id] = nodeInstance
     }
 
     for (i in sortedViews.indices) {
-        sb.appendLine("$i ${sortedViews[i]}")
+        sb.appendLine("$prefix$i ${sortedViews[i]}")
     }
 
     for (i in nodeById.keys) {
-        val node = nodeById[i]
-        for(child in node!!.children) {
-            sb.appendLine("${nodeIds[node]}->${nodeIds[child]}")
+        val sortedNode = nodeById[i]
+        for (child in sortedNode!!.children) {
+            sb.appendLine("$prefix${nodeIds[sortedNode]}->$prefix${nodeIds[child]}")
         }
-       // if(node.children.size < 2){
-       //     continue
-       // }
-       // val cs = node.children.map({nodeIds[it]}).joinToString("->")
-       // sb.appendLine("{ rank = same; $cs [style=invis]}")
+        // TODO change format to force DOT to save children order
     }
 
     sb.appendLine("}")
     return sb.toString()
-
 }
 
 
@@ -70,63 +79,19 @@ enum class NodeShape(val view: String) {
     )
 }
 
-fun fillNodeTemplate(
-    id: String? = null, nodeInfo: String, inputRange: InputRange<*>?, shape: NodeShape, rsmRange: RsmRange? = null
-): String {
-    val inputRangeView = if (inputRange != null) "input: [${inputRange.from}, ${inputRange.to}]" else null
-    val rsmRangeView = if (rsmRange != null) "rsm: [${rsmRange.from.id}, ${rsmRange.to.id}]" else null
-    val view = listOfNotNull(nodeInfo, inputRangeView, rsmRangeView).joinToString(", ")
-    return "[label = \"${id?: ""}${shape.name} $view\", shape = ${shape.view}]"
+fun getNodeView(node: RangeSppfNode<*>, id: String? = null): String {
+    val shape = getNodeShape(node.type)
+    return "[label = \"${id ?: ""}${shape.name} ${node.type}\", shape = ${shape.view}]"
 }
 
-
-fun <InputNode> getNodeView(node: RangeSppfNode<InputNode>, id: String? = null): String {
-    val type = node.type
-    return when (type) {
-        is TerminalType<*> -> {
-            fillNodeTemplate(
-                id, "'${type.terminal}'", node.inputRange, NodeShape.Terminal
-            )
-        }
-
-        is NonterminalType -> {
-            fillNodeTemplate(
-                id, "${type.startState.nonterminal.name}", node.inputRange, NodeShape.Nonterminal
-            )
-        }
-
-        is IntermediateType<*> -> {
-            fillNodeTemplate(
-                id, "input: ${type.inputPosition}, rsm: ${type.grammarSlot.id}", node.inputRange, NodeShape.Intermediate
-            )
-        }
-
-        is EmptyType -> {
-            fillNodeTemplate(
-                id, "", null, NodeShape.Empty
-            )
-        }
-
-        is EpsilonNonterminalType -> {
-            fillNodeTemplate(
-                id, "RSM: ${type.startState.id}", node.inputRange, NodeShape.Epsilon
-            )
-        }
-
-        is RangeType -> {
-            fillNodeTemplate(
-                id, "", node.inputRange, NodeShape.Range, node.rsmRange
-            )
-        }
-
-        else -> throw IllegalStateException("Can't write node type $type to DOT")
-
+fun getNodeShape(rangeType: RangeType): NodeShape {
+    return when (rangeType) {
+        is TerminalType<*> -> NodeShape.Terminal
+        is NonterminalType -> NodeShape.Nonterminal
+        is IntermediateType<*> -> NodeShape.Intermediate
+        is EmptyType -> NodeShape.Empty
+        is EpsilonNonterminalType -> NodeShape.Epsilon
+        is Range -> NodeShape.Range
+        else -> throw IllegalStateException("Can't write node type $rangeType to DOT")
     }
-
-
-}
-
-private fun getView(range: RsmRange?): String {
-    if (range == null) return ""
-    return "rsm: [(${range.from.nonterminal.name}:${range.from.numId}), " + "(${range.to.nonterminal.name}:${range.to.numId})]"
 }

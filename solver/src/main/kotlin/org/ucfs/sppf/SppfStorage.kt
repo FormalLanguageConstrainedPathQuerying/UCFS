@@ -1,5 +1,6 @@
 package org.ucfs.sppf
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.ucfs.rsm.RsmState
 import org.ucfs.rsm.symbol.ITerminal
 import org.ucfs.sppf.node.*
@@ -8,6 +9,8 @@ import org.ucfs.sppf.node.*
  * @param InputEdgeType - type of vertex in input graph
  */
 open class SppfStorage<InputEdgeType> {
+    private val logger = KotlinLogging.logger {}
+
     /**
      * Collection of created sppfNodes with access and search in O(1) time
      */
@@ -15,7 +18,10 @@ open class SppfStorage<InputEdgeType> {
 
 
     private fun addNode(node: RangeSppfNode<InputEdgeType>): RangeSppfNode<InputEdgeType> {
-        return createdSppfNodes.getOrPut(node, { node })
+
+        val sppfNode = createdSppfNodes.getOrPut(node) { node }
+        logger.debug{"+sppf:${sppfNode.id}, "}
+        return sppfNode
     }
 
     /**
@@ -37,7 +43,8 @@ open class SppfStorage<InputEdgeType> {
         rsmState: RsmState
     ): RangeSppfNode<InputEdgeType> {
         return addNode(
-            input, rsmRange, EpsilonNonterminalType(rsmState))
+            input, rsmRange, EpsilonNonterminalType(rsmState)
+        )
     }
 
     /**
@@ -79,8 +86,8 @@ open class SppfStorage<InputEdgeType> {
         if (!rangeNode.children.contains(valueNode)) {
             rangeNode.children.add(valueNode)
         }
-        for(child in children){
-            if (!valueNode.children.contains(child)){
+        for (child in children) {
+            if (!valueNode.children.contains(child)) {
                 valueNode.children.add(child)
             }
         }

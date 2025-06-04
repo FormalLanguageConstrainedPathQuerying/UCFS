@@ -27,5 +27,17 @@ data class Descriptor<InputNodeType>(
      */
     val sppfNode: RangeSppfNode<InputNodeType>,
 
-)
 
+) {
+    // debug only property
+    val id = lastId++
+    override fun toString(): String {
+        return "${id}\t;" +
+                "${inputPosition}\t;" +
+                "${rsmState.id}\t;" +
+                "(${gssNode.inputPosition}, ${gssNode.rsm.id})\t;" +
+                "sppf: ${sppfNode.id} "
+    }
+}
+
+var lastId = 0

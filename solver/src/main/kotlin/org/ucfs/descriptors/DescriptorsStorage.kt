@@ -1,5 +1,6 @@
 package org.ucfs.descriptors
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.ucfs.parser.ParsingException
 
 /**
@@ -7,6 +8,8 @@ import org.ucfs.parser.ParsingException
  * @param VertexType - type of vertex in input graph
  */
 open class DescriptorsStorage<VertexType> {
+    private val logger = KotlinLogging.logger {}
+
     /**
      * Collection of already handled descriptors, accessible via descriptor's hashcode
      */
@@ -31,10 +34,12 @@ open class DescriptorsStorage<VertexType> {
     }
 
     fun add(descriptor: Descriptor<VertexType>) {
-        if(!handledDescriptors.contains(descriptor)){
+        logger.debug { "+d:${descriptor.id}" }
+        if (!handledDescriptors.contains(descriptor)) {
             descriptorsToHandle.addLast(descriptor)
         }
     }
+
     /**
      * Gets next descriptor to handle
      * @return default descriptor if there is available one, null otherwise

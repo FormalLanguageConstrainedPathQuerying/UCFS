@@ -13,6 +13,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.5")
     implementation("com.fasterxml.jackson.core:jackson-core:2.14.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.14.0")
+    implementation ("io.github.oshai:kotlin-logging-jvm:5.1.0")
 
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")

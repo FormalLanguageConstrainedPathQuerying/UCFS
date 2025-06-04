@@ -12,7 +12,16 @@ class SimplifiedDyck : Grammar() {
 
     init {
         S /= Option("(" * S * ")")
-       // S = eps | ( S )
+        // S =  ( S ) ?
+    }
+}
+
+class StrangeDyck : Grammar() {
+    val S by Nt().asStart()
+
+    init {
+        S /= "(" * S * ")" or "a"
+        // S = eps | ( S )
     }
 }
 
@@ -20,7 +29,7 @@ class LoopDyck : Grammar() {
     val S by Nt().asStart()
 
     init {
-        S /= Many( "(" * S * ")")
+        S /= Many("(" * S * ")")
         // S = [ ( S ) ]*
     }
 }
@@ -44,7 +53,7 @@ class Epsilon : Grammar() {
 /**
  * Can parse only one symbol 'a'
  */
-class AmbiguousAStar1: Grammar() {
+class AmbiguousAStar1 : Grammar() {
     val S by Nt().asStart()
 
     init {
@@ -52,7 +61,7 @@ class AmbiguousAStar1: Grammar() {
     }
 }
 
-class AmbiguousAStar2: Grammar() {
+class AmbiguousAStar2 : Grammar() {
     val S by Nt().asStart()
 
     init {
@@ -61,7 +70,7 @@ class AmbiguousAStar2: Grammar() {
 }
 
 
-class AmbiguousAStar3: Grammar() {
+class AmbiguousAStar3 : Grammar() {
     val S by Nt().asStart()
 
     init {
