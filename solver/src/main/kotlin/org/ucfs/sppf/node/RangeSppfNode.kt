@@ -24,10 +24,10 @@ data class RangeSppfNode<VertexType>(
     val children = ArrayList<RangeSppfNode<VertexType>>()
     override fun toString(): String {
         return when (type) {
-            is TerminalType<*> -> "Terminal $inputRange ${type.terminal}"
+            is TerminalType<*> -> "Terminal `${type.terminal}` $inputRange"
             is Range -> "Range $inputRange $rsmRange"
             is NonterminalType -> "Nonterminal ${type.startState.nonterminal.name} $inputRange $rsmRange"
-            is IntermediateType<*> -> "Intermediate i:${type.inputPosition} rsm:${type.grammarSlot.id}"
+            is IntermediateType<*> -> "Intermediate input:${type.inputPosition} rsm:${type.grammarSlot.id}"
             is EpsilonNonterminalType -> "Epsilon ${type.startState.id}"
             is EmptyType -> "Empty node"
             else -> "Unknown sppf node type!"

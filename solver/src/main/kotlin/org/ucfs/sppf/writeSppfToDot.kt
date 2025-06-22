@@ -4,6 +4,7 @@ import org.ucfs.sppf.node.*
 import java.nio.file.Files
 import java.nio.file.Path
 
+val printWithId = false
 fun <InputNode> writeSppfToDot(sppfNode: RangeSppfNode<InputNode>, filePath: String, label: String = "") {
     val genPath = Path.of("gen", "sppf")
     Files.createDirectories(genPath)
@@ -20,7 +21,7 @@ fun <InputNode> getSppfDot(sppfNodes: Set<RangeSppfNode<InputNode>>, label: Stri
     sb.appendLine("labelloc=\"t\"")
     sb.appendLine("label=\"$label\"")
     var idx = 0
-    val results = sppfNodes.map { sppf -> getSppfDot(sppf, idx++.toString()) }
+    val results = sppfNodes.sortedWith(compareBy { it.toString() }).map { sppf -> getSppfDot(sppf.children[0], idx++.toString()) }
     for (sppf in results.sorted()) {
         sb.appendLine(sppf)
     }
@@ -29,7 +30,7 @@ fun <InputNode> getSppfDot(sppfNodes: Set<RangeSppfNode<InputNode>>, label: Stri
 }
 
 fun <InputNode> getSppfDot(sppfNode: RangeSppfNode<InputNode>, label: String): String {
-    val prefix = sppfNode.hashCode().toString()
+    val prefix = "_${label}_"
     val queue: ArrayDeque<RangeSppfNode<InputNode>> = ArrayDeque(listOf(sppfNode))
     val visited: HashSet<Int> = HashSet()
     var node: RangeSppfNode<InputNode>
@@ -79,9 +80,10 @@ enum class NodeShape(val view: String) {
     )
 }
 
-fun getNodeView(node: RangeSppfNode<*>, id: String? = null): String {
+fun getNodeView(node: RangeSppfNode<*>, id: String): String {
     val shape = getNodeShape(node.type)
-    return "[label = \"${id ?: ""}${shape.name} ${node.type}\", shape = ${shape.view}]"
+    val idView = if (printWithId) "$id " else ""
+    return "[label = \"$idView${node}\", shape = ${shape.view}]"
 }
 
 fun getNodeShape(rangeType: RangeType): NodeShape {

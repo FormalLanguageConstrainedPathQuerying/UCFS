@@ -1,9 +1,15 @@
 digraph g {
 labelloc="t"
 label=""
-0 [label = "Epsilon RSM: S_0, input: [0, 0]", shape = invhouse]
-1 [label = "Nonterminal S, input: [0, 0]", shape = invtrapezium]
-2 [label = "Range , input: [0, 0], rsm: [S_0, S_0]", shape = ellipse]
-1->2
-2->0
+subgraph cluster_0{
+labelloc="t"
+0_0 [label = "63Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
+0_1 [label = "64Epsilon EpsilonNonterminalType(startState=RsmState(nonterminal=Nonterminal(S), isStart=true, isFinal=true, numId=0))", shape = invhouse]
+0_2 [label = "65Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
+0_3 [label = "66Nonterminal NonterminalType(startState=RsmState(nonterminal=Nonterminal(S), isStart=true, isFinal=true, numId=0))", shape = invtrapezium]
+0_0->0_1
+0_2->0_3
+0_3->0_0
+}
+
 }

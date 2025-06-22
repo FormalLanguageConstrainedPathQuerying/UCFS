@@ -25,7 +25,11 @@ class TreeCorrectnessTest : AbstractCorrectnessTest() {
         if (expectedResult.isEmpty() || regenerate) {
             expectedFile.writeText(actualResult)
         } else {
-            assertEquals(expectedResult, actualResult, "for grammar ${grammar.javaClass.simpleName} at ${testCasesFolder.name}")
+            assertEquals(
+                expectedResult,
+                actualResult,
+                "for grammar ${grammar.javaClass.simpleName} at ${testCasesFolder.name}"
+            )
         }
     }
 

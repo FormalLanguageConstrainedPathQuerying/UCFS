@@ -1,22 +1,28 @@
 digraph g {
 labelloc="t"
 label=""
-0 [label = "Nonterminal A, input: [0, 1]", shape = invtrapezium]
-1 [label = "Nonterminal B, input: [0, 1]", shape = invtrapezium]
-2 [label = "Nonterminal C, input: [0, 1]", shape = invtrapezium]
-3 [label = "Nonterminal S, input: [0, 1]", shape = invtrapezium]
-4 [label = "Range , input: [0, 1], rsm: [A_0, A_1]", shape = ellipse]
-5 [label = "Range , input: [0, 1], rsm: [B_0, B_1]", shape = ellipse]
-6 [label = "Range , input: [0, 1], rsm: [C_0, C_1]", shape = ellipse]
-7 [label = "Range , input: [0, 1], rsm: [S_0, S_1]", shape = ellipse]
-8 [label = "Terminal 'a', input: [0, 1]", shape = rectangle]
-0->4
-1->5
-2->6
-3->7
-4->8
-5->2
-6->8
-7->1
-7->0
+subgraph cluster_0{
+labelloc="t"
+0_0 [label = "26Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
+0_1 [label = "27Terminal TerminalType(terminal=a)", shape = rectangle]
+0_2 [label = "28Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
+0_3 [label = "29Nonterminal NonterminalType(startState=RsmState(nonterminal=Nonterminal(C), isStart=true, isFinal=false, numId=0))", shape = invtrapezium]
+0_4 [label = "30Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
+0_5 [label = "31Nonterminal NonterminalType(startState=RsmState(nonterminal=Nonterminal(B), isStart=true, isFinal=false, numId=0))", shape = invtrapezium]
+0_6 [label = "32Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
+0_7 [label = "33Nonterminal NonterminalType(startState=RsmState(nonterminal=Nonterminal(S), isStart=true, isFinal=false, numId=0))", shape = invtrapezium]
+0_8 [label = "34Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
+0_9 [label = "37Nonterminal NonterminalType(startState=RsmState(nonterminal=Nonterminal(A), isStart=true, isFinal=false, numId=0))", shape = invtrapezium]
+0_0->0_1
+0_2->0_3
+0_3->0_0
+0_4->0_5
+0_4->0_9
+0_5->0_2
+0_6->0_7
+0_7->0_4
+0_8->0_1
+0_9->0_8
+}
+
 }
