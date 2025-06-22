@@ -13,7 +13,7 @@ abstract class AbstractCorrectnessTest {
 
     abstract fun getRootDataFolder(): Path
 
-   val grammars = listOf(SimplifiedDyck(), ABGrammar(), SALang(), Epsilon(), LoopDyck(), AmbiguousAStar2(), AmbiguousAStar1())
+    val grammars = listOf(SimplifiedDyck(), ABGrammar(), SALang(), Epsilon(), LoopDyck(), AmbiguousAStar2(), AmbiguousAStar1(), CubicSPPFLang(),  CubicSPPFLang())
     //TODO return only one result for ambiguous AmbiguousAStar2(), AmbiguousAStar1()
     // TODO fix worst case for loopdyck
     val regenerate = false
