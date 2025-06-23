@@ -3,52 +3,52 @@ labelloc="t"
 label=""
 subgraph cluster_0{
 labelloc="t"
-_0_0 [label = "Epsilon S_0", shape = invhouse]
-_0_1 [label = "Nonterminal S input:[0;0] rsm:[fictiveStart_0;fictiveStart_1]", shape = invtrapezium]
-_0_2 [label = "Range input:[0;0] rsm:[S_0;S_0]", shape = ellipse]
-_0_1->_0_2
+_0_0 [label = "150 Range input:[0;0] rsm:[S_0;S_0]", shape = ellipse]
+_0_1 [label = "151 Epsilon S_0", shape = invhouse]
+_0_2 [label = "153 Nonterminal S input:[0;0] rsm:[fictiveStart_0;fictiveStart_1]", shape = invtrapezium]
+_0_0->_0_1
 _0_2->_0_0
 }
 
 subgraph cluster_1{
 labelloc="t"
-_1_0 [label = "Epsilon S_0", shape = invhouse]
-_1_1 [label = "Epsilon S_0", shape = invhouse]
-_1_2 [label = "Intermediate input:1 rsm:S_1", shape = plain]
-_1_3 [label = "Intermediate input:1 rsm:S_2", shape = plain]
-_1_4 [label = "Intermediate input:2 rsm:S_3", shape = plain]
-_1_5 [label = "Nonterminal S input:[0;2] rsm:[fictiveStart_0;fictiveStart_1]", shape = invtrapezium]
-_1_6 [label = "Nonterminal S input:[1;1] rsm:[S_1;S_2]", shape = invtrapezium]
-_1_7 [label = "Nonterminal S input:[2;2] rsm:[S_3;S_4]", shape = invtrapezium]
-_1_8 [label = "Range input:[0;1] rsm:[S_0;S_1]", shape = ellipse]
-_1_9 [label = "Range input:[0;1] rsm:[S_0;S_2]", shape = ellipse]
-_1_10 [label = "Range input:[0;2] rsm:[S_0;S_3]", shape = ellipse]
-_1_11 [label = "Range input:[0;2] rsm:[S_0;S_4]", shape = ellipse]
-_1_12 [label = "Range input:[1;1] rsm:[S_0;S_0]", shape = ellipse]
-_1_13 [label = "Range input:[1;1] rsm:[S_1;S_2]", shape = ellipse]
-_1_14 [label = "Range input:[1;2] rsm:[S_2;S_3]", shape = ellipse]
-_1_15 [label = "Range input:[2;2] rsm:[S_0;S_0]", shape = ellipse]
-_1_16 [label = "Range input:[2;2] rsm:[S_3;S_4]", shape = ellipse]
-_1_17 [label = "Terminal `a` input:[0;1]", shape = rectangle]
-_1_18 [label = "Terminal `a` input:[1;2]", shape = rectangle]
-_1_2->_1_8
-_1_2->_1_13
-_1_3->_1_9
-_1_3->_1_14
-_1_4->_1_10
-_1_4->_1_16
-_1_5->_1_11
-_1_6->_1_12
-_1_7->_1_15
-_1_8->_1_17
-_1_9->_1_2
-_1_10->_1_3
-_1_11->_1_4
-_1_12->_1_0
+_1_0 [label = "154 Range input:[0;1] rsm:[S_0;S_1]", shape = ellipse]
+_1_1 [label = "155 Terminal `a` input:[0;1]", shape = rectangle]
+_1_2 [label = "157 Range input:[1;1] rsm:[S_0;S_0]", shape = ellipse]
+_1_3 [label = "158 Epsilon S_0", shape = invhouse]
+_1_4 [label = "159 Range input:[1;1] rsm:[S_1;S_2]", shape = ellipse]
+_1_5 [label = "160 Nonterminal S input:[1;1] rsm:[S_1;S_2]", shape = invtrapezium]
+_1_6 [label = "161 Range input:[0;1] rsm:[S_0;S_2]", shape = ellipse]
+_1_7 [label = "162 Intermediate input:1 rsm:S_1", shape = plain]
+_1_8 [label = "164 Terminal `a` input:[1;2]", shape = rectangle]
+_1_9 [label = "166 Range input:[2;2] rsm:[S_0;S_0]", shape = ellipse]
+_1_10 [label = "167 Epsilon S_0", shape = invhouse]
+_1_11 [label = "172 Range input:[1;2] rsm:[S_2;S_3]", shape = ellipse]
+_1_12 [label = "174 Range input:[0;2] rsm:[S_0;S_3]", shape = ellipse]
+_1_13 [label = "175 Intermediate input:1 rsm:S_2", shape = plain]
+_1_14 [label = "177 Range input:[2;2] rsm:[S_3;S_4]", shape = ellipse]
+_1_15 [label = "178 Nonterminal S input:[2;2] rsm:[S_3;S_4]", shape = invtrapezium]
+_1_16 [label = "179 Range input:[0;2] rsm:[S_0;S_4]", shape = ellipse]
+_1_17 [label = "180 Intermediate input:2 rsm:S_3", shape = plain]
+_1_18 [label = "182 Nonterminal S input:[0;2] rsm:[fictiveStart_0;fictiveStart_1]", shape = invtrapezium]
+_1_0->_1_1
+_1_2->_1_3
+_1_4->_1_5
+_1_5->_1_2
+_1_6->_1_7
+_1_7->_1_0
+_1_7->_1_4
+_1_9->_1_10
+_1_11->_1_8
+_1_12->_1_13
 _1_13->_1_6
-_1_14->_1_18
-_1_15->_1_0
-_1_16->_1_7
+_1_13->_1_11
+_1_14->_1_15
+_1_15->_1_9
+_1_16->_1_17
+_1_17->_1_12
+_1_17->_1_14
+_1_18->_1_16
 }
 
 }
