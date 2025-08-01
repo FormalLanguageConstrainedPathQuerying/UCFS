@@ -7,6 +7,7 @@ import org.ucfs.grammar.combinator.Grammar
 import org.ucfs.rsm.writeRsmToDot
 import java.io.File
 import java.nio.file.Path
+import kotlin.test.assertFalse
 
 abstract class AbstractCorrectnessTest {
     val rootPath: Path = Path.of("src", "test", "resources", "correctness")
@@ -17,6 +18,7 @@ abstract class AbstractCorrectnessTest {
     //TODO return only one result for ambiguous AmbiguousAStar2(), AmbiguousAStar1()
     // TODO fix worst case for loopdyck
     val regenerate = false
+
     //@TestFactory
     //TODO make it abstract by used grammar
     @Test
@@ -36,6 +38,7 @@ abstract class AbstractCorrectnessTest {
                 }
             }
         }
+        assertFalse { regenerate }
 
     }
 
