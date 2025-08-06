@@ -1,11 +1,16 @@
 digraph g {
 labelloc="t"
 label=""
-0 [label = "Nonterminal S, input: [0, 1]", shape = invtrapezium]
-1 [label = "Nonterminal S, input: [0, 1]", shape = invtrapezium]
-2 [label = "Range , input: [0, 1], rsm: [S_0, S_1]", shape = ellipse]
-3 [label = "Terminal 'a', input: [0, 1]", shape = rectangle]
-0->2
-2->3
-2->0
+subgraph cluster_0{
+labelloc="t"
+_0_0 [label = "294Range , input: [0, 1], rsm: [S_0, S_1]", shape = ellipse]
+_0_1 [label = "295Terminal 'a', input: [0, 1]", shape = rectangle]
+_0_2 [label = "298Nonterminal S, input: [0, 1]", shape = invtrapezium]
+_0_3 [label = "300Nonterminal S, input: [0, 1]", shape = invtrapezium]
+_0_0->_0_1
+_0_0->_0_3
+_0_2->_0_0
+_0_3->_0_0
+}
+
 }

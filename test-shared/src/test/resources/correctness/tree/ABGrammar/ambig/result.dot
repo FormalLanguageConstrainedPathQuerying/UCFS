@@ -3,26 +3,24 @@ labelloc="t"
 label=""
 subgraph cluster_0{
 labelloc="t"
-0_0 [label = "26Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-0_1 [label = "27Terminal TerminalType(terminal=a)", shape = rectangle]
-0_2 [label = "28Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-0_3 [label = "29Nonterminal NonterminalType(startState=RsmState(nonterminal=Nonterminal(C), isStart=true, isFinal=false, numId=0))", shape = invtrapezium]
-0_4 [label = "30Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-0_5 [label = "31Nonterminal NonterminalType(startState=RsmState(nonterminal=Nonterminal(B), isStart=true, isFinal=false, numId=0))", shape = invtrapezium]
-0_6 [label = "32Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-0_7 [label = "33Nonterminal NonterminalType(startState=RsmState(nonterminal=Nonterminal(S), isStart=true, isFinal=false, numId=0))", shape = invtrapezium]
-0_8 [label = "34Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-0_9 [label = "37Nonterminal NonterminalType(startState=RsmState(nonterminal=Nonterminal(A), isStart=true, isFinal=false, numId=0))", shape = invtrapezium]
-0_0->0_1
-0_2->0_3
-0_3->0_0
-0_4->0_5
-0_4->0_9
-0_5->0_2
-0_6->0_7
-0_7->0_4
-0_8->0_1
-0_9->0_8
+_0_0 [label = "26Range , input: [0, 1], rsm: [C_0, C_1]", shape = ellipse]
+_0_1 [label = "27Terminal 'a', input: [0, 1]", shape = rectangle]
+_0_2 [label = "28Range , input: [0, 1], rsm: [B_0, B_1]", shape = ellipse]
+_0_3 [label = "29Nonterminal C, input: [0, 1]", shape = invtrapezium]
+_0_4 [label = "30Range , input: [0, 1], rsm: [S_0, S_1]", shape = ellipse]
+_0_5 [label = "31Nonterminal B, input: [0, 1]", shape = invtrapezium]
+_0_6 [label = "33Nonterminal S, input: [0, 1]", shape = invtrapezium]
+_0_7 [label = "34Range , input: [0, 1], rsm: [A_0, A_1]", shape = ellipse]
+_0_8 [label = "37Nonterminal A, input: [0, 1]", shape = invtrapezium]
+_0_0->_0_1
+_0_2->_0_3
+_0_3->_0_0
+_0_4->_0_5
+_0_4->_0_8
+_0_5->_0_2
+_0_6->_0_4
+_0_7->_0_1
+_0_8->_0_7
 }
 
 }

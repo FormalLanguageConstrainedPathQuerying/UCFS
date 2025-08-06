@@ -3,96 +3,71 @@ labelloc="t"
 label=""
 subgraph cluster_0{
 labelloc="t"
-0_0 [label = "107Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-0_1 [label = "108Epsilon EpsilonNonterminalType(startState=RsmState(nonterminal=Nonterminal(S), isStart=true, isFinal=true, numId=0))", shape = invhouse]
-0_2 [label = "111Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-0_3 [label = "112Terminal TerminalType(terminal=()", shape = rectangle]
-0_4 [label = "114Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-0_5 [label = "115Nonterminal NonterminalType(startState=RsmState(nonterminal=Nonterminal(S), isStart=true, isFinal=true, numId=0))", shape = invtrapezium]
-0_6 [label = "116Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-0_7 [label = "117Intermediate IntermediateType(grammarSlot=RsmState(nonterminal=Nonterminal(S), isStart=false, isFinal=false, numId=1), inputPosition=0)", shape = plain]
-0_8 [label = "118Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-0_9 [label = "119Terminal TerminalType(terminal=))", shape = rectangle]
-0_10 [label = "120Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-0_11 [label = "121Intermediate IntermediateType(grammarSlot=RsmState(nonterminal=Nonterminal(S), isStart=false, isFinal=false, numId=2), inputPosition=0)", shape = plain]
-0_12 [label = "122Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-0_13 [label = "123Nonterminal NonterminalType(startState=RsmState(nonterminal=Nonterminal(S), isStart=true, isFinal=true, numId=0))", shape = invtrapezium]
-0_14 [label = "124Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-0_15 [label = "125Nonterminal NonterminalType(startState=RsmState(nonterminal=Nonterminal(S), isStart=true, isFinal=true, numId=0))", shape = invtrapezium]
-0_16 [label = "126Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-0_17 [label = "127Intermediate IntermediateType(grammarSlot=RsmState(nonterminal=Nonterminal(S), isStart=false, isFinal=false, numId=1), inputPosition=0)", shape = plain]
-0_18 [label = "128Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-0_19 [label = "129Terminal TerminalType(terminal=))", shape = rectangle]
-0_20 [label = "131Intermediate IntermediateType(grammarSlot=RsmState(nonterminal=Nonterminal(S), isStart=false, isFinal=false, numId=2), inputPosition=1)", shape = plain]
-0_0->0_1
-0_0->0_20
-0_2->0_3
-0_4->0_5
-0_5->0_0
-0_6->0_7
-0_7->0_2
-0_7->0_4
-0_8->0_9
-0_10->0_11
-0_11->0_6
-0_11->0_8
-0_12->0_13
-0_13->0_10
-0_14->0_15
-0_15->0_10
-0_16->0_17
-0_17->0_2
-0_17->0_14
-0_18->0_19
-0_20->0_16
-0_20->0_18
+_0_0 [label = "160Range , input: [0, 0], rsm: [S_0, S_0]", shape = ellipse]
+_0_1 [label = "161Epsilon RSM: S_0, input: [0, 0]", shape = invhouse]
+_0_2 [label = "163Nonterminal S, input: [0, 0]", shape = invtrapezium]
+_0_3 [label = "164Range , input: [0, 0], rsm: [S_0, S_1]", shape = ellipse]
+_0_4 [label = "165Terminal '(', input: [0, 0]", shape = rectangle]
+_0_5 [label = "167Range , input: [0, 0], rsm: [S_1, S_2]", shape = ellipse]
+_0_6 [label = "168Nonterminal S, input: [0, 0]", shape = invtrapezium]
+_0_7 [label = "169Range , input: [0, 0], rsm: [S_0, S_2]", shape = ellipse]
+_0_8 [label = "170Intermediate input: 0, rsm: S_1, input: [0, 0]", shape = plain]
+_0_9 [label = "171Range , input: [0, 1], rsm: [S_2, S_0]", shape = ellipse]
+_0_10 [label = "172Terminal ')', input: [0, 1]", shape = rectangle]
+_0_11 [label = "173Range , input: [0, 1], rsm: [S_0, S_0]", shape = ellipse]
+_0_12 [label = "174Intermediate input: 0, rsm: S_2, input: [0, 1]", shape = plain]
+_0_13 [label = "177Range , input: [0, 1], rsm: [S_1, S_2]", shape = ellipse]
+_0_14 [label = "178Nonterminal S, input: [0, 1]", shape = invtrapezium]
+_0_15 [label = "179Range , input: [0, 1], rsm: [S_0, S_2]", shape = ellipse]
+_0_16 [label = "180Intermediate input: 0, rsm: S_1, input: [0, 1]", shape = plain]
+_0_17 [label = "181Range , input: [1, 0], rsm: [S_2, S_0]", shape = ellipse]
+_0_18 [label = "182Terminal ')', input: [1, 0]", shape = rectangle]
+_0_19 [label = "184Intermediate input: 1, rsm: S_2, input: [0, 0]", shape = plain]
+_0_0->_0_1
+_0_0->_0_19
+_0_2->_0_0
+_0_3->_0_4
+_0_5->_0_6
+_0_7->_0_8
+_0_8->_0_3
+_0_8->_0_5
+_0_9->_0_10
+_0_11->_0_12
+_0_12->_0_7
+_0_12->_0_9
+_0_13->_0_14
+_0_14->_0_11
+_0_15->_0_16
+_0_16->_0_3
+_0_16->_0_13
+_0_17->_0_18
+_0_19->_0_15
+_0_19->_0_17
 }
 
 subgraph cluster_1{
 labelloc="t"
-1_0 [label = "107Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-1_1 [label = "108Epsilon EpsilonNonterminalType(startState=RsmState(nonterminal=Nonterminal(S), isStart=true, isFinal=true, numId=0))", shape = invhouse]
-1_2 [label = "109Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-1_3 [label = "110Nonterminal NonterminalType(startState=RsmState(nonterminal=Nonterminal(S), isStart=true, isFinal=true, numId=0))", shape = invtrapezium]
-1_4 [label = "111Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-1_5 [label = "112Terminal TerminalType(terminal=()", shape = rectangle]
-1_6 [label = "114Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-1_7 [label = "115Nonterminal NonterminalType(startState=RsmState(nonterminal=Nonterminal(S), isStart=true, isFinal=true, numId=0))", shape = invtrapezium]
-1_8 [label = "116Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-1_9 [label = "117Intermediate IntermediateType(grammarSlot=RsmState(nonterminal=Nonterminal(S), isStart=false, isFinal=false, numId=1), inputPosition=0)", shape = plain]
-1_10 [label = "118Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-1_11 [label = "119Terminal TerminalType(terminal=))", shape = rectangle]
-1_12 [label = "120Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-1_13 [label = "121Intermediate IntermediateType(grammarSlot=RsmState(nonterminal=Nonterminal(S), isStart=false, isFinal=false, numId=2), inputPosition=0)", shape = plain]
-1_14 [label = "124Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-1_15 [label = "125Nonterminal NonterminalType(startState=RsmState(nonterminal=Nonterminal(S), isStart=true, isFinal=true, numId=0))", shape = invtrapezium]
-1_16 [label = "126Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-1_17 [label = "127Intermediate IntermediateType(grammarSlot=RsmState(nonterminal=Nonterminal(S), isStart=false, isFinal=false, numId=1), inputPosition=0)", shape = plain]
-1_18 [label = "128Range org.ucfs.sppf.node.Range@6970140a", shape = ellipse]
-1_19 [label = "129Terminal TerminalType(terminal=))", shape = rectangle]
-1_20 [label = "131Intermediate IntermediateType(grammarSlot=RsmState(nonterminal=Nonterminal(S), isStart=false, isFinal=false, numId=2), inputPosition=1)", shape = plain]
-1_0->1_1
-1_0->1_20
-1_2->1_3
-1_3->1_0
-1_4->1_5
-1_6->1_7
-1_7->1_0
-1_8->1_9
-1_9->1_4
-1_9->1_6
-1_10->1_11
-1_12->1_13
-1_13->1_8
-1_13->1_10
-1_14->1_15
-1_15->1_12
-1_16->1_17
-1_17->1_4
-1_17->1_14
-1_18->1_19
-1_20->1_16
-1_20->1_18
+_1_0 [label = "164Range , input: [0, 0], rsm: [S_0, S_1]", shape = ellipse]
+_1_1 [label = "165Terminal '(', input: [0, 0]", shape = rectangle]
+_1_2 [label = "167Range , input: [0, 0], rsm: [S_1, S_2]", shape = ellipse]
+_1_3 [label = "168Nonterminal S, input: [0, 0]", shape = invtrapezium]
+_1_4 [label = "169Range , input: [0, 0], rsm: [S_0, S_2]", shape = ellipse]
+_1_5 [label = "170Intermediate input: 0, rsm: S_1, input: [0, 0]", shape = plain]
+_1_6 [label = "171Range , input: [0, 1], rsm: [S_2, S_0]", shape = ellipse]
+_1_7 [label = "172Terminal ')', input: [0, 1]", shape = rectangle]
+_1_8 [label = "173Range , input: [0, 1], rsm: [S_0, S_0]", shape = ellipse]
+_1_9 [label = "174Intermediate input: 0, rsm: S_2, input: [0, 1]", shape = plain]
+_1_10 [label = "176Nonterminal S, input: [0, 1]", shape = invtrapezium]
+_1_0->_1_1
+_1_2->_1_3
+_1_4->_1_5
+_1_5->_1_0
+_1_5->_1_2
+_1_6->_1_7
+_1_8->_1_9
+_1_9->_1_4
+_1_9->_1_6
+_1_10->_1_8
 }
 
 }
