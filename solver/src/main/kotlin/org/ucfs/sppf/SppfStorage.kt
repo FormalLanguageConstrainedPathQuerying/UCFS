@@ -16,9 +16,7 @@ open class SppfStorage<InputEdgeType> {
 
 
     private fun addNode(node: RangeSppfNode<InputEdgeType>): RangeSppfNode<InputEdgeType> {
-
-        val sppfNode = createdSppfNodes.getOrPut(node) { node }
-        return sppfNode
+        return createdSppfNodes.getOrPut(node, { node })
     }
 
     /**

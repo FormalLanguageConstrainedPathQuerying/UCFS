@@ -80,20 +80,62 @@ enum class NodeShape(val view: String) {
     )
 }
 
-fun getNodeView(node: RangeSppfNode<*>, id: String): String {
-    val shape = getNodeShape(node.type)
-    val idView = if (printWithId) "$id " else ""
-    return "[label = \"$idView${node}\", shape = ${shape.view}]"
+fun fillNodeTemplate(
+    id: String? = null, nodeInfo: String, inputRange: InputRange<*>?, shape: NodeShape, rsmRange: RsmRange? = null
+): String {
+    val inputRangeView = if (inputRange != null) "input: [${inputRange.from}, ${inputRange.to}]" else null
+    val rsmRangeView = if (rsmRange != null) "rsm: [${rsmRange.from.id}, ${rsmRange.to.id}]" else null
+    val view = listOfNotNull(nodeInfo, inputRangeView, rsmRangeView).joinToString(", ")
+    return "[label = \"${id?: ""}${shape.name} $view\", shape = ${shape.view}]"
 }
 
-fun getNodeShape(rangeType: RangeType): NodeShape {
-    return when (rangeType) {
-        is TerminalType<*> -> NodeShape.Terminal
-        is NonterminalType -> NodeShape.Nonterminal
-        is IntermediateType<*> -> NodeShape.Intermediate
-        is EmptyType -> NodeShape.Empty
-        is EpsilonNonterminalType -> NodeShape.Epsilon
-        is Range -> NodeShape.Range
-        else -> throw IllegalStateException("Can't write node type $rangeType to DOT")
+fun <InputNode> getNodeView(node: RangeSppfNode<InputNode>, id: String? = null): String {
+    val type = node.type
+    return when (type) {
+        is TerminalType<*> -> {
+            fillNodeTemplate(
+                id, "'${type.terminal}'", node.inputRange, NodeShape.Terminal
+            )
+        }
+
+        is NonterminalType -> {
+            fillNodeTemplate(
+                id, "${type.startState.nonterminal.name}", node.inputRange, NodeShape.Nonterminal
+            )
+        }
+
+        is IntermediateType<*> -> {
+            fillNodeTemplate(
+                id, "input: ${type.inputPosition}, rsm: ${type.grammarSlot.id}", node.inputRange, NodeShape.Intermediate
+            )
+        }
+
+        is EmptyType -> {
+            fillNodeTemplate(
+                id, "", null, NodeShape.Empty
+            )
+        }
+
+        is EpsilonNonterminalType -> {
+            fillNodeTemplate(
+                id, "RSM: ${type.startState.id}", node.inputRange, NodeShape.Epsilon
+            )
+        }
+
+        is RangeType -> {
+            fillNodeTemplate(
+                id, "", node.inputRange, NodeShape.Range, node.rsmRange
+            )
+        }
+
+        else -> throw IllegalStateException("Can't write node type $type to DOT")
+
     }
+
+
+}
+
+private fun getView(range: RsmRange?): String {
+    if (range == null) return ""
+    return "rsm: [(${range.from.nonterminal.name}:${range.from.numId}), " + "(${range.to.nonterminal.name}:${range.to.numId})]"
 }
