@@ -1,6 +1,5 @@
 package org.ucfs.parser
 
-import io.github.oshai.kotlinlogging.KotlinLogging
 import org.ucfs.descriptors.Descriptor
 import org.ucfs.gss.GssEdge
 import org.ucfs.input.IInputGraph
@@ -19,7 +18,6 @@ import org.ucfs.sppf.node.*
 class Gll<VertexType, LabelType : ILabel> private constructor(
     override var ctx: Context<VertexType, LabelType>, private val engine: IIntersectionEngine
 ) : IGll<VertexType, LabelType> {
-    val logger = KotlinLogging.logger {}
 
     companion object {
         /**
@@ -81,7 +79,6 @@ class Gll<VertexType, LabelType : ILabel> private constructor(
      */
     override fun handleDescriptor(descriptor: Descriptor<VertexType>) {
         ctx.descriptors.addToHandled(descriptor)
-        logger.debug { "\n${descriptor}\t" }
         if (descriptor.rsmState.isFinal) {
             handleTerminalRsmState(descriptor)
         }
