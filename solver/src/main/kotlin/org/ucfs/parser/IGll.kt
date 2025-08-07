@@ -54,7 +54,7 @@ interface IGll<InputNodeType, LabelType : ILabel> {
 
             val gssNode = ctx.gss.getOrCreateNode(startVertex, ctx.fictiveStartState)
             val startDescriptor = Descriptor(
-                startVertex, gssNode, ctx.fictiveStartState, getEmptyRange()
+                startVertex, gssNode, ctx.fictiveStartState, getEmptyRange(ctx.sppfStorage.getId())
             )
             ctx.descriptors.add(startDescriptor)
         }
@@ -69,7 +69,7 @@ interface IGll<InputNodeType, LabelType : ILabel> {
         )
 
         var newDescriptor = Descriptor(
-            descriptor.inputPosition, newGssNode, rsmStartState, getEmptyRange()
+            descriptor.inputPosition, newGssNode, rsmStartState, getEmptyRange(ctx.sppfStorage.getId())
         )
         ctx.descriptors.add(newDescriptor)
 

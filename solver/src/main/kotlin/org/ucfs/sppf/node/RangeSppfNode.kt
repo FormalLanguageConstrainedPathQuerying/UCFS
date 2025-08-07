@@ -1,5 +1,7 @@
 package org.ucfs.sppf.node
 
+import org.ucfs.input.ILabel
+import org.ucfs.parser.context.Context
 import org.ucfs.rsm.RsmState
 import org.ucfs.rsm.symbol.ITerminal
 
@@ -21,17 +23,17 @@ data class RangeSppfNode<VertexType>(
     val inputRange: InputRange<VertexType>?,
     val rsmRange: RsmRange?,
     val type: RangeType,
+    val id: Int
 ) {
-    val id: Int = lastId++
     val children = ArrayList<RangeSppfNode<VertexType>>()
 }
 
-fun <VertexType> getEmptyRange(isStart: Boolean = false): RangeSppfNode<VertexType>  {
+fun <VertexType> getEmptyRange(id: Int, isStart: Boolean = false): RangeSppfNode<VertexType>  {
     val type = EmptyType()
     if(isStart) {
         type.isStart = isStart
     }
-    return RangeSppfNode(null, null, type)
+    return RangeSppfNode(null, null, type, id)
 }
 
 data class InputRange<VertexType>(

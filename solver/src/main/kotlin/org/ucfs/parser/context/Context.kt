@@ -36,5 +36,7 @@ class Context<InputNodeType, LabelType : ILabel>(
 
     val gss: GraphStructuredStack<InputNodeType> = GraphStructuredStack()
 
+
+
     var parseResults = HashSet<RangeSppfNode<InputNodeType>>()
 }

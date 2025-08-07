@@ -14,6 +14,11 @@ open class SppfStorage<InputEdgeType> {
      */
     private val createdSppfNodes: HashMap<RangeSppfNode<InputEdgeType>, RangeSppfNode<InputEdgeType>> = HashMap()
 
+    private var lastRangeId: Int = 0;
+
+    public fun getId(): Int{
+        return lastRangeId++
+    }
 
     private fun addNode(node: RangeSppfNode<InputEdgeType>): RangeSppfNode<InputEdgeType> {
         return createdSppfNodes.getOrPut(node, { node })
@@ -75,9 +80,9 @@ open class SppfStorage<InputEdgeType> {
         rangeType: RangeType,
         children: List<RangeSppfNode<InputEdgeType>> = listOf()
     ): RangeSppfNode<InputEdgeType> {
-        val rangeNode = addNode(RangeSppfNode(input, rsm, Range))
+        val rangeNode = addNode(RangeSppfNode(input, rsm, Range, getId()))
         val valueRsm = if (rangeType is TerminalType<*>) null else rsm
-        val valueNode = addNode(RangeSppfNode(input, valueRsm, rangeType))
+        val valueNode = addNode(RangeSppfNode(input, valueRsm, rangeType, getId()))
         if (!rangeNode.children.contains(valueNode)) {
             rangeNode.children.add(valueNode)
         }
