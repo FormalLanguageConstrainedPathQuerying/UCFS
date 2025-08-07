@@ -12,6 +12,6 @@ import solver.AbstractCorrectnessTest
 class SimplifiedDyckGrammarTreeCorrectnessTest : AbstractCorrectnessTest() {
     @Test
     override fun checkTreeCorrectnessForGrammar() {
-        runTest(SimplifiedDyckGrammar())
+        runTests(SimplifiedDyckGrammar())
     }
 }

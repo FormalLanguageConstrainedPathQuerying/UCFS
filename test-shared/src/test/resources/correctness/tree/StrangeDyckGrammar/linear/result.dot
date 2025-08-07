@@ -1,29 +1,33 @@
 digraph g {
 labelloc="t"
 label=""
-0 [label = "Epsilon RSM: S_0, input: [1, 1]", shape = invhouse]
-1 [label = "Intermediate input: 1, rsm: S_1, input: [0, 1]", shape = plain]
-2 [label = "Intermediate input: 1, rsm: S_2, input: [0, 2]", shape = plain]
-3 [label = "Nonterminal S, input: [0, 2]", shape = invtrapezium]
-4 [label = "Nonterminal S, input: [1, 1]", shape = invtrapezium]
-5 [label = "Range , input: [0, 1], rsm: [S_0, S_1]", shape = ellipse]
-6 [label = "Range , input: [0, 1], rsm: [S_0, S_2]", shape = ellipse]
-7 [label = "Range , input: [0, 2], rsm: [S_0, S_3]", shape = ellipse]
-8 [label = "Range , input: [1, 1], rsm: [S_0, S_0]", shape = ellipse]
-9 [label = "Range , input: [1, 1], rsm: [S_1, S_2]", shape = ellipse]
-10 [label = "Range , input: [1, 2], rsm: [S_2, S_3]", shape = ellipse]
-11 [label = "Terminal '(', input: [0, 1]", shape = rectangle]
-12 [label = "Terminal ')', input: [1, 2]", shape = rectangle]
-1->5
-1->9
-2->6
-2->10
-3->7
-4->8
-5->11
-6->1
-7->2
-8->0
-9->4
-10->12
+subgraph cluster_0{
+labelloc="t"
+_0_0 [label = "10Intermediate input: 1, rsm: S_1, input: [0, 2]", shape = plain]
+_0_1 [label = "11Range , input: [2, 3], rsm: [S_3, S_2]", shape = ellipse]
+_0_2 [label = "12Terminal ')', input: [2, 3]", shape = rectangle]
+_0_3 [label = "13Range , input: [0, 3], rsm: [S_0, S_2]", shape = ellipse]
+_0_4 [label = "14Intermediate input: 2, rsm: S_3, input: [0, 3]", shape = plain]
+_0_5 [label = "16Nonterminal S, input: [0, 3]", shape = invtrapezium]
+_0_6 [label = "2Range , input: [0, 1], rsm: [S_0, S_1]", shape = ellipse]
+_0_7 [label = "3Terminal '(', input: [0, 1]", shape = rectangle]
+_0_8 [label = "5Range , input: [1, 2], rsm: [S_0, S_2]", shape = ellipse]
+_0_9 [label = "6Terminal 'a', input: [1, 2]", shape = rectangle]
+_0_10 [label = "7Range , input: [1, 2], rsm: [S_1, S_3]", shape = ellipse]
+_0_11 [label = "8Nonterminal S, input: [1, 2]", shape = invtrapezium]
+_0_12 [label = "9Range , input: [0, 2], rsm: [S_0, S_3]", shape = ellipse]
+_0_0->_0_6
+_0_0->_0_10
+_0_1->_0_2
+_0_3->_0_4
+_0_4->_0_12
+_0_4->_0_1
+_0_5->_0_3
+_0_6->_0_7
+_0_8->_0_9
+_0_10->_0_11
+_0_11->_0_8
+_0_12->_0_0
+}
+
 }

@@ -4,43 +4,73 @@ import grammars.*
 import org.jetbrains.kotlin.incremental.createDirectory
 import org.junit.jupiter.api.Test
 import org.ucfs.grammar.combinator.Grammar
+import org.ucfs.input.DotParser
+import org.ucfs.parser.Gll
 import org.ucfs.rsm.writeRsmToDot
+import org.ucfs.sppf.getSppfDot
 import java.io.File
 import java.nio.file.Path
+import kotlin.io.path.readText
+import kotlin.io.path.writeText
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
 
 abstract class AbstractCorrectnessTest {
     val rootPath: Path = Path.of("src", "test", "resources", "correctness")
 
-    abstract fun getRootDataFolder(): Path
+    fun getRootDataFolder(): Path {
+        return rootPath.resolve("tree")
+    }
 
-   val grammars = listOf(SimplifiedDyck(), ABGrammar(), SALang(), Epsilon(), LoopDyck(), AmbiguousAStar2(), AmbiguousAStar1())
-    //TODO return only one result for ambiguous AmbiguousAStar2(), AmbiguousAStar1()
-    // TODO fix worst case for loopdyck
     val regenerate = false
 
-    //@TestFactory
-    //TODO make it abstract by used grammar
     @Test
-    fun testCorrectness() {
-        for (grammar in grammars) {
-            val grammarName = grammar.javaClass.simpleName
-            writeRsmToDot(grammar.rsm, "${grammarName}Rsm")
-            val path: Path = getRootDataFolder()
-            val testCasesFolder = File(path.resolve(grammarName).toUri())
-            if (!testCasesFolder.exists()) {
-                println("Can't find test case for $grammarName")
-            }
-            testCasesFolder.createDirectory()
-            for (folder in testCasesFolder.listFiles()) {
-                if (folder.isDirectory) {
-                    runGoldTest(folder, grammar)
-                }
+    abstract fun checkTreeCorrectnessForGrammar()
+
+
+    fun runTests(grammar :Grammar) {
+        val grammarName = grammar.javaClass.simpleName
+        writeRsmToDot(grammar.rsm, "${grammarName}Rsm")
+        val path: Path = getRootDataFolder()
+        val testCasesFolder = File(path.resolve(grammarName).toUri())
+
+        if (!testCasesFolder.exists()) {
+            println("Can't find test case for $grammarName")
+        }
+        testCasesFolder.createDirectory()
+        for (folder in testCasesFolder.listFiles()) {
+            if (folder.isDirectory) {
+                testCreatedTreeForCorrectness(folder, grammar)
             }
         }
         assertFalse { regenerate }
-
     }
 
-    abstract fun runGoldTest(testCasesFolder: File, grammar: Grammar)
+    fun testCreatedTreeForCorrectness(testCasesFolder: File, grammar: Grammar) {
+        val inputFile = testCasesFolder.toPath().resolve("input.dot")
+        val expectedFile = testCasesFolder.toPath().resolve("result.dot")
+        val input = inputFile.readText()
+        val expectedResult = expectedFile.readText()
+        val actualResult = createTree(input, grammar)
+        if (expectedResult.isEmpty() || regenerate) {
+            expectedFile.writeText(actualResult)
+        } else {
+            assertEquals(
+                expectedResult,
+                actualResult,
+                "for grammar ${grammar.javaClass.simpleName} at ${testCasesFolder.name}"
+            )
+        }
+    }
+
+
+    fun createTree(input: String, grammar: Grammar): String {
+        val inputGraph = DotParser().parseDot(input)
+        val gll = Gll.gll(grammar.rsm, inputGraph)
+        val sppf = gll.parse()
+        assertNotNull(sppf) { "Can't parse input!" }
+        return getSppfDot(sppf)
+    }
+
 }
