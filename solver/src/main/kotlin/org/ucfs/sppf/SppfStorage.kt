@@ -14,12 +14,6 @@ open class SppfStorage<InputEdgeType> {
      */
     private val createdSppfNodes: HashMap<RangeSppfNode<InputEdgeType>, RangeSppfNode<InputEdgeType>> = HashMap()
 
-    private var lastRangeId: Int = 0;
-
-    public fun getId(): Int{
-        return lastRangeId++
-    }
-
     private fun addNode(node: RangeSppfNode<InputEdgeType>): RangeSppfNode<InputEdgeType> {
         return createdSppfNodes.getOrPut(node, { node })
     }

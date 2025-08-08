@@ -17,7 +17,6 @@ import org.ucfs.rsm.symbol.ITerminal
  * May be used as extended packed sppfNode.
  * @param VertexType - type of vertex in input graph
  */
-var lastId = 0
 
 data class RangeSppfNode<VertexType>(
     val inputRange: InputRange<VertexType>?,
@@ -27,7 +26,7 @@ data class RangeSppfNode<VertexType>(
     val children = ArrayList<RangeSppfNode<VertexType>>()
 }
 
-fun <VertexType> getEmptyRange(id: Int, isStart: Boolean = false): RangeSppfNode<VertexType>  {
+fun <VertexType> getEmptyRange( isStart: Boolean = false): RangeSppfNode<VertexType>  {
     val type = EmptyType()
     if(isStart) {
         type.isStart = isStart

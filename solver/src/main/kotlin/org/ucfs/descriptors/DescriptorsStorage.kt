@@ -1,6 +1,7 @@
 package org.ucfs.descriptors
 
 import org.ucfs.parser.ParsingException
+import java.util.LinkedList
 
 /**
  * Collection of default descriptors
@@ -12,19 +13,10 @@ open class DescriptorsStorage<VertexType> {
      */
     private val handledDescriptors = HashSet<Descriptor<VertexType>>()
 
-    private val descriptorsToHandle = ArrayDeque<Descriptor<VertexType>>()
+    private val descriptorsToHandle = LinkedList<Descriptor<VertexType>>()
 
     private fun isEmpty() = descriptorsToHandle.isEmpty()
 
-    /**
-     * @return next default descriptor to handle
-     */
-    open fun next(): Descriptor<VertexType> {
-        if (isEmpty()) {
-            throw ParsingException("Descriptor storage is empty")
-        }
-        return descriptorsToHandle.removeLast()
-    }
 
     fun addToHandled(descriptor: Descriptor<VertexType>) {
         handledDescriptors.add(descriptor)
@@ -42,7 +34,7 @@ open class DescriptorsStorage<VertexType> {
      */
     fun nextToHandle(): Descriptor<VertexType>? {
         if (!isEmpty()) {
-            return next()
+            return descriptorsToHandle.removeLast()
         }
         return null
     }
