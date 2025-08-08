@@ -1,0 +1,31 @@
+digraph g {
+labelloc="t"
+label=""
+subgraph cluster_0{
+labelloc="t"
+_0_0 [label = "225Range , input: [0, 0], rsm: [S_0, S_0]", shape = ellipse]
+_0_1 [label = "226Epsilon RSM: S_0, input: [0, 0]", shape = invhouse]
+_0_2 [label = "228Nonterminal S, input: [0, 0]", shape = invtrapezium]
+_0_3 [label = "229Range , input: [0, 0], rsm: [S_0, S_1]", shape = ellipse]
+_0_4 [label = "230Terminal '(', input: [0, 0]", shape = rectangle]
+_0_5 [label = "232Range , input: [0, 0], rsm: [S_1, S_2]", shape = ellipse]
+_0_6 [label = "233Nonterminal S, input: [0, 0]", shape = invtrapezium]
+_0_7 [label = "234Range , input: [0, 0], rsm: [S_0, S_2]", shape = ellipse]
+_0_8 [label = "235Intermediate input: 0, rsm: S_1, input: [0, 0]", shape = plain]
+_0_9 [label = "236Range , input: [0, 0], rsm: [S_2, S_0]", shape = ellipse]
+_0_10 [label = "237Terminal ')', input: [0, 0]", shape = rectangle]
+_0_11 [label = "239Intermediate input: 0, rsm: S_2, input: [0, 0]", shape = plain]
+_0_0->_0_1
+_0_0->_0_11
+_0_2->_0_0
+_0_3->_0_4
+_0_5->_0_6
+_0_7->_0_8
+_0_8->_0_3
+_0_8->_0_5
+_0_9->_0_10
+_0_11->_0_7
+_0_11->_0_9
+}
+
+}

@@ -23,7 +23,6 @@ data class RangeSppfNode<VertexType>(
     val inputRange: InputRange<VertexType>?,
     val rsmRange: RsmRange?,
     val type: RangeType,
-    val id: Int
 ) {
     val children = ArrayList<RangeSppfNode<VertexType>>()
 }
@@ -33,7 +32,7 @@ fun <VertexType> getEmptyRange(id: Int, isStart: Boolean = false): RangeSppfNode
     if(isStart) {
         type.isStart = isStart
     }
-    return RangeSppfNode(null, null, type, id)
+    return RangeSppfNode(null, null, type)
 }
 
 data class InputRange<VertexType>(

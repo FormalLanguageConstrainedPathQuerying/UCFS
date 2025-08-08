@@ -38,12 +38,13 @@ fun <InputNode> getSppfDot(sppfNode: RangeSppfNode<InputNode>, label: String): S
     sb.appendLine("subgraph cluster_$label{")
     sb.appendLine("labelloc=\"t\"")
     val nodeViews = HashMap<RangeSppfNode<InputNode>, String>()
+    var id = 0
     while (queue.isNotEmpty()) {
         node = queue.removeFirst()
         if (!visited.add(node.hashCode())) continue
 
-        nodeViews[node] = getNodeView(node, node.id.toString())
-
+        nodeViews[node] = getNodeView(node, id.toString())
+        id++
         node.children.forEach {
             queue.addLast(it)
         }
@@ -86,7 +87,7 @@ fun fillNodeTemplate(
     val inputRangeView = if (inputRange != null) "input: [${inputRange.from}, ${inputRange.to}]" else null
     val rsmRangeView = if (rsmRange != null) "rsm: [${rsmRange.from.id}, ${rsmRange.to.id}]" else null
     val view = listOfNotNull(nodeInfo, inputRangeView, rsmRangeView).joinToString(", ")
-    return "[label = \"${id?: ""}${shape.name} $view\", shape = ${shape.view}]"
+    return "[label = \"${id?: ""}     ${shape.name} $view\", shape = ${shape.view}]"
 }
 
 fun <InputNode> getNodeView(node: RangeSppfNode<InputNode>, id: String? = null): String {

@@ -1,0 +1,10 @@
+digraph Input {
+    label="Second worst case, simple loop RSM for Dyck language"
+    start -> 0;
+	0 -> 1 [label = ")"];
+	1 -> 2 [label = ")"];
+	2 -> 0 [label = ")"];
+
+	0 -> 3 [label = "("];
+	3 -> 0 [label = "("];
+}

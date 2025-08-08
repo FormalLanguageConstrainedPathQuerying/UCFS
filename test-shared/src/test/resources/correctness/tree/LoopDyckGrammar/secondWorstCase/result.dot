@@ -1,0 +1,349 @@
+digraph g {
+labelloc="t"
+label=""
+subgraph cluster_0{
+labelloc="t"
+_0_0 [label = "100Intermediate input: 1, rsm: S_2, input: [0, 2]", shape = plain]
+_0_1 [label = "103Range , input: [0, 2], rsm: [S_1, S_2]", shape = ellipse]
+_0_2 [label = "104Nonterminal S, input: [0, 2]", shape = invtrapezium]
+_0_3 [label = "105Range , input: [3, 2], rsm: [S_0, S_2]", shape = ellipse]
+_0_4 [label = "106Intermediate input: 0, rsm: S_1, input: [3, 2]", shape = plain]
+_0_5 [label = "107Range , input: [2, 0], rsm: [S_2, S_0]", shape = ellipse]
+_0_6 [label = "108Terminal ')', input: [2, 0]", shape = rectangle]
+_0_7 [label = "109Range , input: [3, 0], rsm: [S_0, S_0]", shape = ellipse]
+_0_8 [label = "110Intermediate input: 2, rsm: S_2, input: [3, 0]", shape = plain]
+_0_9 [label = "111Range , input: [3, 0], rsm: [S_1, S_2]", shape = ellipse]
+_0_10 [label = "112Nonterminal S, input: [3, 0]", shape = invtrapezium]
+_0_11 [label = "113Range , input: [0, 0], rsm: [S_0, S_2]", shape = ellipse]
+_0_12 [label = "114Intermediate input: 3, rsm: S_1, input: [0, 0]", shape = plain]
+_0_13 [label = "117Range , input: [3, 3], rsm: [S_0, S_1]", shape = ellipse]
+_0_14 [label = "118Intermediate input: 0, rsm: S_0, input: [3, 3]", shape = plain]
+_0_15 [label = "126Range , input: [3, 1], rsm: [S_0, S_2]", shape = ellipse]
+_0_16 [label = "127Intermediate input: 3, rsm: S_1, input: [3, 1]", shape = plain]
+_0_17 [label = "131Intermediate input: 3, rsm: S_1, input: [3, 0]", shape = plain]
+_0_18 [label = "134Range , input: [3, 2], rsm: [S_0, S_0]", shape = ellipse]
+_0_19 [label = "135Intermediate input: 1, rsm: S_2, input: [3, 2]", shape = plain]
+_0_20 [label = "136Range , input: [3, 2], rsm: [S_1, S_2]", shape = ellipse]
+_0_21 [label = "137Nonterminal S, input: [3, 2]", shape = invtrapezium]
+_0_22 [label = "138Range , input: [0, 2], rsm: [S_0, S_2]", shape = ellipse]
+_0_23 [label = "139Intermediate input: 3, rsm: S_1, input: [0, 2]", shape = plain]
+_0_24 [label = "143Intermediate input: 3, rsm: S_1, input: [3, 2]", shape = plain]
+_0_25 [label = "147Intermediate input: 2, rsm: S_2, input: [0, 0]", shape = plain]
+_0_26 [label = "150Range , input: [0, 1], rsm: [S_0, S_0]", shape = ellipse]
+_0_27 [label = "151Intermediate input: 0, rsm: S_2, input: [0, 1]", shape = plain]
+_0_28 [label = "154Range , input: [0, 1], rsm: [S_1, S_2]", shape = ellipse]
+_0_29 [label = "155Nonterminal S, input: [0, 1]", shape = invtrapezium]
+_0_30 [label = "157Intermediate input: 0, rsm: S_1, input: [3, 1]", shape = plain]
+_0_31 [label = "69Range , input: [0, 0], rsm: [S_0, S_0]", shape = ellipse]
+_0_32 [label = "70Epsilon RSM: S_0, input: [0, 0]", shape = invhouse]
+_0_33 [label = "72Nonterminal S, input: [0, 0]", shape = invtrapezium]
+_0_34 [label = "73Range , input: [0, 3], rsm: [S_0, S_1]", shape = ellipse]
+_0_35 [label = "74Terminal '(', input: [0, 3]", shape = rectangle]
+_0_36 [label = "82Range , input: [3, 0], rsm: [S_0, S_1]", shape = ellipse]
+_0_37 [label = "83Terminal '(', input: [3, 0]", shape = rectangle]
+_0_38 [label = "85Range , input: [0, 0], rsm: [S_1, S_2]", shape = ellipse]
+_0_39 [label = "86Nonterminal S, input: [0, 0]", shape = invtrapezium]
+_0_40 [label = "87Range , input: [3, 0], rsm: [S_0, S_2]", shape = ellipse]
+_0_41 [label = "88Intermediate input: 0, rsm: S_1, input: [3, 0]", shape = plain]
+_0_42 [label = "89Range , input: [0, 1], rsm: [S_2, S_0]", shape = ellipse]
+_0_43 [label = "90Terminal ')', input: [0, 1]", shape = rectangle]
+_0_44 [label = "91Range , input: [3, 1], rsm: [S_0, S_0]", shape = ellipse]
+_0_45 [label = "92Intermediate input: 0, rsm: S_2, input: [3, 1]", shape = plain]
+_0_46 [label = "93Range , input: [3, 1], rsm: [S_1, S_2]", shape = ellipse]
+_0_47 [label = "94Nonterminal S, input: [3, 1]", shape = invtrapezium]
+_0_48 [label = "95Range , input: [0, 1], rsm: [S_0, S_2]", shape = ellipse]
+_0_49 [label = "96Intermediate input: 3, rsm: S_1, input: [0, 1]", shape = plain]
+_0_50 [label = "97Range , input: [1, 2], rsm: [S_2, S_0]", shape = ellipse]
+_0_51 [label = "98Terminal ')', input: [1, 2]", shape = rectangle]
+_0_52 [label = "99Range , input: [0, 2], rsm: [S_0, S_0]", shape = ellipse]
+_0_0->_0_48
+_0_0->_0_50
+_0_1->_0_2
+_0_2->_0_52
+_0_3->_0_4
+_0_3->_0_24
+_0_4->_0_36
+_0_4->_0_1
+_0_5->_0_6
+_0_7->_0_8
+_0_8->_0_3
+_0_8->_0_5
+_0_9->_0_10
+_0_10->_0_7
+_0_11->_0_12
+_0_12->_0_34
+_0_12->_0_9
+_0_13->_0_14
+_0_14->_0_7
+_0_14->_0_34
+_0_15->_0_16
+_0_15->_0_30
+_0_16->_0_13
+_0_16->_0_46
+_0_17->_0_13
+_0_17->_0_9
+_0_18->_0_19
+_0_19->_0_15
+_0_19->_0_50
+_0_20->_0_21
+_0_21->_0_18
+_0_22->_0_23
+_0_23->_0_34
+_0_23->_0_20
+_0_24->_0_13
+_0_24->_0_20
+_0_25->_0_22
+_0_25->_0_5
+_0_26->_0_27
+_0_27->_0_11
+_0_27->_0_42
+_0_28->_0_29
+_0_29->_0_26
+_0_30->_0_36
+_0_30->_0_28
+_0_31->_0_32
+_0_31->_0_25
+_0_33->_0_31
+_0_34->_0_35
+_0_36->_0_37
+_0_38->_0_39
+_0_40->_0_41
+_0_40->_0_17
+_0_41->_0_36
+_0_41->_0_38
+_0_42->_0_43
+_0_44->_0_45
+_0_45->_0_40
+_0_45->_0_42
+_0_46->_0_47
+_0_47->_0_44
+_0_48->_0_49
+_0_49->_0_34
+_0_49->_0_46
+_0_50->_0_51
+_0_52->_0_0
+}
+
+subgraph cluster_1{
+labelloc="t"
+_1_0 [label = "100Intermediate input: 1, rsm: S_2, input: [0, 2]", shape = plain]
+_1_1 [label = "103Range , input: [0, 2], rsm: [S_1, S_2]", shape = ellipse]
+_1_2 [label = "104Nonterminal S, input: [0, 2]", shape = invtrapezium]
+_1_3 [label = "105Range , input: [3, 2], rsm: [S_0, S_2]", shape = ellipse]
+_1_4 [label = "106Intermediate input: 0, rsm: S_1, input: [3, 2]", shape = plain]
+_1_5 [label = "107Range , input: [2, 0], rsm: [S_2, S_0]", shape = ellipse]
+_1_6 [label = "108Terminal ')', input: [2, 0]", shape = rectangle]
+_1_7 [label = "109Range , input: [3, 0], rsm: [S_0, S_0]", shape = ellipse]
+_1_8 [label = "110Intermediate input: 2, rsm: S_2, input: [3, 0]", shape = plain]
+_1_9 [label = "111Range , input: [3, 0], rsm: [S_1, S_2]", shape = ellipse]
+_1_10 [label = "112Nonterminal S, input: [3, 0]", shape = invtrapezium]
+_1_11 [label = "113Range , input: [0, 0], rsm: [S_0, S_2]", shape = ellipse]
+_1_12 [label = "114Intermediate input: 3, rsm: S_1, input: [0, 0]", shape = plain]
+_1_13 [label = "117Range , input: [3, 3], rsm: [S_0, S_1]", shape = ellipse]
+_1_14 [label = "118Intermediate input: 0, rsm: S_0, input: [3, 3]", shape = plain]
+_1_15 [label = "126Range , input: [3, 1], rsm: [S_0, S_2]", shape = ellipse]
+_1_16 [label = "127Intermediate input: 3, rsm: S_1, input: [3, 1]", shape = plain]
+_1_17 [label = "131Intermediate input: 3, rsm: S_1, input: [3, 0]", shape = plain]
+_1_18 [label = "134Range , input: [3, 2], rsm: [S_0, S_0]", shape = ellipse]
+_1_19 [label = "135Intermediate input: 1, rsm: S_2, input: [3, 2]", shape = plain]
+_1_20 [label = "136Range , input: [3, 2], rsm: [S_1, S_2]", shape = ellipse]
+_1_21 [label = "137Nonterminal S, input: [3, 2]", shape = invtrapezium]
+_1_22 [label = "143Intermediate input: 3, rsm: S_1, input: [3, 2]", shape = plain]
+_1_23 [label = "150Range , input: [0, 1], rsm: [S_0, S_0]", shape = ellipse]
+_1_24 [label = "151Intermediate input: 0, rsm: S_2, input: [0, 1]", shape = plain]
+_1_25 [label = "153Nonterminal S, input: [0, 1]", shape = invtrapezium]
+_1_26 [label = "154Range , input: [0, 1], rsm: [S_1, S_2]", shape = ellipse]
+_1_27 [label = "155Nonterminal S, input: [0, 1]", shape = invtrapezium]
+_1_28 [label = "157Intermediate input: 0, rsm: S_1, input: [3, 1]", shape = plain]
+_1_29 [label = "73Range , input: [0, 3], rsm: [S_0, S_1]", shape = ellipse]
+_1_30 [label = "74Terminal '(', input: [0, 3]", shape = rectangle]
+_1_31 [label = "82Range , input: [3, 0], rsm: [S_0, S_1]", shape = ellipse]
+_1_32 [label = "83Terminal '(', input: [3, 0]", shape = rectangle]
+_1_33 [label = "85Range , input: [0, 0], rsm: [S_1, S_2]", shape = ellipse]
+_1_34 [label = "86Nonterminal S, input: [0, 0]", shape = invtrapezium]
+_1_35 [label = "87Range , input: [3, 0], rsm: [S_0, S_2]", shape = ellipse]
+_1_36 [label = "88Intermediate input: 0, rsm: S_1, input: [3, 0]", shape = plain]
+_1_37 [label = "89Range , input: [0, 1], rsm: [S_2, S_0]", shape = ellipse]
+_1_38 [label = "90Terminal ')', input: [0, 1]", shape = rectangle]
+_1_39 [label = "91Range , input: [3, 1], rsm: [S_0, S_0]", shape = ellipse]
+_1_40 [label = "92Intermediate input: 0, rsm: S_2, input: [3, 1]", shape = plain]
+_1_41 [label = "93Range , input: [3, 1], rsm: [S_1, S_2]", shape = ellipse]
+_1_42 [label = "94Nonterminal S, input: [3, 1]", shape = invtrapezium]
+_1_43 [label = "95Range , input: [0, 1], rsm: [S_0, S_2]", shape = ellipse]
+_1_44 [label = "96Intermediate input: 3, rsm: S_1, input: [0, 1]", shape = plain]
+_1_45 [label = "97Range , input: [1, 2], rsm: [S_2, S_0]", shape = ellipse]
+_1_46 [label = "98Terminal ')', input: [1, 2]", shape = rectangle]
+_1_47 [label = "99Range , input: [0, 2], rsm: [S_0, S_0]", shape = ellipse]
+_1_0->_1_43
+_1_0->_1_45
+_1_1->_1_2
+_1_2->_1_47
+_1_3->_1_4
+_1_3->_1_22
+_1_4->_1_31
+_1_4->_1_1
+_1_5->_1_6
+_1_7->_1_8
+_1_8->_1_3
+_1_8->_1_5
+_1_9->_1_10
+_1_10->_1_7
+_1_11->_1_12
+_1_12->_1_29
+_1_12->_1_9
+_1_13->_1_14
+_1_14->_1_7
+_1_14->_1_29
+_1_15->_1_16
+_1_15->_1_28
+_1_16->_1_13
+_1_16->_1_41
+_1_17->_1_13
+_1_17->_1_9
+_1_18->_1_19
+_1_19->_1_15
+_1_19->_1_45
+_1_20->_1_21
+_1_21->_1_18
+_1_22->_1_13
+_1_22->_1_20
+_1_23->_1_24
+_1_24->_1_11
+_1_24->_1_37
+_1_25->_1_23
+_1_26->_1_27
+_1_27->_1_23
+_1_28->_1_31
+_1_28->_1_26
+_1_29->_1_30
+_1_31->_1_32
+_1_33->_1_34
+_1_35->_1_36
+_1_35->_1_17
+_1_36->_1_31
+_1_36->_1_33
+_1_37->_1_38
+_1_39->_1_40
+_1_40->_1_35
+_1_40->_1_37
+_1_41->_1_42
+_1_42->_1_39
+_1_43->_1_44
+_1_44->_1_29
+_1_44->_1_41
+_1_45->_1_46
+_1_47->_1_0
+}
+
+subgraph cluster_2{
+labelloc="t"
+_2_0 [label = "100Intermediate input: 1, rsm: S_2, input: [0, 2]", shape = plain]
+_2_1 [label = "102Nonterminal S, input: [0, 2]", shape = invtrapezium]
+_2_2 [label = "103Range , input: [0, 2], rsm: [S_1, S_2]", shape = ellipse]
+_2_3 [label = "104Nonterminal S, input: [0, 2]", shape = invtrapezium]
+_2_4 [label = "105Range , input: [3, 2], rsm: [S_0, S_2]", shape = ellipse]
+_2_5 [label = "106Intermediate input: 0, rsm: S_1, input: [3, 2]", shape = plain]
+_2_6 [label = "107Range , input: [2, 0], rsm: [S_2, S_0]", shape = ellipse]
+_2_7 [label = "108Terminal ')', input: [2, 0]", shape = rectangle]
+_2_8 [label = "109Range , input: [3, 0], rsm: [S_0, S_0]", shape = ellipse]
+_2_9 [label = "110Intermediate input: 2, rsm: S_2, input: [3, 0]", shape = plain]
+_2_10 [label = "111Range , input: [3, 0], rsm: [S_1, S_2]", shape = ellipse]
+_2_11 [label = "112Nonterminal S, input: [3, 0]", shape = invtrapezium]
+_2_12 [label = "113Range , input: [0, 0], rsm: [S_0, S_2]", shape = ellipse]
+_2_13 [label = "114Intermediate input: 3, rsm: S_1, input: [0, 0]", shape = plain]
+_2_14 [label = "117Range , input: [3, 3], rsm: [S_0, S_1]", shape = ellipse]
+_2_15 [label = "118Intermediate input: 0, rsm: S_0, input: [3, 3]", shape = plain]
+_2_16 [label = "126Range , input: [3, 1], rsm: [S_0, S_2]", shape = ellipse]
+_2_17 [label = "127Intermediate input: 3, rsm: S_1, input: [3, 1]", shape = plain]
+_2_18 [label = "131Intermediate input: 3, rsm: S_1, input: [3, 0]", shape = plain]
+_2_19 [label = "134Range , input: [3, 2], rsm: [S_0, S_0]", shape = ellipse]
+_2_20 [label = "135Intermediate input: 1, rsm: S_2, input: [3, 2]", shape = plain]
+_2_21 [label = "136Range , input: [3, 2], rsm: [S_1, S_2]", shape = ellipse]
+_2_22 [label = "137Nonterminal S, input: [3, 2]", shape = invtrapezium]
+_2_23 [label = "143Intermediate input: 3, rsm: S_1, input: [3, 2]", shape = plain]
+_2_24 [label = "150Range , input: [0, 1], rsm: [S_0, S_0]", shape = ellipse]
+_2_25 [label = "151Intermediate input: 0, rsm: S_2, input: [0, 1]", shape = plain]
+_2_26 [label = "154Range , input: [0, 1], rsm: [S_1, S_2]", shape = ellipse]
+_2_27 [label = "155Nonterminal S, input: [0, 1]", shape = invtrapezium]
+_2_28 [label = "157Intermediate input: 0, rsm: S_1, input: [3, 1]", shape = plain]
+_2_29 [label = "73Range , input: [0, 3], rsm: [S_0, S_1]", shape = ellipse]
+_2_30 [label = "74Terminal '(', input: [0, 3]", shape = rectangle]
+_2_31 [label = "82Range , input: [3, 0], rsm: [S_0, S_1]", shape = ellipse]
+_2_32 [label = "83Terminal '(', input: [3, 0]", shape = rectangle]
+_2_33 [label = "85Range , input: [0, 0], rsm: [S_1, S_2]", shape = ellipse]
+_2_34 [label = "86Nonterminal S, input: [0, 0]", shape = invtrapezium]
+_2_35 [label = "87Range , input: [3, 0], rsm: [S_0, S_2]", shape = ellipse]
+_2_36 [label = "88Intermediate input: 0, rsm: S_1, input: [3, 0]", shape = plain]
+_2_37 [label = "89Range , input: [0, 1], rsm: [S_2, S_0]", shape = ellipse]
+_2_38 [label = "90Terminal ')', input: [0, 1]", shape = rectangle]
+_2_39 [label = "91Range , input: [3, 1], rsm: [S_0, S_0]", shape = ellipse]
+_2_40 [label = "92Intermediate input: 0, rsm: S_2, input: [3, 1]", shape = plain]
+_2_41 [label = "93Range , input: [3, 1], rsm: [S_1, S_2]", shape = ellipse]
+_2_42 [label = "94Nonterminal S, input: [3, 1]", shape = invtrapezium]
+_2_43 [label = "95Range , input: [0, 1], rsm: [S_0, S_2]", shape = ellipse]
+_2_44 [label = "96Intermediate input: 3, rsm: S_1, input: [0, 1]", shape = plain]
+_2_45 [label = "97Range , input: [1, 2], rsm: [S_2, S_0]", shape = ellipse]
+_2_46 [label = "98Terminal ')', input: [1, 2]", shape = rectangle]
+_2_47 [label = "99Range , input: [0, 2], rsm: [S_0, S_0]", shape = ellipse]
+_2_0->_2_43
+_2_0->_2_45
+_2_1->_2_47
+_2_2->_2_3
+_2_3->_2_47
+_2_4->_2_5
+_2_4->_2_23
+_2_5->_2_31
+_2_5->_2_2
+_2_6->_2_7
+_2_8->_2_9
+_2_9->_2_4
+_2_9->_2_6
+_2_10->_2_11
+_2_11->_2_8
+_2_12->_2_13
+_2_13->_2_29
+_2_13->_2_10
+_2_14->_2_15
+_2_15->_2_8
+_2_15->_2_29
+_2_16->_2_17
+_2_16->_2_28
+_2_17->_2_14
+_2_17->_2_41
+_2_18->_2_14
+_2_18->_2_10
+_2_19->_2_20
+_2_20->_2_16
+_2_20->_2_45
+_2_21->_2_22
+_2_22->_2_19
+_2_23->_2_14
+_2_23->_2_21
+_2_24->_2_25
+_2_25->_2_12
+_2_25->_2_37
+_2_26->_2_27
+_2_27->_2_24
+_2_28->_2_31
+_2_28->_2_26
+_2_29->_2_30
+_2_31->_2_32
+_2_33->_2_34
+_2_35->_2_36
+_2_35->_2_18
+_2_36->_2_31
+_2_36->_2_33
+_2_37->_2_38
+_2_39->_2_40
+_2_40->_2_35
+_2_40->_2_37
+_2_41->_2_42
+_2_42->_2_39
+_2_43->_2_44
+_2_44->_2_29
+_2_44->_2_41
+_2_45->_2_46
+_2_47->_2_0
+}
+
+}

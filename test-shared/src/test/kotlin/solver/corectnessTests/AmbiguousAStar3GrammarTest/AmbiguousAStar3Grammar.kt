@@ -1,0 +1,16 @@
+package solver.corectnessTests.AmbiguousAStar3GrammarTest
+
+
+import org.ucfs.grammar.combinator.Grammar
+import org.ucfs.grammar.combinator.extension.StringExtension.or
+import org.ucfs.grammar.combinator.extension.StringExtension.times
+import org.ucfs.grammar.combinator.regexp.*
+
+class AmbiguousAStart3Grammar : Grammar() {
+    val S by Nt().asStart()
+
+    init {
+        S /= "(" * S * ")" or "a"
+        // S = eps | ( S )
+    }
+}

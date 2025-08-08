@@ -35,8 +35,7 @@ data class Descriptor<InputNodeType>(
         return "${id}\t;" +
                 "${inputPosition}\t;" +
                 "${rsmState.id}\t;" +
-                "(${gssNode.inputPosition}, ${gssNode.rsm.id})\t;" +
-                "sppf: ${sppfNode.id} "
+                "(${gssNode.inputPosition}, ${gssNode.rsm.id})\t;"
     }
 }
 

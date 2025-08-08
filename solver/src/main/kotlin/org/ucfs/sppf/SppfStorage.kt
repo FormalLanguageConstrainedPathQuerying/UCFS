@@ -80,9 +80,9 @@ open class SppfStorage<InputEdgeType> {
         rangeType: RangeType,
         children: List<RangeSppfNode<InputEdgeType>> = listOf()
     ): RangeSppfNode<InputEdgeType> {
-        val rangeNode = addNode(RangeSppfNode(input, rsm, Range, getId()))
+        val rangeNode = addNode(RangeSppfNode(input, rsm, Range))
         val valueRsm = if (rangeType is TerminalType<*>) null else rsm
-        val valueNode = addNode(RangeSppfNode(input, valueRsm, rangeType, getId()))
+        val valueNode = addNode(RangeSppfNode(input, valueRsm, rangeType))
         if (!rangeNode.children.contains(valueNode)) {
             rangeNode.children.add(valueNode)
         }

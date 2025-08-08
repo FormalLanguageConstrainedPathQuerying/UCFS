@@ -7,7 +7,7 @@
 
 ### IntelliJ IDEA ###
 .idea
-
+./test-shared/gen
 ### VS Code ###
 .vscode/
 
