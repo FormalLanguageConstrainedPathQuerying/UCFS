@@ -3,39 +3,39 @@ labelloc="t"
 label=""
 subgraph cluster_0{
 labelloc="t"
-_0_0 [label = "40Range , input: [0, 1], rsm: [S_0, S_2]", shape = ellipse]
-_0_1 [label = "41Terminal 'a', input: [0, 1]", shape = rectangle]
-_0_2 [label = "43Range , input: [0, 1], rsm: [A_0, A_1]", shape = ellipse]
-_0_3 [label = "45Range , input: [1, 2], rsm: [A_1, A_2]", shape = ellipse]
-_0_4 [label = "46Terminal 'b', input: [1, 2]", shape = rectangle]
-_0_5 [label = "47Range , input: [0, 2], rsm: [A_0, A_2]", shape = ellipse]
-_0_6 [label = "48Intermediate input: 1, rsm: A_1, input: [0, 2]", shape = plain]
-_0_7 [label = "49Range , input: [0, 2], rsm: [S_0, S_1]", shape = ellipse]
-_0_8 [label = "50Nonterminal A, input: [0, 2]", shape = invtrapezium]
-_0_9 [label = "51Range , input: [2, 3], rsm: [S_1, S_3]", shape = ellipse]
-_0_10 [label = "52Terminal 'c', input: [2, 3]", shape = rectangle]
-_0_11 [label = "53Range , input: [0, 3], rsm: [S_0, S_3]", shape = ellipse]
-_0_12 [label = "54Intermediate input: 2, rsm: S_1, input: [0, 3]", shape = plain]
-_0_13 [label = "56Nonterminal S, input: [0, 3]", shape = invtrapezium]
-_0_14 [label = "57Range , input: [1, 2], rsm: [S_2, S_1]", shape = ellipse]
-_0_15 [label = "60Intermediate input: 1, rsm: S_2, input: [0, 2]", shape = plain]
+_0_0 [label = "0     Nonterminal S, input: [0, 3]", shape = invtrapezium]
+_0_1 [label = "1     Range , input: [0, 3], rsm: [S_0, S_3]", shape = ellipse]
+_0_2 [label = "10     Range , input: [1, 2], rsm: [S_2, S_1]", shape = ellipse]
+_0_3 [label = "11     Intermediate input: 1, rsm: A_1, input: [0, 2]", shape = plain]
+_0_4 [label = "12     Terminal 'a', input: [0, 1]", shape = rectangle]
+_0_5 [label = "13     Terminal 'b', input: [1, 2]", shape = rectangle]
+_0_6 [label = "14     Range , input: [0, 1], rsm: [A_0, A_1]", shape = ellipse]
+_0_7 [label = "15     Range , input: [1, 2], rsm: [A_1, A_2]", shape = ellipse]
+_0_8 [label = "2     Intermediate input: 2, rsm: S_1, input: [0, 3]", shape = plain]
+_0_9 [label = "3     Range , input: [0, 2], rsm: [S_0, S_1]", shape = ellipse]
+_0_10 [label = "4     Range , input: [2, 3], rsm: [S_1, S_3]", shape = ellipse]
+_0_11 [label = "5     Nonterminal A, input: [0, 2]", shape = invtrapezium]
+_0_12 [label = "6     Intermediate input: 1, rsm: S_2, input: [0, 2]", shape = plain]
+_0_13 [label = "7     Terminal 'c', input: [2, 3]", shape = rectangle]
+_0_14 [label = "8     Range , input: [0, 2], rsm: [A_0, A_2]", shape = ellipse]
+_0_15 [label = "9     Range , input: [0, 1], rsm: [S_0, S_2]", shape = ellipse]
 _0_0->_0_1
-_0_2->_0_1
-_0_3->_0_4
-_0_5->_0_6
-_0_6->_0_2
-_0_6->_0_3
-_0_7->_0_8
-_0_7->_0_15
-_0_8->_0_5
-_0_9->_0_10
-_0_11->_0_12
-_0_12->_0_7
-_0_12->_0_9
-_0_13->_0_11
-_0_14->_0_4
-_0_15->_0_0
-_0_15->_0_14
+_0_1->_0_8
+_0_2->_0_5
+_0_3->_0_6
+_0_3->_0_7
+_0_6->_0_4
+_0_7->_0_5
+_0_8->_0_9
+_0_8->_0_10
+_0_9->_0_11
+_0_9->_0_12
+_0_10->_0_13
+_0_11->_0_14
+_0_12->_0_15
+_0_12->_0_2
+_0_14->_0_3
+_0_15->_0_4
 }
 
 }

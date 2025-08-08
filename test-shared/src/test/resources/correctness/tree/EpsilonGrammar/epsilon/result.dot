@@ -3,11 +3,11 @@ labelloc="t"
 label=""
 subgraph cluster_0{
 labelloc="t"
-_0_0 [label = "63Range , input: [0, 0], rsm: [S_0, S_0]", shape = ellipse]
-_0_1 [label = "64Epsilon RSM: S_0, input: [0, 0]", shape = invhouse]
-_0_2 [label = "66Nonterminal S, input: [0, 0]", shape = invtrapezium]
+_0_0 [label = "0     Nonterminal S, input: [0, 0]", shape = invtrapezium]
+_0_1 [label = "1     Range , input: [0, 0], rsm: [S_0, S_0]", shape = ellipse]
+_0_2 [label = "2     Epsilon RSM: S_0, input: [0, 0]", shape = invhouse]
 _0_0->_0_1
-_0_2->_0_0
+_0_1->_0_2
 }
 
 }

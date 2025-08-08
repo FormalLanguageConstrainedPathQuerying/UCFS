@@ -6,7 +6,7 @@ import org.ucfs.grammar.combinator.extension.StringExtension.or
 import org.ucfs.grammar.combinator.extension.StringExtension.times
 import org.ucfs.grammar.combinator.regexp.*
 
-class AmbiguousAStart3Grammar : Grammar() {
+class AmbiguousAStar3Grammar : Grammar() {
     val S by Nt().asStart()
 
     init {

@@ -1,6 +1,0 @@
-digraph Input {
-    label="Two loops with common vertex, simple loop RSM for Dyck language"
-    start -> 0;
-	0 -> 0 [label = "("];
-	0 -> 0 [label = ")"];
-}

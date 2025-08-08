@@ -3,31 +3,31 @@ labelloc="t"
 label=""
 subgraph cluster_0{
 labelloc="t"
-_0_0 [label = "10Intermediate input: 1, rsm: S_1, input: [0, 2]", shape = plain]
-_0_1 [label = "11Range , input: [2, 3], rsm: [S_3, S_2]", shape = ellipse]
-_0_2 [label = "12Terminal ')', input: [2, 3]", shape = rectangle]
-_0_3 [label = "13Range , input: [0, 3], rsm: [S_0, S_2]", shape = ellipse]
-_0_4 [label = "14Intermediate input: 2, rsm: S_3, input: [0, 3]", shape = plain]
-_0_5 [label = "16Nonterminal S, input: [0, 3]", shape = invtrapezium]
-_0_6 [label = "2Range , input: [0, 1], rsm: [S_0, S_1]", shape = ellipse]
-_0_7 [label = "3Terminal '(', input: [0, 1]", shape = rectangle]
-_0_8 [label = "5Range , input: [1, 2], rsm: [S_0, S_2]", shape = ellipse]
-_0_9 [label = "6Terminal 'a', input: [1, 2]", shape = rectangle]
-_0_10 [label = "7Range , input: [1, 2], rsm: [S_1, S_3]", shape = ellipse]
-_0_11 [label = "8Nonterminal S, input: [1, 2]", shape = invtrapezium]
-_0_12 [label = "9Range , input: [0, 2], rsm: [S_0, S_3]", shape = ellipse]
-_0_0->_0_6
-_0_0->_0_10
-_0_1->_0_2
+_0_0 [label = "0     Nonterminal S, input: [0, 3]", shape = invtrapezium]
+_0_1 [label = "1     Range , input: [0, 3], rsm: [S_0, S_2]", shape = ellipse]
+_0_2 [label = "10     Nonterminal S, input: [1, 2]", shape = invtrapezium]
+_0_3 [label = "11     Range , input: [1, 2], rsm: [S_0, S_2]", shape = ellipse]
+_0_4 [label = "12     Terminal 'a', input: [1, 2]", shape = rectangle]
+_0_5 [label = "2     Intermediate input: 2, rsm: S_3, input: [0, 3]", shape = plain]
+_0_6 [label = "3     Range , input: [0, 2], rsm: [S_0, S_3]", shape = ellipse]
+_0_7 [label = "4     Range , input: [2, 3], rsm: [S_3, S_2]", shape = ellipse]
+_0_8 [label = "5     Intermediate input: 1, rsm: S_1, input: [0, 2]", shape = plain]
+_0_9 [label = "6     Terminal ')', input: [2, 3]", shape = rectangle]
+_0_10 [label = "7     Range , input: [0, 1], rsm: [S_0, S_1]", shape = ellipse]
+_0_11 [label = "8     Range , input: [1, 2], rsm: [S_1, S_3]", shape = ellipse]
+_0_12 [label = "9     Terminal '(', input: [0, 1]", shape = rectangle]
+_0_0->_0_1
+_0_1->_0_5
+_0_2->_0_3
 _0_3->_0_4
-_0_4->_0_12
-_0_4->_0_1
-_0_5->_0_3
-_0_6->_0_7
-_0_8->_0_9
-_0_10->_0_11
-_0_11->_0_8
-_0_12->_0_0
+_0_5->_0_6
+_0_5->_0_7
+_0_6->_0_8
+_0_7->_0_9
+_0_8->_0_10
+_0_8->_0_11
+_0_10->_0_12
+_0_11->_0_2
 }
 
 }

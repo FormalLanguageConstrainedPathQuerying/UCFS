@@ -3,9 +3,9 @@ package solver.corectnessTests.LoopDyckGrammarTest
 import org.junit.jupiter.api.Test
 import solver.corectnessTests.AbstractCorrectnessTest
 
-class StrangeDyckGrammarTreeCorrectnessTest : AbstractCorrectnessTest() {
+class LoopDyckGrammarTreeCorrectnessTest : AbstractCorrectnessTest() {
     @Test
     override fun checkTreeCorrectnessForGrammar() {
-        runTests(StrangeDyckGrammar())
+        runTests(LoopDyckGrammar())
     }
 }

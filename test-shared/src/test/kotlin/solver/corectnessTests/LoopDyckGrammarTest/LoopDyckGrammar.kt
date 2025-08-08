@@ -6,11 +6,11 @@ import org.ucfs.grammar.combinator.extension.StringExtension.or
 import org.ucfs.grammar.combinator.extension.StringExtension.times
 import org.ucfs.grammar.combinator.regexp.*
 
-class StrangeDyckGrammar : Grammar() {
+class LoopDyckGrammar : Grammar() {
     val S by Nt().asStart()
 
     init {
-        S /= "(" * S * ")" or "a"
-        // S = eps | ( S )
+        S /= Many("(" * S * ")")
+        // S = [ ( S ) ]*
     }
 }

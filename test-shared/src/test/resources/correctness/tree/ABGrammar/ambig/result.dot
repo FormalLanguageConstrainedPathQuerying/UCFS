@@ -3,23 +3,23 @@ labelloc="t"
 label=""
 subgraph cluster_0{
 labelloc="t"
-_0_0 [label = "26Range , input: [0, 1], rsm: [C_0, C_1]", shape = ellipse]
-_0_1 [label = "27Terminal 'a', input: [0, 1]", shape = rectangle]
-_0_2 [label = "28Range , input: [0, 1], rsm: [B_0, B_1]", shape = ellipse]
-_0_3 [label = "29Nonterminal C, input: [0, 1]", shape = invtrapezium]
-_0_4 [label = "30Range , input: [0, 1], rsm: [S_0, S_1]", shape = ellipse]
-_0_5 [label = "31Nonterminal B, input: [0, 1]", shape = invtrapezium]
-_0_6 [label = "33Nonterminal S, input: [0, 1]", shape = invtrapezium]
-_0_7 [label = "34Range , input: [0, 1], rsm: [A_0, A_1]", shape = ellipse]
-_0_8 [label = "37Nonterminal A, input: [0, 1]", shape = invtrapezium]
+_0_0 [label = "0     Nonterminal S, input: [0, 1]", shape = invtrapezium]
+_0_1 [label = "1     Range , input: [0, 1], rsm: [S_0, S_1]", shape = ellipse]
+_0_2 [label = "2     Nonterminal B, input: [0, 1]", shape = invtrapezium]
+_0_3 [label = "3     Nonterminal A, input: [0, 1]", shape = invtrapezium]
+_0_4 [label = "4     Range , input: [0, 1], rsm: [B_0, B_1]", shape = ellipse]
+_0_5 [label = "5     Range , input: [0, 1], rsm: [A_0, A_1]", shape = ellipse]
+_0_6 [label = "6     Nonterminal C, input: [0, 1]", shape = invtrapezium]
+_0_7 [label = "7     Terminal 'a', input: [0, 1]", shape = rectangle]
+_0_8 [label = "8     Range , input: [0, 1], rsm: [C_0, C_1]", shape = ellipse]
 _0_0->_0_1
-_0_2->_0_3
-_0_3->_0_0
-_0_4->_0_5
-_0_4->_0_8
-_0_5->_0_2
-_0_6->_0_4
-_0_7->_0_1
+_0_1->_0_2
+_0_1->_0_3
+_0_2->_0_4
+_0_3->_0_5
+_0_4->_0_6
+_0_5->_0_7
+_0_6->_0_8
 _0_8->_0_7
 }
 

@@ -3,9 +3,9 @@ package solver.corectnessTests.EpsilonGrammarTest
 import org.junit.jupiter.api.Test
 import solver.corectnessTests.AbstractCorrectnessTest
 
-class SimplifiedDyckGrammarTreeCorrectnessTest : AbstractCorrectnessTest() {
+class EpsilonGrammarTreeCorrectnessTest : AbstractCorrectnessTest() {
     @Test
     override fun checkTreeCorrectnessForGrammar() {
-        runTests(SimplifiedDyckGrammar())
+        runTests(EpsilonGrammar())
     }
 }
