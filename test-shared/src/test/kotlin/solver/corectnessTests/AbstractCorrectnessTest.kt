@@ -51,7 +51,10 @@ abstract class AbstractCorrectnessTest {
         val expectedFile = testCasesFolder.toPath().resolve("result.dot")
         val input = inputFile.readText()
         val expectedResult = expectedFile.readText()
+        val start = System.nanoTime()
         val actualResult = createTree(input, grammar)
+        val workTime = System.nanoTime() - start
+        println("Work time: $workTime")
         if (expectedResult.isEmpty() || regenerate) {
             expectedFile.writeText(actualResult)
         } else {
