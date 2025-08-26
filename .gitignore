@@ -1,5 +1,6 @@
 # Log file
 *.log
+*.logs
 
 .gradle
 !gradle/wrapper/gradle-wrapper.jar
