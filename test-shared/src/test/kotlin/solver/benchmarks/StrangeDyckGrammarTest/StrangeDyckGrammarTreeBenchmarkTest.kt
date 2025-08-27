@@ -1,9 +1,9 @@
 package solver.benchmarks.StrangeDyckGrammarTest
 
 import org.junit.jupiter.api.Test
-import solver.benchmarks.AbstractCorrectnessTest
+import solver.benchmarks.AbstractBenchmarkTest
 
-class StrangeDyckGrammarTreeCorrectnessTest : AbstractCorrectnessTest() {
+class StrangeDyckGrammarTreeBenchmarkTest : AbstractBenchmarkTest() {
     @Test
     override fun checkTreeCorrectnessForGrammar() {
         runTests(StrangeDyckGrammar())

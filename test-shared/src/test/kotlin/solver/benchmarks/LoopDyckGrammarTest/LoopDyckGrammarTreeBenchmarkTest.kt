@@ -1,9 +1,9 @@
 package solver.benchmarks.LoopDyckGrammarTest
 
 import org.junit.jupiter.api.Test
-import solver.benchmarks.AbstractCorrectnessTest
+import solver.benchmarks.AbstractBenchmarkTest
 
-class LoopDyckGrammarTreeCorrectnessTest : AbstractCorrectnessTest() {
+class LoopDyckGrammarTreeBenchmarkTest : AbstractBenchmarkTest() {
     @Test
     override fun checkTreeCorrectnessForGrammar() {
         runTests(LoopDyckGrammar())

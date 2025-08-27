@@ -10,20 +10,21 @@ import org.ucfs.sppf.getSppfDot
 import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.readText
-import kotlin.io.path.writeText
-import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.io.path.Path
 
-abstract class AbstractCorrectnessTest {
+abstract class AbstractBenchmarkTest {
     val rootPath: Path = Path.of("src", "test", "resources")
 
-    fun getRootDataFolder(): Path {
+    fun getDataFolder(): Path {
         return rootPath.resolve("benchmarks")
     }
 
+    fun getResultsFolder(): Path {
+        return rootPath.resolve("benchmarksResult")
+    }
     val regenerate = false
 
     @Test
@@ -33,29 +34,37 @@ abstract class AbstractCorrectnessTest {
     fun runTests(grammar :Grammar) {
         val grammarName = grammar.javaClass.simpleName
         writeRsmToDot(grammar.rsm, "${grammarName}Rsm")
-        val path: Path = getRootDataFolder()
+        val path: Path = getDataFolder()
+        val result_folder: File = File(getResultsFolder().resolve(grammarName).toUri())
         val testCasesFolder = File(path.resolve(grammarName).toUri())
+        println(result_folder.toString())
+        println(testCasesFolder.toString())
 
         if (!testCasesFolder.exists()) {
             println("Can't find test case for $grammarName")
         }
         testCasesFolder.createDirectory()
+        result_folder.createDirectory()
         for (folder in testCasesFolder.listFiles()) {
             if (folder.isDirectory) {
-                testCreatedTreeForCorrectness(folder, grammar)
+                println(folder.name)
+                println(File(Path(result_folder.path).resolve(folder.name).toUri() ))
+                val bechmark_result_folder = File(Path(result_folder.path).resolve(folder.name).toUri() )
+                bechmark_result_folder.createDirectory()
+                testCreatedTreeForCorrectness(folder, grammar, bechmark_result_folder)
             }
         }
         assertFalse { regenerate }
     }
 
-    fun testCreatedTreeForCorrectness(testCasesFolder: File, grammar: Grammar) {
+    fun testCreatedTreeForCorrectness(testCasesFolder: File, grammar: Grammar, result_folder: File) {
         val inputFile = testCasesFolder.toPath().resolve("input.dot")
         val input = inputFile.readText()
         val time = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         val formattedDateTime = time.format(formatter)
-        val logsFile = File(testCasesFolder.toPath().toString(), formattedDateTime+"work_times" +".logs")
-        val resultsLog = File(testCasesFolder.toPath().toString(), formattedDateTime+"results" +".logs")
+        val logsFile = File(result_folder.toPath().toString(), formattedDateTime+"work_times" +".logs")
+        val resultsLog = File(result_folder.toPath().toString(), formattedDateTime+"results" +".logs")
         val actualResult = createTree(input, grammar)
         var x = 0
         var logs = ""
