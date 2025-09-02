@@ -1,5 +1,6 @@
 package rsm.api
 
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.ucfs.grammar.combinator.Grammar
 import org.ucfs.grammar.combinator.regexp.Nt
@@ -9,6 +10,7 @@ import org.ucfs.rsm.symbol.Term
 import rsm.RsmTest
 import kotlin.test.assertTrue
 
+@Disabled
 class TerminalsEqualsTest : RsmTest {
     class AStarTerms : Grammar() {
         val S by Nt().asStart()

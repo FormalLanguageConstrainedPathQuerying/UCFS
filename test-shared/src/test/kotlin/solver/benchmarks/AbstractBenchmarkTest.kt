@@ -9,11 +9,44 @@ import org.ucfs.rsm.writeRsmToDot
 import org.ucfs.sppf.getSppfDot
 import java.io.File
 import java.nio.file.Path
-import kotlin.io.path.readText
-import kotlin.test.assertFalse
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.io.path.Path
+import kotlin.io.path.readText
+import kotlin.test.assertFalse
+import java.util.concurrent.atomic.AtomicBoolean
+
+object MemoryMonitor {
+    private val running = AtomicBoolean(false)
+    private var peakMemory: Long = 0
+    private var monitorThread: Thread? = null
+
+    fun start(intervalMs: Long = 1) {
+        if (running.get()) return
+        running.set(true)
+
+        monitorThread = Thread {
+            val runtime = Runtime.getRuntime()
+            while (running.get()) {
+                val used = runtime.totalMemory() - runtime.freeMemory()
+                synchronized(this) {
+                    if (used > peakMemory) peakMemory = used
+                }
+            }
+        }.apply {
+            isDaemon = true
+            start()
+        }
+    }
+
+    fun stop(): Long {
+        running.set(false)
+        monitorThread?.join()
+        return synchronized(this) { peakMemory / (1024 * 1024) } // MB
+    }
+}
+
+
 
 abstract class AbstractBenchmarkTest {
     val rootPath: Path = Path.of("src", "test", "resources")
@@ -72,8 +105,10 @@ abstract class AbstractBenchmarkTest {
 
         println("Starting performance test...")
         println("Work time: $testCasesFolder")
-
-        while (x < 50) {
+        val used = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024)
+        println("Used memory: " + used + " MB")
+        MemoryMonitor.start()
+        while (x < 1000) {
             val start = System.nanoTime()
             val actualResult = createTree(input, grammar)
             val workTime = System.nanoTime() - start
@@ -82,7 +117,7 @@ abstract class AbstractBenchmarkTest {
 
             x++
         }
-
+        val peak = MemoryMonitor.stop()
         val averageTime = timeMeasurements.average()
         val minTime = timeMeasurements.minOrNull() ?: 0
         val maxTime = timeMeasurements.maxOrNull() ?: 0
@@ -95,6 +130,8 @@ abstract class AbstractBenchmarkTest {
         println("Max time: ${maxTime / 1_000_000} ms")
         println("Total time: ${totalTime / 1_000_000_000.0} seconds")
         println("===========================")
+        // останавливаем и получаем пик
+        println("Peak memory usage: $peak MB")
         logsFile.writeText(logs)
         logs = "\n=== PERFORMANCE RESULTS === \n Total iterations: ${timeMeasurements.size} \n Average time: ${"%.3f".format(averageTime / 1_000_000)} ms" +
                 "\n Min time: ${minTime / 1_000_000} ms" +

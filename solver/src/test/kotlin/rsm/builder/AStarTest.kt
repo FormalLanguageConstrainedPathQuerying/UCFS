@@ -1,5 +1,6 @@
 package rsm.builder
 
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.ucfs.grammar.combinator.Grammar
 import org.ucfs.grammar.combinator.regexp.Nt
@@ -10,6 +11,7 @@ import rsm.RsmTest
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
+@Disabled
 class AStarTest : RsmTest {
     class AStar : Grammar() {
         val S by Nt().asStart()

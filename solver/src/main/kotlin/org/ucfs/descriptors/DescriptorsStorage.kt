@@ -1,6 +1,5 @@
 package org.ucfs.descriptors
 
-import org.ucfs.parser.ParsingException
 import java.util.LinkedList
 
 /**
