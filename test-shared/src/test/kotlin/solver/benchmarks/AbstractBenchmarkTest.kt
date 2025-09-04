@@ -78,8 +78,17 @@ abstract class AbstractBenchmarkTest {
         }
         testCasesFolder.createDirectory()
         result_folder.createDirectory()
+        val special_case = System.getProperty("special_case")
+
+
         for (folder in testCasesFolder.listFiles()) {
+            if((!special_case.isNullOrEmpty() && special_case != "nothing") && folder.name != special_case) {
+
+                println(special_case.isNullOrEmpty())
+                continue;
+            }
             if (folder.isDirectory) {
+                println(special_case)
                 println(folder.name)
                 println(File(Path(result_folder.path).resolve(folder.name).toUri() ))
                 val bechmark_result_folder = File(Path(result_folder.path).resolve(folder.name).toUri() )
@@ -107,8 +116,10 @@ abstract class AbstractBenchmarkTest {
         println("Work time: $testCasesFolder")
         val used = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024)
         println("Used memory: " + used + " MB")
+        val max_test_count = System.getProperty("count_for_case").toInt()
+        println("Used memorsssssy: " + max_test_count + " MB")
         MemoryMonitor.start()
-        while (x < 1000) {
+        while (x < max_test_count) {
             val start = System.nanoTime()
             val actualResult = createTree(input, grammar)
             val workTime = System.nanoTime() - start

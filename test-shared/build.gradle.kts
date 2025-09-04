@@ -21,10 +21,15 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
     val heapSize = (System.getProperty("testMaxHeapSize") ?: "100m") // ограничение памяти для JVM тестов
+    val special_case = System.getProperty("special_case") ?: "nothing"
+    val count_for_case = System.getProperty("count_for_case") ?: "50"
     maxHeapSize = heapSize
+
     jvmArgs(
-        "-XX:+PrintGCDetails",
-        "-Xlog:gc*:file=gc.log:time,uptime,level,tags"
+      //  "-XX:+PrintGCDetails",
+    //    "-Xlog:gc*:file=gc.log:time,uptime,level,tags",
+        "-Dspecial_case=$special_case",
+        "-Dcount_for_case=$count_for_case"
     )
 }
 kotlin {
