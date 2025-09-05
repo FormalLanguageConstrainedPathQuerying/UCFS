@@ -78,8 +78,17 @@ abstract class AbstractBenchmarkTest {
         }
         testCasesFolder.createDirectory()
         result_folder.createDirectory()
+        val special_case = System.getProperty("special_case")
+
+
         for (folder in testCasesFolder.listFiles()) {
+            if((!special_case.isNullOrEmpty() && special_case != "nothing") && folder.name != special_case) {
+
+
+                continue;
+            }
             if (folder.isDirectory) {
+                println(special_case)
                 println(folder.name)
                 println(File(Path(result_folder.path).resolve(folder.name).toUri() ))
                 val bechmark_result_folder = File(Path(result_folder.path).resolve(folder.name).toUri() )
@@ -96,9 +105,12 @@ abstract class AbstractBenchmarkTest {
         val time = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         val formattedDateTime = time.format(formatter)
-        val logsFile = File(result_folder.toPath().toString(), formattedDateTime+"work_times" +".logs")
-        val resultsLog = File(result_folder.toPath().toString(), formattedDateTime+"results" +".logs")
-        val actualResult = createTree(input, grammar)
+        var logsFile: File? = null
+        var resultsLog: File? = null
+        if(System.getProperty("write_case_time") == "1") {
+            logsFile = File(result_folder.toPath().toString(), formattedDateTime + "work_times" + ".logs")
+            resultsLog = File(result_folder.toPath().toString(), formattedDateTime + "results" + ".logs")
+        }
         var x = 0
         var logs = ""
         val timeMeasurements = mutableListOf<Long>()
@@ -107,8 +119,9 @@ abstract class AbstractBenchmarkTest {
         println("Work time: $testCasesFolder")
         val used = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024)
         println("Used memory: " + used + " MB")
+        val max_test_count = System.getProperty("count_for_case").toInt()
         MemoryMonitor.start()
-        while (x < 1000) {
+        while (x < max_test_count) {
             val start = System.nanoTime()
             val actualResult = createTree(input, grammar)
             val workTime = System.nanoTime() - start
@@ -130,14 +143,20 @@ abstract class AbstractBenchmarkTest {
         println("Max time: ${maxTime / 1_000_000} ms")
         println("Total time: ${totalTime / 1_000_000_000.0} seconds")
         println("===========================")
-        // останавливаем и получаем пик
+
         println("Peak memory usage: $peak MB")
-        logsFile.writeText(logs)
+        if(System.getProperty("write_case_time") == "1") {
+            logsFile?.writeText(logs)
+        }
         logs = "\n=== PERFORMANCE RESULTS === \n Total iterations: ${timeMeasurements.size} \n Average time: ${"%.3f".format(averageTime / 1_000_000)} ms" +
                 "\n Min time: ${minTime / 1_000_000} ms" +
                 "\nMax time: ${maxTime / 1_000_000} ms" +
-                "Total time: ${totalTime / 1_000_000_000.0} seconds"
-        resultsLog.writeText(logs)
+                "\nTotal time: ${totalTime / 1_000_000_000.0} seconds"+
+                "\nPeak memory usage: $peak MB"
+
+        if(System.getProperty("write_case_time") == "1") {
+            resultsLog?.writeText(logs)
+        }
 
     }
 
