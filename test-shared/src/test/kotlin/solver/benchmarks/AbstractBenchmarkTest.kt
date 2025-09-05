@@ -143,7 +143,7 @@ abstract class AbstractBenchmarkTest {
         println("Max time: ${maxTime / 1_000_000} ms")
         println("Total time: ${totalTime / 1_000_000_000.0} seconds")
         println("===========================")
-        // останавливаем и получаем пик
+
         println("Peak memory usage: $peak MB")
         if(System.getProperty("write_case_time") == "1") {
             logsFile?.writeText(logs)
