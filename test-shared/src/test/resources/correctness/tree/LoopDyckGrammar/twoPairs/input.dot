@@ -1,0 +1,8 @@
+digraph Input {
+    label="Two concatenated linear pairs of brackets, simple loop RSM for Dyck language"
+    start -> 0;
+	0 -> 1 [label = "("];
+	1 -> 2 [label = ")"];
+	2 -> 3 [label = "("];
+	3 -> 4 [label = ")"];
+}

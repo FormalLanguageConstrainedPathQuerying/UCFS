@@ -1,0 +1,3 @@
+digraph Input {
+    start -> 0;
+}

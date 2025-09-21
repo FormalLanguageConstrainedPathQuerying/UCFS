@@ -1,191 +1,139 @@
-# UCFS
-[![Build](https://github.com/FormalLanguageConstrainedPathQuerying/kotgll/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/FormalLanguageConstrainedPathQuerying/kotgll/actions/workflows/build.yml)
-[![Test](https://github.com/FormalLanguageConstrainedPathQuerying/kotgll/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/FormalLanguageConstrainedPathQuerying/kotgll/actions/workflows/test.yml)
 
-* [About](https://github.com/FormalLanguageConstrainedPathQuerying/kotgll#about)
-* [Usage](https://github.com/FormalLanguageConstrainedPathQuerying/kotgll#usage)
-  * [From sources](https://github.com/FormalLanguageConstrainedPathQuerying/kotgll#from-sources)
-  * [Using JAR](https://github.com/FormalLanguageConstrainedPathQuerying/kotgll#using-jar)
-  * [CFG Format Example](https://github.com/FormalLanguageConstrainedPathQuerying/kotgll#cfg-format-example)
-  * [RSM Format Example](https://github.com/FormalLanguageConstrainedPathQuerying/kotgll#rsm-format-example)
-* [Performance](https://github.com/FormalLanguageConstrainedPathQuerying/kotgll#performance)
-  * [Graphs](https://github.com/FormalLanguageConstrainedPathQuerying/kotgll#graphs)
-  * [Grammars](https://github.com/FormalLanguageConstrainedPathQuerying/kotgll#grammars)
-  * [Results](https://github.com/FormalLanguageConstrainedPathQuerying/kotgll#results)
-  * [More results](https://github.com/FormalLanguageConstrainedPathQuerying/kotgll#more-results)
+# UCFS
 
 > Note: project under heavy development!
 
 ## About
-**UCFS** is an **U**nuversal **C**ontext-**F**ree **S**olver: a tool to solve problems related to context-free and regular language intersection. Examples of such problems:
+**UCFS** is an **U**niversal **C**ontext-**F**ree **S**olver: a tool to solve problems related to context-free and regular language intersection. Examples of such problems:
 - Parsing
 - Context-free path querying (CFPQ)
-- Context-free language reachability (CFL-r)
+- Context-free language reachability (CFL-R)
 
-<!-- Online -- offline modes.
+<!-- Online -- offline modes.    
+    
+All-pairs, multiple-source. All-paths, reachability.     
+    
+Incrementality. Both the graph and RSM    
+    
+Error recovery.    
+    
+ GLL-based    
+ RSM    
+-->    
 
-All-pairs, multiple-source. All-paths, reachability. 
-
-Incrementality. Both the graph and RSM
-
-Error recovery.
-
- GLL-based
- RSM
--->
-
-## Usage
-
-### Command Line Interface
-
-```text
-Usage: kotgll options_list
-Options: 
-    --input -> Input format (always required) { Value should be one of [string, graph] }
-    --grammar -> Grammar format (always required) { Value should be one of [cfg, rsm] }
-    --sppf [ON] -> Sppf mode { Value should be one of [on, off] }
-    --inputPath -> Path to input txt file (always required) { String }
-    --grammarPath -> Path to grammar txt file (always required) { String }
-    --outputPath -> Path to output txt file (always required) { String }
-    --help, -h -> Usage info
+## Project structure 
+```
+├── solver                  -- base ucfs logic
+├── benchmarks              -- comparison with antlr4
+├── generator               -- parser and ast node classes generator
+├── examples                -- examples of grammars
+└── test-shared             -- test cases 
+    └── src
+        └── test
+            └── resources   -- grammars' description and inputs
 ```
 
-### From sources
+## Core Algorithm
+UCFS is based on Generalized LL (GLL) parsing algorithm modified to handle language specification in form of Recursive State Machines (RSM-s) and input in form of arbitratry directed edge-labelled graph. Basic ideas described [here](https://arxiv.org/pdf/2312.11925.pdf). 
 
-#### Step 1. Clone repository
+## Grammar Combinator
 
-`git clone https://github.com/FormalLanguageConstrainedPathQuerying/kotgll.git`
+Kotlin DSL for describing context-free grammars.
 
-or 
 
-`git clone git@github.com:FormalLanguageConstrainedPathQuerying/kotgll.git`
 
-or 
+### Declaration
 
-`gh repo clone FormalLanguageConstrainedPathQuerying/kotgll`
+Example for A* grammar
 
-#### Step 2. Go to the folder
+*EBNF*
+``` 
+A = "a"    
+S = A*     
+``` 
+*DSL*  
+```kotlin 
+class AStar : Grammar() {    
+        var A = Term("a")    
+        val S by Nt().asStart(many(A))    
+    }    
+``` 
+### Non-terminals
 
-`cd kotgll`
+`val S by Nt()`
 
-#### Step 3. Run the help command
+Non-terminals must be fields of the grammar class. Make sure to declare using delegation `by Nt()`!
 
-`gradle run --args="--help"`
+Start non-terminal set with method `setStart(nt)`. Or in initialization with Nt method `asStart`.
 
-You will see the ["Options list"](https://github.com/FormalLanguageConstrainedPathQuerying/kotgll#command-line-interface) message.
+ Can be set only once for grammar.
 
-#### Example
+### Terminals
 
-```text
-gradle run --args="--input graph --grammar rsm --sppf off --inputPath src/test/resources/cli/TestGraphReadWriteCSV/dyck.csv --grammarPath src/test/resources/cli/TestRSMReadWriteTXT/dyck.txt --outputPath ./result.txt"
-```
+`val A = Term("a")`
 
-### Using JAR
+`val B = Term(42)`
 
-#### Step 1. Download the latest JAR
+Terminal is a generic class. Can store terminals of any type. Terminals are compared based on their content.
 
-```text
-curl -L -O https://github.com/FormalLanguageConstrainedPathQuerying/kotgll/releases/download/v1.0.0/kotgll-1.0.0.jar
-```
+They can be declared as fields of a grammar class or directly in productions.
 
-#### Step 2. Run JAR with Java
+### Operations
+Example for Dyck language
 
-```text
-java -jar kotgll-1.0.0.jar --input graph --grammar rsm --sppf off --inputPath src/test/resources/cli/TestGraphReadWriteCSV/dyck.csv --grammarPath src/test/resources/cli/TestRSMReadWriteTXT/dyck.txt --outputPath ./result.txt
-```
-### CFG Format Example
+*EBNF*
+``` 
+S = S1 | S2 | S3 | ε    
+S1 = '(' S ')' S     
+S2 = '[' S ']' S     
+S3 = '{' S '}' S     
+``` 
+*DSL*
+```kotlin 
+class DyckGrammar : Grammar() {
+    val S       by Nt().asStart()
+    val Round   by Nt("(" * S * ")")
+    val Quadrat by Nt("[" * S * "]")
+    val Curly   by Nt("{" * S * "}")
 
-```text
-StartNonterminal("S")
-Nonterminal("S") -> Terminal("subClassOf_r") Nonterminal("S") Terminal("subClassOf")
-Nonterminal("S") -> Terminal("subClassOf_r") Terminal("subClassOf")
-Nonterminal("S") -> Terminal("type_r") Nonterminal("S") Terminal("type")
-Nonterminal("S") -> Terminal("type_r") Terminal("type")
-```
+    init {
+        //recursive nonterminals initialize in `init` block
+        S /= S * (Round or Quadrat or Curly) or Epsilon
+    }
+}
+``` 
+### Production
+$A \Longrightarrow B \hspace{4pt} \overset{def}{=} \hspace{4pt} A$  \\= $B$
 
-### RSM Format Example
+$A \Longrightarrow B \hspace{4pt} \overset{def}{=} \hspace{4pt} A~by~Nt(B)$
 
-```text
-StartState(id=0,nonterminal=Nonterminal("S"),isStart=true,isFinal=false)
-State(id=0,nonterminal=Nonterminal("S"),isStart=true,isFinal=false)
-State(id=1,nonterminal=Nonterminal("S"),isStart=false,isFinal=false)
-State(id=4,nonterminal=Nonterminal("S"),isStart=false,isFinal=false)
-State(id=3,nonterminal=Nonterminal("S"),isStart=false,isFinal=true)
-State(id=2,nonterminal=Nonterminal("S"),isStart=false,isFinal=false)
-State(id=6,nonterminal=Nonterminal("S"),isStart=false,isFinal=true)
-State(id=5,nonterminal=Nonterminal("S"),isStart=false,isFinal=false)
-TerminalEdge(tail=0,head=1,terminal=Terminal("subClassOf_r"))
-TerminalEdge(tail=0,head=4,terminal=Terminal("type_r"))
-TerminalEdge(tail=1,head=3,terminal=Terminal("subClassOf"))
-NonterminalEdge(tail=1,head=2,nonterminal=Nonterminal("S"))
-TerminalEdge(tail=4,head=6,terminal=Terminal("type"))
-NonterminalEdge(tail=4,head=5,nonterminal=Nonterminal("S"))
-TerminalEdge(tail=2,head=3,terminal=Terminal("subClassOf"))
-TerminalEdge(tail=5,head=6,terminal=Terminal("type"))
-```
+### Concatenation
+$( \hspace{4pt} \cdot \hspace{4pt} ) : \sum_∗ \times \sum_∗ → \sum_∗$
 
-## Performance
+$a \cdot b \hspace{4pt} \overset{def}{=} \hspace{4pt} a * b$
 
-The GLL algorithm has been modified to support graph input.
-The proposed modification has been evaluated on several real graphs for the scenario of finding all pairs of reachability.
+### Alternative
+$( \hspace{4pt} | \hspace{4pt} ) : \sum_∗ \times \sum_∗ → \sum_∗$
 
-**Machine configuration**: PC with Ubuntu 20.04, Intel Core i7-6700 3.40GHz CPU, DDR4 64Gb RAM.
+$a \hspace{4pt} | \hspace{4pt} b \hspace{4pt} \overset{def}{=} \hspace{4pt} a \hspace{4pt} or \hspace{4pt} b$
 
-**Enviroment configuration**: 
-* Java HotSpot(TM) 64-Bit server virtual machine (build 15.0.2+7-27, mixed mode, sharing).
-* JVM heap configuration: 55Gb both xms and xmx.
+### Kleene Star
 
-### Graphs
+$( \hspace{4pt} * \hspace{4pt} ) : \sum \to \sum_∗$
 
-The graph data is selected from [CFPQ_Data dataset](https://formallanguageconstrainedpathquerying.github.io/CFPQ_Data).
+$a^* \hspace{4pt} \overset{def}{=} \hspace{4pt} \displaystyle\bigcup_{i = 0}^{\infty}a^i$
 
-A detailed description of the graphs is listed bellow.
+$a^* \hspace{4pt} \overset{def}{=} \hspace{4pt} many(a)$
 
-#### RDF analysis graphs
+$a^+ \hspace{4pt} \overset{def}{=} \hspace{4pt} some(a)$
 
-| Graph name   |   \|*V*\| |     \|*E*\| |  #subClassOf |      #type |  #broaderTransitive |
-|:------------|----------:|------------:|-------------:|-----------:|--------------------:|
-| [Enzyme](https://formallanguageconstrainedpathquerying.github.io/CFPQ_Data/graphs/data/enzyme.html#enzyme)       |    48 815 |      86 543 |        8 163 |     14 989 |               8 156 |
-| [Eclass](https://formallanguageconstrainedpathquerying.github.io/CFPQ_Data/graphs/data/eclass.html#eclass) |   239 111 |     360 248 |       90 962 |     72 517 |                   0 |
-| [Go hierarchy](https://formallanguageconstrainedpathquerying.github.io/CFPQ_Data/graphs/data/go_hierarchy.html#go-hierarchy) |    45 007 |     490 109 |      490 109 |          0 |                   0 | 
-| [Go](https://formallanguageconstrainedpathquerying.github.io/CFPQ_Data/graphs/data/go.html#go)           |   582 929 |   1 437 437 |       94 514 |    226 481 |                   0 |
-| [Geospecies](https://formallanguageconstrainedpathquerying.github.io/CFPQ_Data/graphs/data/geospecies.html#geospecies)   |   450 609 |   2 201 532 |            0 |     89 065 |              20 867 |  
-| [Taxonomy](https://formallanguageconstrainedpathquerying.github.io/CFPQ_Data/graphs/data/taxonomy.html#taxonomy)     | 5 728 398 |  14 922 125 |    2 112 637 |  2 508 635 |                   0 |
+### Optional
+$a? \hspace{4pt} \overset{def}{=} \hspace{4pt} a \hspace{4pt} or \hspace{4pt} Epsilon$
 
-### Grammars
+Epsilon -- constant terminal with behavior corresponding to the $\varepsilon$ -- terminal (empty string).
 
-All queries used in evaluation are variants of same-generation query.
-The inverse of an ```x``` relation and the respective edge is denoted as ```x_r```.
+$a? \hspace{4pt} \overset{def}{=} \hspace{4pt} opt(a)$
 
-<br/>
-
-Grammars used for **RDF** graphs:
-
-**G<sub>1</sub>**
-```
-S -> subClassOf_r S subClassOf | subClassOf_r subClassOf 
-     | type_r S type | type_r type
-```
-
-The representation of **G<sub>1</sub>** context-free grammar in the repository can be found [here](https://github.com/FormalLanguageConstrainedPathQuerying/kotgll/blob/main/src/test/resources/cli/TestCFGReadWriteTXT/g1.txt).
-
-The representation of **G<sub>1</sub>** context-free grammar as recursive automaton in the repository can be found [here](https://github.com/FormalLanguageConstrainedPathQuerying/kotgll/blob/main/src/test/resources/cli/TestRSMReadWriteTXT/g1.txt).
-
-### Results
-
-The results of the **all pairs reachability** queries evaluation on graphs related to **RDF analysis** are listed below.
-
-In each row, the best mean time in seconds is highlighted in **bold**.
-
-| Graph        	|  [CFG](https://github.com/FormalLanguageConstrainedPathQuerying/kotgll/tree/main/src/main/kotlin/org/kotgll/cfg/graphinput/withoutsppf)  	|    [RSM](https://github.com/FormalLanguageConstrainedPathQuerying/kotgll/tree/main/src/main/kotlin/org/kotgll/rsm/graphinput/withoutsppf)    	| [GLL4Graph](https://github.com/FormalLanguageConstrainedPathQuerying/GLL4Graph) 	|
-|--------------	|:-----:	|:---------:	|:---------:	|
-| [Enzyme](https://formallanguageconstrainedpathquerying.github.io/CFPQ_Data/graphs/data/enzyme.html#enzyme)       	| 0.107 	| **0.044** 	|      0.22 	|
-| [Eclass](https://formallanguageconstrainedpathquerying.github.io/CFPQ_Data/graphs/data/eclass.html#eclass)       	|  0.94 	|  **0.43** 	|       1.5 	|
-| [Go hierarchy](https://formallanguageconstrainedpathquerying.github.io/CFPQ_Data/graphs/data/go_hierarchy.html#go-hierarchy) 	|   4.1 	|   **3.0** 	|       3.6 	|
-| [Go](https://formallanguageconstrainedpathquerying.github.io/CFPQ_Data/graphs/data/go.html#go)           	|   3.2 	|  **1.86** 	|      5.55 	|
-| [Geospecies](https://formallanguageconstrainedpathquerying.github.io/CFPQ_Data/graphs/data/geospecies.html#geospecies)   	|  0.97 	|  **0.34** 	|      2.89 	|
-| [Taxonomy](https://formallanguageconstrainedpathquerying.github.io/CFPQ_Data/graphs/data/taxonomy.html#taxonomy)     	|  31.2 	|  **14.8** 	|      45.4 	|
-
-#### More results
-
-More results, but in raw form, can be found in the repository [kotgll_benchmarks](https://github.com/vadyushkins/kotgll_benchmarks/)
+### RSM
+DSL provides access to the RSM corresponding to the grammar using the `getRsm` method.    
+The algorithm for RSM construction is based on Brzozowski derivations.
