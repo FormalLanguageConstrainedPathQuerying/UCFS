@@ -2,8 +2,6 @@
 
 > Note: project under heavy development!
 
-Please, see [documentation](https://formallanguageconstrainedpathquerying.github.io/UCFS/) for details.
-
 ## What is UCFS?
 
 UCFS is an **U**niversal **C**ontext-**F**ree **S**olver: a GLL‑based tool for problems at the intersection of context‑free languages 
@@ -43,4 +41,4 @@ test-shared/  # Testcases, grammars, inputs, ANTLR4 comparison
 
 
 ## Core Algorithm
-UCFS is based on Generalized LL (GLL) parsing algorithm modified to handle language specification in form of Recursive State Machines (RSM) and input in form of arbitratry directed edge-labelled graph. Basic ideas described [here](https://arxiv.org/pdf/2312.11925.pdf). 
+UCFS is based on Generalized LL (GLL) parsing algorithm modified to handle language specification in form of Recursive State Machines (RSM-s) and input in form of arbitratry directed edge-labelled graph. Basic ideas described [here](https://arxiv.org/pdf/2312.11925.pdf). 
