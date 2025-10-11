@@ -3,7 +3,5 @@ plugins {
 }
 rootProject.name = "ucfs"
 include("solver")
-include("benchmarks")
 include("generator")
 include("test-shared")
-include("examples")

@@ -1,4 +1,20 @@
-site_name: My site yaay
-site_url: https://mydomain.org/mysite
+site_name: Universal Context-Free Solver
+site_url: https://formallanguageconstrainedpathquerying.github.io/UCFS/
 theme:
   name: material
+
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js

@@ -2,6 +2,8 @@
 
 > Note: project under heavy development!
 
+Please, see [documentation](https://formallanguageconstrainedpathquerying.github.io/UCFS/) for details.
+
 ## What is UCFS?
 
 UCFS is an **U**niversal **C**ontext-**F**ree **S**olver: a GLL‑based tool for problems at the intersection of context‑free languages 
@@ -22,12 +24,11 @@ over edge‑labeled directed graphs. Examples of such problems:
 
 ### Repository layout (high‑level)
 ```
-benchmarks/   # ANTLR4 comparison & perf harness (examples, scripts)
-examples/     # Grammar examples (A*, Dyck, etc.)
-generator/    # Parser & AST node‑class generator
+docs/         # documentation pages  
+generator/    # Parser & AST node‑class generator <in progress>
 solver/       # Core UCFS logic (GLL + RSM)
-src/          # CLI and library entry points
-test-shared/  # Testcases, grammars, inputs
+test-shared/  # Testcases, grammars, inputs, ANTLR4 comparison
+              # grammar examples and experiments
 ```
 
 ### Requirements
@@ -42,4 +43,4 @@ test-shared/  # Testcases, grammars, inputs
 
 
 ## Core Algorithm
-UCFS is based on Generalized LL (GLL) parsing algorithm modified to handle language specification in form of Recursive State Machines (RSM-s) and input in form of arbitratry directed edge-labelled graph. Basic ideas described [here](https://arxiv.org/pdf/2312.11925.pdf). 
+UCFS is based on Generalized LL (GLL) parsing algorithm modified to handle language specification in form of Recursive State Machines (RSM) and input in form of arbitratry directed edge-labelled graph. Basic ideas described [here](https://arxiv.org/pdf/2312.11925.pdf). 
