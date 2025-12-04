@@ -10,6 +10,10 @@ repositories {
 }
 
 dependencies {
+    implementation(kotlin("stdlib"))
+    testImplementation(kotlin("stdlib"))
+    testImplementation(kotlin("test"))
+
     implementation(project(":solver"))
     implementation(project(":generator"))
     implementation("org.junit.jupiter:junit-jupiter:5.8.1")
