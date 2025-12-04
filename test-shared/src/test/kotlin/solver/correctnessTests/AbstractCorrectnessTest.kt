@@ -29,7 +29,7 @@ abstract class AbstractCorrectnessTest {
 
 
     fun runTests(grammar :Grammar) {
-        val grammarName = grammar.javaClass.simpleName
+        val grammarName = grammar.name
         writeRsmToDot(grammar.rsm, "${grammarName}Rsm")
         val path: Path = getRootDataFolder()
         val testCasesFolder = File(path.resolve(grammarName).toUri())

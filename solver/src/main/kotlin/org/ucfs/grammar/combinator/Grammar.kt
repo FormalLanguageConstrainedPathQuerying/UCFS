@@ -1,11 +1,7 @@
 package org.ucfs.grammar.combinator
 
 import org.ucfs.grammar.combinator.regexp.Nt
-import org.ucfs.grammar.combinator.regexp.Regexp
-import org.ucfs.incrementalDfs
 import org.ucfs.rsm.RsmState
-import org.ucfs.rsm.symbol.ITerminal
-import org.ucfs.rsm.symbol.Nonterminal
 
 
 open class Grammar {
@@ -13,6 +9,11 @@ open class Grammar {
 
     private lateinit var startNt: Nt
     private lateinit var fictitiousStartNt: Nt
+
+    val name: String = this.javaClass.simpleName.ifEmpty {
+        //in case of lambda objects
+        this.javaClass.name.substringBeforeLast('$').substringAfterLast('$')
+    }
 
     private var _rsm: RsmState? = null
     val rsm: RsmState
