@@ -6,8 +6,12 @@ labelloc="t"
 _0_0 [label = "0     Nonterminal S, input: [4, 4]", shape = invtrapezium]
 _0_1 [label = "1     Range , input: [4, 4], rsm: [S_0, S_1]", shape = ellipse]
 _0_2 [label = "2     Nonterminal Sp, input: [4, 4]", shape = invtrapezium]
+_0_3 [label = "3     Range , input: [4, 4], rsm: [Sp_0, Sp_0]", shape = ellipse]
+_0_4 [label = "4     Epsilon RSM: Sp_0, input: [4, 4]", shape = invhouse]
 _0_0->_0_1
 _0_1->_0_2
+_0_2->_0_3
+_0_3->_0_4
 }
 
 subgraph cluster_1{

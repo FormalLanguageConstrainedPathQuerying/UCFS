@@ -1,4 +1,4 @@
-package solver.correctnessTests.dyckKParityAlpha
+package solver.correctnessTests.dyckKParity
 
 import org.ucfs.grammar.combinator.Grammar
 import org.ucfs.grammar.combinator.regexp.Epsilon
