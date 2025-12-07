@@ -1,12 +1,11 @@
-package solver.correctnessTests.dyckKParityAlpha
+package solver.correctnessTests.dyckKParity
 
 import org.junit.jupiter.api.Test
 import solver.correctnessTests.AbstractCorrectnessTest
 
-class DyckKParityTest : AbstractCorrectnessTest() {
+class TestDyckKParityBeta : AbstractCorrectnessTest() {
     @Test
     override fun checkTreeCorrectnessForGrammar() {
-        runTests(dyckAlphaGrammarKParity())
         runTests(dyckBetaGrammarKParity())
     }
 }

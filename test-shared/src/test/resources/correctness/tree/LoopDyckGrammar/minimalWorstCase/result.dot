@@ -35,6 +35,7 @@ _0_7->_0_9
 _0_8->_0_18
 _0_8->_0_10
 _0_10->_0_11
+_0_11->_0_1
 _0_13->_0_14
 _0_13->_0_15
 _0_14->_0_16
@@ -50,24 +51,44 @@ labelloc="t"
 _1_0 [label = "0     Nonterminal S, input: [0, 1]", shape = invtrapezium]
 _1_1 [label = "1     Range , input: [0, 1], rsm: [S_0, S_0]", shape = ellipse]
 _1_2 [label = "10     Nonterminal S, input: [0, 0]", shape = invtrapezium]
-_1_3 [label = "2     Intermediate input: 0, rsm: S_2, input: [0, 1]", shape = plain]
-_1_4 [label = "3     Range , input: [0, 0], rsm: [S_0, S_2]", shape = ellipse]
-_1_5 [label = "4     Range , input: [0, 1], rsm: [S_2, S_0]", shape = ellipse]
-_1_6 [label = "5     Intermediate input: 0, rsm: S_1, input: [0, 0]", shape = plain]
-_1_7 [label = "6     Terminal ')', input: [0, 1]", shape = rectangle]
-_1_8 [label = "7     Range , input: [0, 0], rsm: [S_0, S_1]", shape = ellipse]
-_1_9 [label = "8     Range , input: [0, 0], rsm: [S_1, S_2]", shape = ellipse]
-_1_10 [label = "9     Terminal '(', input: [0, 0]", shape = rectangle]
+_1_3 [label = "11     Range , input: [0, 0], rsm: [S_0, S_0]", shape = ellipse]
+_1_4 [label = "12     Epsilon RSM: S_0, input: [0, 0]", shape = invhouse]
+_1_5 [label = "13     Intermediate input: 1, rsm: S_2, input: [0, 0]", shape = plain]
+_1_6 [label = "14     Range , input: [0, 1], rsm: [S_0, S_2]", shape = ellipse]
+_1_7 [label = "15     Range , input: [1, 0], rsm: [S_2, S_0]", shape = ellipse]
+_1_8 [label = "16     Intermediate input: 0, rsm: S_1, input: [0, 1]", shape = plain]
+_1_9 [label = "17     Terminal ')', input: [1, 0]", shape = rectangle]
+_1_10 [label = "18     Range , input: [0, 1], rsm: [S_1, S_2]", shape = ellipse]
+_1_11 [label = "19     Nonterminal S, input: [0, 1]", shape = invtrapezium]
+_1_12 [label = "2     Intermediate input: 0, rsm: S_2, input: [0, 1]", shape = plain]
+_1_13 [label = "3     Range , input: [0, 0], rsm: [S_0, S_2]", shape = ellipse]
+_1_14 [label = "4     Range , input: [0, 1], rsm: [S_2, S_0]", shape = ellipse]
+_1_15 [label = "5     Intermediate input: 0, rsm: S_1, input: [0, 0]", shape = plain]
+_1_16 [label = "6     Terminal ')', input: [0, 1]", shape = rectangle]
+_1_17 [label = "7     Range , input: [0, 0], rsm: [S_0, S_1]", shape = ellipse]
+_1_18 [label = "8     Range , input: [0, 0], rsm: [S_1, S_2]", shape = ellipse]
+_1_19 [label = "9     Terminal '(', input: [0, 0]", shape = rectangle]
 _1_0->_1_1
-_1_1->_1_3
+_1_1->_1_12
+_1_2->_1_3
 _1_3->_1_4
 _1_3->_1_5
-_1_4->_1_6
+_1_5->_1_6
 _1_5->_1_7
 _1_6->_1_8
-_1_6->_1_9
+_1_7->_1_9
+_1_8->_1_17
 _1_8->_1_10
-_1_9->_1_2
+_1_10->_1_11
+_1_11->_1_1
+_1_12->_1_13
+_1_12->_1_14
+_1_13->_1_15
+_1_14->_1_16
+_1_15->_1_17
+_1_15->_1_18
+_1_17->_1_19
+_1_18->_1_2
 }
 
 }
