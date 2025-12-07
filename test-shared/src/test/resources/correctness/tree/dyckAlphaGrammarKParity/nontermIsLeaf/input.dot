@@ -1,9 +1,6 @@
 digraph G {
-    start -> 3;
     start -> 4;
-    start -> 5;
     start -> 7;
-    start -> 8;
     3->4[label="op--1"];
     4->5[label="cp--1"];
     7->4[label="ob--1"];
