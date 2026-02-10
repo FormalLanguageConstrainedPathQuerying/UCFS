@@ -1,0 +1,12 @@
+digraph {
+    start -> 1;
+    1 -> 0 [label = "pt"];
+    2 -> 1 [label = "assign"];
+    1 -> 2 [label = "assign_r"];
+    2 -> 3 [label = "store_0"];
+    3 -> 4 [label = "pt"];
+    5 -> 3 [label = "assign"];
+    3 -> 5 [label = "assign_r"];
+    5 -> 6 [label = "store_1"];
+    6 -> 7 [label = "pt"];
+}
