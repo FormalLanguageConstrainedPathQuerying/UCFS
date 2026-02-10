@@ -10,11 +10,15 @@ import org.ucfs.input.DotParser
 import org.ucfs.input.InputGraph
 import org.ucfs.input.TerminalInputLabel
 import org.ucfs.parser.Gll
+import org.ucfs.sppf.getSppfDot
 import org.ucfs.sppf.node.*
+import java.nio.file.Files
+import java.nio.file.Path
+import kotlin.collections.flatten
 
 data class Input(val graphDot: String, val grammar: Grammar)
 
-class RequestGrammar : Grammar() {
+class PointsToGrammar : Grammar() {
     val S by Nt().asStart()
     val R by Nt(many("assign_r" or "load_0_r" or "load_1_r"))
 
@@ -23,7 +27,7 @@ class RequestGrammar : Grammar() {
     }
 }
 
-fun getInput(name: String): InputGraph<Int, TerminalInputLabel> {
+fun readGraph(name: String): InputGraph<Int, TerminalInputLabel> {
     val dotGraph = object {}.javaClass.getResource("/$name")?.readText()
         ?: throw RuntimeException("File $name not found in resources")
     val dotParser = DotParser()
@@ -32,7 +36,10 @@ fun getInput(name: String): InputGraph<Int, TerminalInputLabel> {
 
 data class OutEgde(val start: Int, val symbol: String, val end: Int)
 
-fun getPathFromSppf(node: RangeSppfNode<Int>): List<OutEgde> {
+fun getPathFromSppf(node: RangeSppfNode<Int>, maxDepth: Int): List<OutEgde>? {
+    if (maxDepth == 0) {
+        return null
+    }
     when (val nodeType = node.type) {
         is TerminalType<*> -> {
             val range = node.inputRange ?: throw RuntimeException("Null inputRange for TerminalType node of SPPF")
@@ -52,19 +59,40 @@ fun getPathFromSppf(node: RangeSppfNode<Int>): List<OutEgde> {
             throw RuntimeException("SPPF cannot contain EmptyRange")
         }
 
+        is IntermediateType<*>, is NonterminalType -> {
+            val subPaths = node.children.map { getPathFromSppf(it, maxDepth - 1) }
+            if (subPaths.any { it == null }) {
+                return null
+            }
+            return subPaths.filterNotNull().flatten()
+        }
+
+        is Range -> {
+            node.children.forEach {
+                getPathFromSppf(it, maxDepth - 1)?.let { path ->
+                    return@getPathFromSppf path
+                }
+            }
+            return null
+        }
+
         else -> {
-            return node.children.flatMap { getPathFromSppf(it) }
+            println("Type of node is ${node.type.javaClass}")
+            throw RuntimeException("Unknown RangeType in SPPF")
         }
     }
 }
 
 fun main() {
-    val graph = getInput("graph_1.dot")
-    val grammar = RequestGrammar()
-    val gll = Gll.gll(grammar.rsm, graph)
-    val sppf = gll.parse()
-    println("Result length ${sppf.size}")
-    sppf.forEach {
-        println(getPathFromSppf(it).toString())
+    listOf("graph_1.dot", "graph_2.dot", "graph_3.dot").forEach { graphName ->
+        val graph = readGraph(graphName)
+        val grammar = PointsToGrammar()
+        val gll = Gll.gll(grammar.rsm, graph)
+        val sppf = gll.parse()
+        println("Founded paths in $graphName")
+        sppf.forEach {
+            println(getPathFromSppf(it, maxDepth = 10).toString())
+        }
+        println()
     }
 }
