@@ -18,10 +18,10 @@ import java.nio.file.Path
 
 class PointsToGrammar : Grammar() {
     val S by Nt().asStart()
-    val R by Nt(Option("pt" * "pt_r"))
+    val R by Nt(Option("pt" * "pt_r") * many("assign_r"))
 
     init {
-        S /= R * many("assign_r" * ("store_0" or "store_1" or "store_2" or "store_3")) * "pt"
+        S /= many( R * ("store_0" or "store_1" or "store_2" or "store_3")) * "pt"
     }
 }
 
