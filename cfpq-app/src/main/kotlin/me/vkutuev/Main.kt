@@ -12,8 +12,6 @@ import org.ucfs.input.TerminalInputLabel
 import org.ucfs.parser.Gll
 import org.ucfs.sppf.node.*
 
-data class Input(val graphDot: String, val grammar: Grammar)
-
 class PointsToGrammar : Grammar() {
     val S by Nt().asStart()
     val R by Nt(many("assign_r" or "load_0_r" or "load_1_r"))
