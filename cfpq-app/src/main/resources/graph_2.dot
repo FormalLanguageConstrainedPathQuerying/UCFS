@@ -8,13 +8,13 @@ digraph {
     1 -> 2 [label = "pt_r"];
     2 -> 3 [label = "store_0"];
     3 -> 4 [label = "pt"];
-    4 -> 3 [label = "pt"];
+    4 -> 3 [label = "pt_r"];
     2 -> 5 [label = "assign"];
     5 -> 2 [label = "assign_r"];
     5 -> 2 [label = "load_0"];
     2 -> 5 [label = "load_0_r"];
     2 -> 4 [label = "pt"];
-    4 -> 2 [label = "pt"];
+    4 -> 2 [label = "pt_r"];
     5 -> 4 [label = "pt"];
-    4 -> 5 [label = "pt"];
+    4 -> 5 [label = "pt_r"];
 }
