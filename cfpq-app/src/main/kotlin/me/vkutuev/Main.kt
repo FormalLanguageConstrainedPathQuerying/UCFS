@@ -5,6 +5,7 @@ import org.ucfs.grammar.combinator.extension.StringExtension.many
 import org.ucfs.grammar.combinator.extension.StringExtension.or
 import org.ucfs.grammar.combinator.extension.StringExtension.times
 import org.ucfs.grammar.combinator.regexp.Nt
+import org.ucfs.grammar.combinator.regexp.Option
 import org.ucfs.grammar.combinator.regexp.many
 import org.ucfs.input.DotParser
 import org.ucfs.input.InputGraph
@@ -17,10 +18,10 @@ import java.nio.file.Path
 
 class PointsToGrammar : Grammar() {
     val S by Nt().asStart()
-    val R by Nt(many("assign_r" or "load_0_r" or "load_1_r"))
+    val R by Nt(Option("pt" * "pt_r"))
 
     init {
-        S /= many("assign") * many(R * ("store_0" or "store_1")) * "pt"
+        S /= R * many("assign_r" * ("store_0" or "store_1" or "store_2" or "store_3")) * "pt"
     }
 }
 
@@ -92,14 +93,14 @@ fun saveSppf(name: String, sppf: Set<RangeSppfNode<Int>>) {
 }
 
 fun main() {
-    listOf("graph_1.dot", "graph_2.dot", "graph_3.dot").forEach { graphName ->
+    listOf("graph_1.dot", "graph_2.dot", "graph_3.dot", "graph_4.dot").forEach { graphName ->
         val graph = readGraph(graphName)
         val grammar = PointsToGrammar()
         val gll = Gll.gll(grammar.rsm, graph)
         val sppf = gll.parse()
         println("Founded paths in $graphName")
         sppf.forEach {
-            println(getPathFromSppf(it, maxDepth = 10).toString())
+            println(getPathFromSppf(it, maxDepth = 100).toString())
         }
         println()
         saveSppf(graphName, sppf)
