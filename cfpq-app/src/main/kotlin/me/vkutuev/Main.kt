@@ -10,7 +10,10 @@ import org.ucfs.input.DotParser
 import org.ucfs.input.InputGraph
 import org.ucfs.input.TerminalInputLabel
 import org.ucfs.parser.Gll
+import org.ucfs.sppf.getSppfDot
 import org.ucfs.sppf.node.*
+import java.nio.file.Files
+import java.nio.file.Path
 
 class PointsToGrammar : Grammar() {
     val S by Nt().asStart()
@@ -77,6 +80,17 @@ fun getPathFromSppf(node: RangeSppfNode<Int>, maxDepth: Int): List<OutEgde>? {
     }
 }
 
+fun saveSppf(name: String, sppf: Set<RangeSppfNode<Int>>) {
+    val graphName = name.removeSuffix(".dot")
+    val genPath = Path.of("gen", "sppf")
+    Files.createDirectories(genPath)
+    val file = genPath.resolve("${graphName}_sppf.dot").toFile()
+
+    file.printWriter().use { out ->
+        out.println(getSppfDot(sppf))
+    }
+}
+
 fun main() {
     listOf("graph_1.dot", "graph_2.dot", "graph_3.dot").forEach { graphName ->
         val graph = readGraph(graphName)
@@ -88,5 +102,6 @@ fun main() {
             println(getPathFromSppf(it, maxDepth = 10).toString())
         }
         println()
+        saveSppf(graphName, sppf)
     }
 }
