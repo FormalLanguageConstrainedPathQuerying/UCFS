@@ -32,21 +32,22 @@ fun readGraph(name: String): InputGraph<Int, TerminalInputLabel> {
     return dotParser.parseDot(dotGraph)
 }
 
-data class OutEgde(val start: Int, val symbol: String, val end: Int)
+data class OutEdge(val start: Int, val symbol: String, val end: Int)
 
-fun getPathFromSppf(node: RangeSppfNode<Int>, maxDepth: Int): List<List<OutEgde>>? {
+fun getPathFromSppf(node: RangeSppfNode<Int>, maxDepth: Int): List<List<OutEdge>>? {
     if (maxDepth == 0) {
         return null
     }
     when (val nodeType = node.type) {
         is TerminalType<*> -> {
             val range = node.inputRange ?: throw RuntimeException("Null inputRange for TerminalType node of SPPF")
-            return listOf(listOf(OutEgde(range.from, nodeType.terminal.toString(), range.to)))
+            return listOf(listOf(OutEdge(range.from, nodeType.terminal.toString(), range.to)))
         }
 
+        //Do not extract subpaths for non-terminal R because they are useless.
         is NonterminalType if nodeType.startState.nonterminal.name == "R" -> {
             val range = node.inputRange ?: throw RuntimeException("Null inputRange for R Nonterminal node of SPPF")
-            return listOf(listOf(OutEgde(range.from, "R", range.to)))
+            return listOf(listOf(OutEdge(range.from, "R", range.to)))
         }
 
         is EpsilonNonterminalType -> {
@@ -62,7 +63,7 @@ fun getPathFromSppf(node: RangeSppfNode<Int>, maxDepth: Int): List<List<OutEgde>
             if (subPaths.any { it == null }) {
                 return null
             }
-            val paths = subPaths.filterNotNull().fold(listOf(listOf<OutEgde>())) { acc, lst ->
+            val paths = subPaths.filterNotNull().fold(listOf(listOf<OutEdge>())) { acc, lst ->
                 acc.flatMap { list -> lst.map { element -> list + element } }
             }
             return paths
@@ -72,8 +73,10 @@ fun getPathFromSppf(node: RangeSppfNode<Int>, maxDepth: Int): List<List<OutEgde>
             val paths = node.children.map {
                 getPathFromSppf(it, maxDepth - 1)?.filterNotNull()
             }.filterNotNull().flatten()
-            if (paths.isEmpty()){return null}
-                return paths
+            if (paths.isEmpty()) {
+                return null
+            }
+            return paths
         }
 
         else -> {
@@ -96,16 +99,12 @@ fun saveSppf(name: String, sppf: Set<RangeSppfNode<Int>>) {
 
 fun main() {
     listOf("graph_1.dot", "graph_2.dot", "graph_3.dot", "graph_4.dot").forEach { graphName ->
-    //listOf("graph_3.dot").forEach { graphName ->
         val graph = readGraph(graphName)
         val grammar = PointsToGrammar()
         val gll = Gll.gll(grammar.rsm, graph)
         val sppf = gll.parse()
         println("Founded paths in $graphName")
-        sppf.forEach { getPathFromSppf(it, maxDepth = 30)?.forEach{
-            println(it.toString())
-        }
-        }
+        sppf.forEach { getPathFromSppf(it, maxDepth = 30)?.forEach { println(it.toString()) } }
         println()
         saveSppf(graphName, sppf)
     }
