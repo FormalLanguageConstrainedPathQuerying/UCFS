@@ -10,11 +10,7 @@ import org.ucfs.input.DotParser
 import org.ucfs.input.InputGraph
 import org.ucfs.input.TerminalInputLabel
 import org.ucfs.parser.Gll
-import org.ucfs.sppf.getSppfDot
 import org.ucfs.sppf.node.*
-import java.nio.file.Files
-import java.nio.file.Path
-import kotlin.collections.flatten
 
 data class Input(val graphDot: String, val grammar: Grammar)
 
