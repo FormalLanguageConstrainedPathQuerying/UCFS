@@ -1,0 +1,37 @@
+digraph {
+    start -> 1;
+    start -> 8;
+    1 -> 0 [label = "alloc"];
+    1 -> 0 [label = "pt"];
+    0 -> 1 [label = "pt_r"];
+    4 -> 2 [label = "alloc"];
+    4 -> 2 [label = "pt"];
+    2 -> 4 [label = "pt_r"];
+    5 -> 3 [label = "alloc"];
+    5 -> 3 [label = "pt"];
+    3 -> 5 [label = "pt_r"];
+    10 -> 12 [label = "alloc"];
+    10 -> 12 [label = "pt"];
+    12 -> 10 [label = "pt_r"];
+    11 -> 13 [label = "alloc"];
+    11 -> 13 [label = "pt"];
+    13 -> 11 [label = "pt_r"];    
+    8 -> 6 [label = "assign"];
+    6 -> 8 [label = "assign_r"];
+    9 -> 7 [label = "assign"];
+    7 -> 9 [label = "assign_r"];    
+    4 -> 1 [label = "store_0"];
+    5 -> 1 [label = "store_1"];
+    8 -> 10 [label = "store_2"];
+    9 -> 11 [label = "store_3"];
+    6 -> 4 [label = "load_0"];
+    7 -> 5 [label = "load_1"];    
+    6 -> 0 [label = "pt"];
+    0 -> 6 [label = "pt_r"];
+    8 -> 0 [label = "pt"];
+    0 -> 8 [label = "pt_r"];
+    7 -> 0 [label = "pt"];
+    0 -> 7 [label = "pt_r"];
+    9 -> 0 [label = "pt"];
+    0 -> 9 [label = "pt_r"];
+}

@@ -1,12 +1,20 @@
 digraph {
     start -> 0;
     0 -> 1 [label = "pt"];
+    1 -> 0 [label = "pt_r"];
     2 -> 0 [label = "assign"];
     0 -> 2 [label = "assign_r"];
+    2 -> 1 [label = "pt"];
+    1 -> 2 [label = "pt_r"];
     2 -> 3 [label = "store_0"];
     3 -> 4 [label = "pt"];
+    4 -> 3 [label = "pt"];
     2 -> 5 [label = "assign"];
     5 -> 2 [label = "assign_r"];
     5 -> 2 [label = "load_0"];
     2 -> 5 [label = "load_0_r"];
+    2 -> 4 [label = "pt"];
+    4 -> 2 [label = "pt"];
+    5 -> 4 [label = "pt"];
+    4 -> 5 [label = "pt"];
 }
