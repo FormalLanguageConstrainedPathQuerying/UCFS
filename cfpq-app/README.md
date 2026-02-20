@@ -30,18 +30,18 @@ val y = new Y()
 val z = new Z()
 val l = n
 val t = y
-z.u = y
+l.u = y
 t.v = z
 ```
+
 
 Graph 2:
 ```java
 val n = new X()
 val l = n
-while (...){
-    val t = new X()
-    l.next = t
-    l = t
+while (...){    
+    l.next = new X()
+    l = l.next
 }
 ```
 
@@ -49,9 +49,10 @@ Graph 3:
 ```java
 val n = new X()
 val l = n
-while (...){    
-    l.next = new X()
-    l = l.next
+while (...){
+    val t = new X()
+    l.next = t
+    l = t
 }
 ```
 

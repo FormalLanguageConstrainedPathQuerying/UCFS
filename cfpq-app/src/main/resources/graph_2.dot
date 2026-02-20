@@ -7,6 +7,7 @@ digraph {
     2 -> 1 [label = "pt"];
     1 -> 2 [label = "pt_r"];
     2 -> 3 [label = "store_0"];
+    3 -> 2 [label = "store_0_r"];
     3 -> 4 [label = "pt"];
     4 -> 3 [label = "pt_r"];
     2 -> 5 [label = "assign"];
@@ -17,4 +18,12 @@ digraph {
     4 -> 2 [label = "pt_r"];
     5 -> 4 [label = "pt"];
     4 -> 5 [label = "pt_r"];
+
+    0[label = "n"]
+    1[label = "new X() // line 1"]
+    2[label = "l"]
+    3[label = "tmp1 // line 4"]
+    4[label = "new X() // line 4"]
+    5[label = "tmp2 // line 5"]
+
 }

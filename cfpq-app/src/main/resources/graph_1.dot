@@ -1,12 +1,27 @@
 digraph {
     start -> 1;
     1 -> 0 [label = "pt"];
+    0 -> 1 [label = "pt_r"];
     2 -> 1 [label = "assign"];
     1 -> 2 [label = "assign_r"];
     2 -> 3 [label = "store_0"];
+    3 -> 2 [label = "store_0_r"];
     3 -> 4 [label = "pt"];
+    4 -> 3 [label = "pt_r"];
     5 -> 3 [label = "assign"];
     3 -> 5 [label = "assign_r"];
     5 -> 6 [label = "store_1"];
+    6 -> 5 [label = "store_1_r"];
     6 -> 7 [label = "pt"];
+    7 -> 6 [label = "pt_r"];
+
+    0[label = "new X()"]
+    1[label = "n"]
+    2[label = "l"]
+    3[label = "y"]
+    4[label = "new Y()"]
+    5[label = "t"]
+    6[label = "z"]
+    7[label = "new Z()"]
+
 }
