@@ -7,6 +7,7 @@ import org.ucfs.grammar.combinator.extension.StringExtension.times
 import org.ucfs.grammar.combinator.regexp.Nt
 import org.ucfs.grammar.combinator.regexp.Option
 import org.ucfs.grammar.combinator.regexp.many
+import org.ucfs.grammar.combinator.regexp.or
 import org.ucfs.input.DotParser
 import org.ucfs.input.InputGraph
 import org.ucfs.input.TerminalInputLabel
@@ -18,10 +19,20 @@ import java.nio.file.Path
 
 class PointsToGrammar : Grammar() {
     val S by Nt().asStart()
-    val R by Nt(Option("pt" * "pt_r") * many("assign_r"))
-
+    val Alias by Nt()
+    val PointsTo by Nt(many("assign" or ("load_0" * Alias * "store_0") 
+                                     or ("load_1" * Alias * "store_1") 
+                                     or ("load_2" * Alias * "store_2") 
+                                     or ("load_3" * Alias * "store_3")
+                           ) * "alloc")
+    val FlowsTo by Nt("alloc_r" * many("assign_r" or ("store_0_r" * Alias * "load_0_r")
+                                                  or ("store_1_r" * Alias * "load_1_r")
+                                                  or ("store_2_r" * Alias * "load_2_r")
+                                                  or ("store_3_r" * Alias * "load_3_r")))
+    
     init {
-        S /= many( R * ("store_0" or "store_1" or "store_2" or "store_3")) * "pt"
+        Alias /= PointsTo * FlowsTo
+        S /= many( Option(Alias) * ("store_0" or "store_1" or "store_2" or "store_3")) * PointsTo
     }
 }
 
@@ -32,7 +43,9 @@ fun readGraph(name: String): InputGraph<Int, TerminalInputLabel> {
     return dotParser.parseDot(dotGraph)
 }
 
-data class OutEdge(val start: Int, val symbol: String, val end: Int)
+data class OutEdge(val start: Int, val symbol: String, val end: Int){
+    override fun toString(): String = "(" + start.toString() + "-" + symbol + "->" + end.toString() + ")"
+}
 
 fun getPathFromSppf(node: RangeSppfNode<Int>, maxDepth: Int): List<List<OutEdge>>? {
     if (maxDepth == 0) {
@@ -44,14 +57,20 @@ fun getPathFromSppf(node: RangeSppfNode<Int>, maxDepth: Int): List<List<OutEdge>
             return listOf(listOf(OutEdge(range.from, nodeType.terminal.toString(), range.to)))
         }
 
-        //Do not extract subpaths for non-terminal R because they are useless.
-        is NonterminalType if nodeType.startState.nonterminal.name == "R" -> {
-            val range = node.inputRange ?: throw RuntimeException("Null inputRange for R Nonterminal node of SPPF")
-            return listOf(listOf(OutEdge(range.from, "R", range.to)))
+        //Do not extract subpaths for non-terminal Alias because they are useless.
+        is NonterminalType if nodeType.startState.nonterminal.name == "Alias" -> {
+            val range = node.inputRange ?: throw RuntimeException("Null inputRange for Alias Nonterminal node of SPPF")
+            return listOf(listOf(OutEdge(range.from, "Alias", range.to)))
+        }
+
+        //Do not extract subpaths for non-terminal PointsTo because they are useless.
+        is NonterminalType if nodeType.startState.nonterminal.name == "PointsTo" -> {
+            val range = node.inputRange ?: throw RuntimeException("Null inputRange for PointsTo Nonterminal node of SPPF")
+            return listOf(listOf(OutEdge(range.from, "PointsTo", range.to)))
         }
 
         is EpsilonNonterminalType -> {
-            return emptyList()
+            return listOf(emptyList())
         }
 
         is EmptyType -> {
