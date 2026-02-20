@@ -4,6 +4,8 @@ digraph {
     1 -> 0 [label = "alloc_r"];
     2 -> 0 [label = "assign"];
     0 -> 2 [label = "assign_r"];
+    2 -> 1 [label = "pt"];
+    1 -> 2 [label = "pt_r"];
     2 -> 3 [label = "store_0"];
     3 -> 2 [label = "store_0_r"];
     3 -> 4 [label = "alloc"];
