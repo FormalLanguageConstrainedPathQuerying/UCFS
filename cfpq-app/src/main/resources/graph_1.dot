@@ -1,19 +1,19 @@
 digraph {
     start -> 1;
-    1 -> 0 [label = "pt"];
-    0 -> 1 [label = "pt_r"];
+    1 -> 0 [label = "alloc"];
+    0 -> 1 [label = "alloc_r"];
     2 -> 1 [label = "assign"];
     1 -> 2 [label = "assign_r"];
     2 -> 3 [label = "store_0"];
     3 -> 2 [label = "store_0_r"];
-    3 -> 4 [label = "pt"];
-    4 -> 3 [label = "pt_r"];
+    3 -> 4 [label = "alloc"];
+    4 -> 3 [label = "alloc_r"];
     5 -> 3 [label = "assign"];
     3 -> 5 [label = "assign_r"];
     5 -> 6 [label = "store_1"];
     6 -> 5 [label = "store_1_r"];
-    6 -> 7 [label = "pt"];
-    7 -> 6 [label = "pt_r"];
+    6 -> 7 [label = "alloc"];
+    7 -> 6 [label = "alloc_r"];
 
     0[label = "new X()"]
     1[label = "n"]

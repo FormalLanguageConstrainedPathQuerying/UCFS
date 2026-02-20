@@ -1,16 +1,16 @@
 digraph {
     start -> 1;
     start -> 8;
-    1 -> 0 [label = "pt"];
-    0 -> 1 [label = "pt_r"];
-    4 -> 2 [label = "pt"];
-    2 -> 4 [label = "pt_r"];
-    5 -> 3 [label = "pt"];
-    3 -> 5 [label = "pt_r"];
-    10 -> 12 [label = "pt"];
-    12 -> 10 [label = "pt_r"];
-    11 -> 13 [label = "pt"];
-    13 -> 11 [label = "pt_r"];    
+    1 -> 0 [label = "alloc"];
+    0 -> 1 [label = "alloc_r"];
+    4 -> 2 [label = "alloc"];
+    2 -> 4 [label = "alloc_r"];
+    5 -> 3 [label = "alloc"];
+    3 -> 5 [label = "alloc_r"];
+    10 -> 12 [label = "alloc"];
+    12 -> 10 [label = "alloc_r"];
+    11 -> 13 [label = "alloc"];
+    13 -> 11 [label = "alloc_r"];
     8 -> 6 [label = "assign"];
     6 -> 8 [label = "assign_r"];
     9 -> 7 [label = "assign"];
@@ -27,12 +27,19 @@ digraph {
     4 -> 6 [label = "load_0_r"];
     7 -> 5 [label = "load_1"];    
     5 -> 7 [label = "load_1_r"];    
-    6 -> 0 [label = "pt"];
-    0 -> 6 [label = "pt_r"];
-    8 -> 0 [label = "pt"];
-    0 -> 8 [label = "pt_r"];
-    7 -> 0 [label = "pt"];
-    0 -> 7 [label = "pt_r"];
-    9 -> 0 [label = "pt"];
-    0 -> 9 [label = "pt_r"];
+
+    0[label="new X()"];
+    1[label="n"];
+    2[label="new Z()"];
+    3[label="new U()"];
+    4[label="z"];
+    5[label="u"];
+    6[label="tmp1 // line 6"];
+    7[label="tmp2 // line 8"];
+    8[label="v"];
+    9[label="r"];
+    10[label="tmp3 // line 7"];
+    11[label="tmp4 // line 9"];
+    12[label="new Y()"];
+    13[label="new P()"];
 }
