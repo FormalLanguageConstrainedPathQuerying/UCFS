@@ -1,0 +1,23 @@
+digraph {
+    start -> 0;
+    0 -> 1 [label = "alloc"];
+    1 -> 0 [label = "alloc_r"];
+    2 -> 0 [label = "assign"];
+    0 -> 2 [label = "assign_r"];
+    2 -> 3 [label = "store_0"];
+    3 -> 2 [label = "store_0_r"];
+    3 -> 4 [label = "alloc"];
+    4 -> 3 [label = "alloc_r"];
+    2 -> 5 [label = "assign"];
+    5 -> 2 [label = "assign_r"];
+    5 -> 2 [label = "load_0"];
+    2 -> 5 [label = "load_0_r"];
+    
+    0[label = "0: n"]
+    1[label = "1: new X() // line 1"]
+    2[label = "2: l"]
+    3[label = "3: tmp1 // line 4"]
+    4[label = "4: new X() // line 4"]
+    5[label = "5: tmp2 // line 5"]
+
+}
