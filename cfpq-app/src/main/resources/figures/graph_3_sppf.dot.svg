@@ -6,7 +6,7 @@
 <!-- Title: g Pages: 1 -->
 <svg width="1828pt" height="1207pt"
  viewBox="0.00 0.00 1828.00 1207.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="page0,1_graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 1203)">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 1203)">
 <title>g</title>
 <polygon fill="white" stroke="transparent" points="-4,4 -4,-1203 1824,-1203 1824,4 -4,4"/>
 <g id="clust1" class="cluster">
@@ -80,7 +80,7 @@
 <!-- _0_23 -->
 <g id="node24" class="node">
 <title>_0_23</title>
-<ellipse fill="none" stroke="black" cx="1180" cy="-970" rx="161.37" ry="18"/>
+<ellipse fill="none" stroke="red" cx="1180" cy="-970" rx="161.37" ry="18"/>
 <text text-anchor="middle" x="1180" y="-966.3" font-family="Times,serif" font-size="14.00">3 &#160;&#160;&#160;&#160;Range , input: [0, 2], rsm: [S_0, S_0]</text>
 </g>
 <!-- _0_3&#45;&gt;_0_23 -->
@@ -465,7 +465,7 @@
 <!-- _0_39 -->
 <g id="node40" class="node">
 <title>_0_39</title>
-<ellipse fill="none" stroke="black" cx="957" cy="-826" rx="161.37" ry="18"/>
+<ellipse fill="none" stroke="red" cx="957" cy="-826" rx="161.37" ry="18"/>
 <text text-anchor="middle" x="957" y="-822.3" font-family="Times,serif" font-size="14.00">7 &#160;&#160;&#160;&#160;Range , input: [0, 1], rsm: [S_0, S_1]</text>
 </g>
 <!-- _0_37&#45;&gt;_0_39 -->
