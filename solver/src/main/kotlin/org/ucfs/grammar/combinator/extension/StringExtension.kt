@@ -19,6 +19,7 @@ object StringExtension {
     infix fun String.or(other: String): Regexp = Alternative.makeAlternative(left = Term(this), Term(other))
     infix fun String.or(other: Regexp): Regexp = Alternative.makeAlternative(left = Term(this), other)
     infix fun Regexp.or(other: String): Regexp = Alternative.makeAlternative(left = this, Term(other))
+    infix fun Regexp.or(other: Regexp): Regexp = Alternative.makeAlternative(left = this, other)
 
 
     fun many(some: String): Regexp {
