@@ -1,7 +1,6 @@
-package me.vkutuev
+package org.ucfs.paths
 
 import org.ucfs.grammar.combinator.Grammar
-import org.ucfs.grammar.combinator.extension.StringExtension.many
 import org.ucfs.grammar.combinator.extension.StringExtension.or
 import org.ucfs.grammar.combinator.extension.StringExtension.times
 import org.ucfs.grammar.combinator.regexp.Nt

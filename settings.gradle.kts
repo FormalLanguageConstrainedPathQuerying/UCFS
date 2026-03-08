@@ -5,4 +5,4 @@ rootProject.name = "ucfs"
 include("solver")
 include("generator")
 include("test-shared")
-include("cfpq-app")
+include("cfpq-paths-app")

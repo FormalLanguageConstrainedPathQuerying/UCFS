@@ -17,5 +17,5 @@ kotlin {
 }
 
 application {
-    mainClass = "me.vkutuev.MainKt"
+    mainClass = "org.ucfs.paths.MainKt"
 }
