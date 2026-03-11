@@ -6,24 +6,103 @@ import org.ucfs.rsm.RsmState
 import org.ucfs.rsm.symbol.ITerminal
 
 /**
+ * Base class for SPPF range nodes.
+ * Represents all possible ways to derive a specific range.
+ * Contains two ranges: one in the RSM and one in the input graph.
+ * Nodes are deduplicated via [SppfStorage] and can be reused.
  *
- * A Range node which corresponds to a matched range. It
- * represents all possible ways to get a specific range and can
- * have arbitrary many children. A child node can be of any
- * type, besides a Range node. Nodes of this type can be reused.
- * <p>
- *     Contains two range: in RSM and in Input graph
- *<p>
- * May be used as extended packed sppfNode.
+ * Specialized into three subclasses based on the number of children:
+ * - [LeafSppfNode] — no children (terminal, epsilon, empty nodes)
+ * - [BinarySppfNode] — exactly two children (intermediate nodes)
+ * - [VariadicSppfNode] — variable number of children (range, nonterminal nodes)
+ *
  * @param VertexType - type of vertex in input graph
  */
+sealed class RangeSppfNode<VertexType> {
+    abstract val inputRange: InputRange<VertexType>?
+    abstract val rsmRange: RsmRange?
+    abstract val type: RangeType
+    abstract fun hasChild(target: RangeSppfNode<VertexType>): Boolean
+    abstract fun addChild(child: RangeSppfNode<VertexType>)
+    abstract val children: Iterable<RangeSppfNode<VertexType>>
+}
 
-data class RangeSppfNode<VertexType>(
-    val inputRange: InputRange<VertexType>?,
-    val rsmRange: RsmRange?,
-    val type: RangeType,
-) {
-    val children = SmallList<RangeSppfNode<VertexType>>()
+data class LeafSppfNode<VertexType>(
+    override val inputRange: InputRange<VertexType>?,
+    override val rsmRange: RsmRange?,
+    override val type: RangeType,
+) : RangeSppfNode<VertexType>() {
+    override val children = emptyList<RangeSppfNode<VertexType>>()
+
+    override fun hasChild(target: RangeSppfNode<VertexType>) = false
+
+    override fun addChild(child: RangeSppfNode<VertexType>) = throw UnsupportedOperationException()
+}
+
+data class BinarySppfNode<VertexType>(
+    override val inputRange: InputRange<VertexType>?,
+    override val rsmRange: RsmRange?,
+    override val type: RangeType,
+) : RangeSppfNode<VertexType>() {
+    var child0: RangeSppfNode<VertexType>? = null
+    var child1: RangeSppfNode<VertexType>? = null
+
+    override val children: Iterable<RangeSppfNode<VertexType>> get() = listOfNotNull(child0, child1)
+
+    override fun hasChild(target: RangeSppfNode<VertexType>) =
+        child0 === target || child1 === target
+
+    override fun addChild(child: RangeSppfNode<VertexType>) {
+        when {
+            child0 == null -> child0 = child
+            child1 == null -> child1 = child
+            else -> throw IllegalStateException("BinarySppfNode already has 2 children")
+        }
+    }
+}
+
+data class VariadicSppfNode<VertexType>(
+    override val inputRange: InputRange<VertexType>?,
+    override val rsmRange: RsmRange?,
+    override val type: RangeType,
+) : RangeSppfNode<VertexType>() {
+    private var _child0: RangeSppfNode<VertexType>? = null
+    private var _child1: RangeSppfNode<VertexType>? = null
+    private var _rest: ArrayList<RangeSppfNode<VertexType>>? = null
+    private var _size = 0
+
+    override val children: Iterable<RangeSppfNode<VertexType>> get() = object : Iterable<RangeSppfNode<VertexType>> {
+        override fun iterator() = object : Iterator<RangeSppfNode<VertexType>> {
+            var i = 0
+
+            override fun hasNext() = i < _size
+
+            override fun next(): RangeSppfNode<VertexType> = when (i++) {
+                0 -> _child0!!
+                1 -> _child1!!
+                else -> _rest!![i - 3]
+            }
+        }
+    }
+
+    override fun hasChild(target: RangeSppfNode<VertexType>): Boolean {
+        if (_child0 === target) return true
+        if (_child1 === target) return true
+        _rest?.forEach { if (it === target) return true }
+        return false
+    }
+
+    override fun addChild(child: RangeSppfNode<VertexType>) {
+        when (_size) {
+            0 -> _child0 = child
+            1 -> _child1 = child
+            else -> {
+                if (_rest == null) _rest = ArrayList(2)
+                _rest!!.add(child)
+            }
+        }
+        _size++
+    }
 }
 
 fun <VertexType> getEmptyRange( isStart: Boolean = false): RangeSppfNode<VertexType>  {
@@ -31,7 +110,7 @@ fun <VertexType> getEmptyRange( isStart: Boolean = false): RangeSppfNode<VertexT
     if(isStart) {
         type.isStart = isStart
     }
-    return RangeSppfNode(null, null, type)
+    return LeafSppfNode(null, null, type)
 }
 
 data class InputRange<VertexType>(

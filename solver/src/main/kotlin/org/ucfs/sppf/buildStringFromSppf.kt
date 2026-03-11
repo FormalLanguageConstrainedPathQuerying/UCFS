@@ -29,7 +29,7 @@ fun <InputNode>buildTokenStreamFromSppf(sppfNode: RangeSppfNode<InputNode>): Mut
             }
 
             is NonterminalType -> {
-                if (curNode.children.isNotEmpty()) {
+                if (curNode.children.toList().isNotEmpty()) {
                     curNode.children.findLast {
                         !visited.contains(
                             it
