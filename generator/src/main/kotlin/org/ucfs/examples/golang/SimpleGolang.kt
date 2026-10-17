@@ -5,7 +5,6 @@ import org.ucfs.grammar.combinator.extension.StringExtension.or
 import org.ucfs.grammar.combinator.extension.StringExtension.times
 import org.ucfs.grammar.combinator.regexp.Many
 import org.ucfs.grammar.combinator.regexp.Nt
-import org.ucfs.grammar.combinator.regexp.or
 
 class SimpleGolang : Grammar() {
     val IntExpr by Nt("1" or "1" * "+" * "1")
