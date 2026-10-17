@@ -6,7 +6,6 @@ import org.ucfs.grammar.combinator.extension.StringExtension.times
 import org.ucfs.grammar.combinator.regexp.Nt
 import org.ucfs.grammar.combinator.regexp.option
 import org.ucfs.grammar.combinator.regexp.many
-import org.ucfs.grammar.combinator.regexp.or
 import org.ucfs.input.DotParser
 import org.ucfs.input.InputGraph
 import org.ucfs.input.TerminalInputLabel
