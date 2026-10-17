@@ -18,6 +18,16 @@ open class SppfStorage<InputEdgeType> {
         return createdSppfNodes.getOrPut(node, { node })
     }
 
+    private fun makeNode(
+        input: InputRange<InputEdgeType>?,
+        rsm: RsmRange?,
+        type: RangeType
+    ): RangeSppfNode<InputEdgeType> = when (type) {
+        is TerminalType<*>, is EpsilonNonterminalType, is EmptyType -> LeafSppfNode(input, rsm, type)
+        is IntermediateType<*> -> BinarySppfNode(input, rsm, type)
+        else -> VariadicSppfNode(input, rsm, type) // Range, NonterminalType
+    }
+
     /**
      * Add nonterminal node after pop
      */
@@ -63,7 +73,7 @@ open class SppfStorage<InputEdgeType> {
             ), RsmRange(
                 leftSubtree.rsmRange!!.from, rightSubtree.rsmRange!!.to
             ), IntermediateType(
-                leftSubtree.rsmRange.to, leftSubtree.inputRange.to
+                leftSubtree.rsmRange!!.to, leftSubtree.inputRange!!.to
             ), listOf(leftSubtree, rightSubtree)
         )
     }
@@ -74,15 +84,16 @@ open class SppfStorage<InputEdgeType> {
         rangeType: RangeType,
         children: List<RangeSppfNode<InputEdgeType>> = listOf()
     ): RangeSppfNode<InputEdgeType> {
-        val rangeNode = addNode(RangeSppfNode(input, rsm, Range))
+        val rangeNode = addNode(makeNode(input, rsm, Range))
         val valueRsm = if (rangeType is TerminalType<*>) null else rsm
-        val valueNode = addNode(RangeSppfNode(input, valueRsm, rangeType))
-        if (!rangeNode.children.contains(valueNode)) {
-            rangeNode.children.add(valueNode)
+        val valueNode = addNode(makeNode(input, valueRsm, rangeType))
+
+        if (!rangeNode.hasChild(valueNode)) {
+            rangeNode.addChild(valueNode)
         }
         for (child in children) {
-            if (!valueNode.children.contains(child)) {
-                valueNode.children.add(child)
+            if (!valueNode.hasChild(child)) {
+                valueNode.addChild(child)
             }
         }
         return rangeNode

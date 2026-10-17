@@ -70,7 +70,7 @@ class Gll<VertexType, LabelType : ILabel> private constructor(
     private fun isParseResult(matchedRange: RangeSppfNode<VertexType>): Boolean {
         return matchedRange.inputRange!!.from in ctx.input.getInputStartVertices()
                 && matchedRange.rsmRange!!.from == ctx.fictiveStartState
-                && matchedRange.rsmRange.to == ctx.fictiveFinalState
+                && matchedRange.rsmRange!!.to == ctx.fictiveFinalState
     }
 
     /**
