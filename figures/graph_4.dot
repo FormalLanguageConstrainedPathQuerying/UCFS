@@ -1,0 +1,45 @@
+digraph {
+    start -> 1;
+    start -> 8;
+    1 -> 0 [label = "alloc"];
+    0 -> 1 [label = "alloc_r"];
+    4 -> 2 [label = "alloc"];
+    2 -> 4 [label = "alloc_r"];
+    5 -> 3 [label = "alloc"];
+    3 -> 5 [label = "alloc_r"];
+    10 -> 12 [label = "alloc"];
+    12 -> 10 [label = "alloc_r"];
+    11 -> 13 [label = "alloc"];
+    13 -> 11 [label = "alloc_r"];
+    8 -> 6 [label = "assign"];
+    6 -> 8 [label = "assign_r"];
+    9 -> 7 [label = "assign"];
+    7 -> 9 [label = "assign_r"];    
+    4 -> 1 [label = "store_0"];
+    1 -> 4 [label = "store_0_r"];
+    5 -> 1 [label = "store_1"];
+    1 -> 5 [label = "store_1_r"];
+    8 -> 10 [label = "store_2"];
+    10 -> 8 [label = "store_2_r"];
+    9 -> 11 [label = "store_3"];
+    11 -> 9 [label = "store_3_r"];
+    6 -> 4 [label = "load_0"];
+    4 -> 6 [label = "load_0_r"];
+    7 -> 5 [label = "load_1"];    
+    5 -> 7 [label = "load_1_r"];    
+
+    0[label="0 | new X()"];
+    1[label="1 | n"];
+    2[label="2 | new Z()"];
+    3[label="3 | new U()"];
+    4[label="4 | z"];
+    5[label="5 | u"];
+    6[label="6 | tmp1 // line 6"];
+    7[label="7 | tmp2 // line 8"];
+    8[label="8 | v"];
+    9[label="9 | r"];
+    10[label="10 | tmp3 // line 7"];
+    11[label="11 | tmp4 // line 9"];
+    12[label="12 | new Y()"];
+    13[label="13 | new P()"];
+}
