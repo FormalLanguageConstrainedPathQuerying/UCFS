@@ -64,6 +64,8 @@ Alias -> PointsTo FlowsTo
 S -> (Alias? "store_i")* PointsTo
 ```
 
+The `PointsTo`, `FlowsTo` and `Alias` rules follow the field-sensitive points-to grammar from [Dietrich et al., "Giga-scale exhaustive points-to analysis for Java in under a minute", OOPSLA 2015](https://doi.org/10.1145/2814270.2814307).
+
 For all our examples, we use a common grammar with $i \in [0..3]$.
 The corresponding RSM is presented below:
 
