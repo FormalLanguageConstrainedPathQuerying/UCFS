@@ -11,29 +11,29 @@ SPPF consists of nodes of the types listed below. Each node has a unique Id and 
 
 * **Nonterminal** node contains the name of the non-terminal and pairs of vertices from the input graph that are the start and end of paths derived from that non-terminal.
   
-  ![Graph for example 1](./src/main/resources/figures/Nonterm_example.dot.svg)
+  ![Graph for example 1](../docs/docs/figures/Nonterm_example.dot.svg)
 
   This node has number ```0``` and is the root of all derivations for all paths from 1 to 4 derivable from non-terminal ```S```
 
 * **Terminal** node is a leaf and corresponds to an edge.
 
-  ![Graph for example 1](./src/main/resources/figures/Terminal_example.dot.svg)
+  ![Graph for example 1](../docs/docs/figures/Terminal_example.dot.svg)
 
   This node depicts edge ```3 -alloc-> 4```.
 
 * **Epsilon** node is a simplified way to represent that $\varepsilon$ is derived at a specific position.
 
-  ![Graph for example 1](./src/main/resources/figures/Epsilon_example.dot.svg)
+  ![Graph for example 1](../docs/docs/figures/Epsilon_example.dot.svg)
 
 * **Range** node is a supplementary node that helps reuse subtrees.
   
-  ![Graph for example 1](./src/main/resources/figures/Range_example.dot.svg)
+  ![Graph for example 1](../docs/docs/figures/Range_example.dot.svg)
 
   This node represents all subpaths from 0 to 4 that are accepted while the RSM transitions from ```S_0``` to ```S_2```.
 
 * **Intermediate** node is a supplementary node used to connect subpaths.
 
-  ![Graph for example 1](./src/main/resources/figures/Intermediate_example.dot.svg)
+  ![Graph for example 1](../docs/docs/figures/Intermediate_example.dot.svg)
 
   This node depicts that the path from 0 to 2 is composed of two parts: from 0 to 1 and from 1 to 2.
 
@@ -69,7 +69,7 @@ The `PointsTo`, `FlowsTo` and `Alias` rules follow the field-sensitive points-to
 For all our examples, we use a common grammar with $i \in [0..3]$.
 The corresponding RSM is presented below:
 
-![Graph for example 1](./src/main/resources/figures/rsm.dot.svg)
+![Graph for example 1](../docs/docs/figures/rsm.dot.svg)
 
 ### Example 1
 Code snippet: 
@@ -85,11 +85,11 @@ t.v = z
 
 Respective graph:
 
-![Graph for example 1](./src/main/resources/figures/graph_1.dot.svg)
+![Graph for example 1](../docs/docs/figures/graph_1.dot.svg)
 
 Resulting SPPF:
 
-![SPPF for example 1](./src/main/resources/figures/graph_1_sppf.dot.svg)
+![SPPF for example 1](../docs/docs/figures/graph_1_sppf.dot.svg)
 
 Three trees are extracted because there are three paths of interest from node 1.
 We do not extract subpaths derivable from non-terminals ```Alias``` and ```PointsTo```, as they contain no useful information for restoring fields.
@@ -124,11 +124,11 @@ while (...){
 
 Respective graph:
 
-![Graph for example 2](./src/main/resources/figures/graph_2.dot.svg)
+![Graph for example 2](../docs/docs/figures/graph_2.dot.svg)
 
 Part of resulting SPPF:
 
-![SPPF for example 2](./src/main/resources/figures/graph_2_sppf.dot.svg)
+![SPPF for example 2](../docs/docs/figures/graph_2_sppf.dot.svg)
 
 This part contains a cycle formed by vertices 27–31–34–37–38–40–42–44–47–49–52–56 (colored in red). This is because there are infinitely many paths of interest. We extract some of them:
 
@@ -173,11 +173,11 @@ while (...){
 
 Respective graph:
 
-![Graph for example 3](./src/main/resources/figures/graph_3.dot.svg)
+![Graph for example 3](../docs/docs/figures/graph_3.dot.svg)
 
 Part of resulting SPPF:
 
-![SPPF for example 3](./src/main/resources/figures/graph_3_sppf.dot.svg)
+![SPPF for example 3](../docs/docs/figures/graph_3_sppf.dot.svg)
 
 This SPPF also contains a cycle (3–5–7–11), so there are infinitely many paths of interest, and we extract only a few of them.
 
@@ -223,7 +223,7 @@ r.q = new P()
 ```
 Respective graph:
 
-![Graph for example 4](./src/main/resources/figures/graph_4.dot.svg)
+![Graph for example 4](../docs/docs/figures/graph_4.dot.svg)
 
 For this example, we omit the figure of the SPPF due to its size. However, we present the respective paths. Note that in this example, we specify two vertices as start: 1 and 8.
 
