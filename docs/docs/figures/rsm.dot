@@ -1,0 +1,106 @@
+digraph g {
+S_2 [label = "S_2", shape = doublecircle, color = red]
+PointsTo_4 [label = "PointsTo_4", shape = circle, color = black]
+PointsTo_3 [label = "PointsTo_3", shape = circle, color = black]
+PointsTo_2 [label = "PointsTo_2", shape = circle, color = black]
+PointsTo_1 [label = "PointsTo_1", shape = circle, color = black]
+FlowsTo_9 [label = "FlowsTo_9", shape = circle, color = black]
+FlowsTo_8 [label = "FlowsTo_8", shape = circle, color = black]
+S_1 [label = "S_1", shape = circle, color = black]
+FlowsTo_5 [label = "FlowsTo_5", shape = circle, color = black]
+FlowsTo_4 [label = "FlowsTo_4", shape = circle, color = black]
+PointsTo_5 [label = "PointsTo_5", shape = doublecircle, color = red]
+FlowsTo_1 [label = "FlowsTo_1", shape = doublecircle, color = red]
+FlowsTo_7 [label = "FlowsTo_7", shape = circle, color = black]
+FlowsTo_6 [label = "FlowsTo_6", shape = circle, color = black]
+PointsTo_9 [label = "PointsTo_9", shape = circle, color = black]
+PointsTo_8 [label = "PointsTo_8", shape = circle, color = black]
+PointsTo_7 [label = "PointsTo_7", shape = circle, color = black]
+FlowsTo_3 [label = "FlowsTo_3", shape = circle, color = black]
+S_0 [label = "S_0", shape = circle, color = green]
+PointsTo_6 [label = "PointsTo_6", shape = circle, color = black]
+FlowsTo_2 [label = "FlowsTo_2", shape = circle, color = black]
+Alias_2 [label = "Alias_2", shape = doublecircle, color = red]
+FlowsTo_0 [label = "FlowsTo_0", shape = circle, color = green]
+Alias_1 [label = "Alias_1", shape = circle, color = black]
+PointsTo_0 [label = "PointsTo_0", shape = circle, color = green]
+Alias_0 [label = "Alias_0", shape = circle, color = green]
+PointsTo_4 -> PointsTo_6 [label = "Alias"]
+PointsTo_3 -> PointsTo_7 [label = "Alias"]
+PointsTo_2 -> PointsTo_8 [label = "Alias"]
+PointsTo_1 -> PointsTo_9 [label = "Alias"]
+FlowsTo_9 -> FlowsTo_1 [label = "load_0_r"]
+FlowsTo_8 -> FlowsTo_1 [label = "load_1_r"]
+S_1 -> S_0 [label = "store_0"]
+S_1 -> S_0 [label = "store_1"]
+S_1 -> S_0 [label = "store_2"]
+S_1 -> S_0 [label = "store_3"]
+FlowsTo_5 -> FlowsTo_6 [label = "Alias"]
+FlowsTo_4 -> FlowsTo_7 [label = "Alias"]
+FlowsTo_1 -> FlowsTo_1 [label = "assign_r"]
+FlowsTo_1 -> FlowsTo_2 [label = "store_0_r"]
+FlowsTo_1 -> FlowsTo_3 [label = "store_1_r"]
+FlowsTo_1 -> FlowsTo_4 [label = "store_2_r"]
+FlowsTo_1 -> FlowsTo_5 [label = "store_3_r"]
+FlowsTo_7 -> FlowsTo_1 [label = "load_2_r"]
+FlowsTo_6 -> FlowsTo_1 [label = "load_3_r"]
+PointsTo_9 -> PointsTo_0 [label = "store_0"]
+PointsTo_8 -> PointsTo_0 [label = "store_1"]
+PointsTo_7 -> PointsTo_0 [label = "store_2"]
+FlowsTo_3 -> FlowsTo_8 [label = "Alias"]
+S_0 -> S_0 [label = "store_0"]
+S_0 -> S_0 [label = "store_1"]
+S_0 -> S_0 [label = "store_2"]
+S_0 -> S_0 [label = "store_3"]
+S_0 -> S_1 [label = "Alias"]
+S_0 -> S_2 [label = "PointsTo"]
+PointsTo_6 -> PointsTo_0 [label = "store_3"]
+FlowsTo_2 -> FlowsTo_9 [label = "Alias"]
+FlowsTo_0 -> FlowsTo_1 [label = "alloc_r"]
+Alias_1 -> Alias_2 [label = "FlowsTo"]
+PointsTo_0 -> PointsTo_0 [label = "assign"]
+PointsTo_0 -> PointsTo_1 [label = "load_0"]
+PointsTo_0 -> PointsTo_2 [label = "load_1"]
+PointsTo_0 -> PointsTo_3 [label = "load_2"]
+PointsTo_0 -> PointsTo_4 [label = "load_3"]
+PointsTo_0 -> PointsTo_5 [label = "alloc"]
+Alias_0 -> Alias_1 [label = "PointsTo"]
+subgraph cluster_S {
+S_1
+S_2
+S_0
+label = "S"
+}
+subgraph cluster_FlowsTo {
+FlowsTo_9
+FlowsTo_8
+FlowsTo_0
+FlowsTo_5
+FlowsTo_4
+FlowsTo_1
+FlowsTo_7
+FlowsTo_6
+FlowsTo_3
+FlowsTo_2
+label = "FlowsTo"
+}
+subgraph cluster_Alias {
+Alias_2
+Alias_0
+Alias_1
+label = "Alias"
+}
+subgraph cluster_PointsTo {
+PointsTo_4
+PointsTo_3
+PointsTo_2
+PointsTo_1
+PointsTo_5
+PointsTo_0
+PointsTo_9
+PointsTo_8
+PointsTo_7
+PointsTo_6
+label = "PointsTo"
+}
+}

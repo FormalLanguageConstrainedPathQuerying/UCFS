@@ -18,6 +18,7 @@
 ### Generated files ###
 /benchmarks/gen/
 /benchmarks/logs/
+/cfpq-paths-app/gen/
 
 ### Antlr parsers ###
 /benchmarks/src/main/java/org/antlr/*
