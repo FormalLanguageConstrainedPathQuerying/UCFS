@@ -12,9 +12,15 @@ class PathExtractionTest {
             .flatMap { getPathFromSppf(it, maxDepth) ?: emptyList() }.map { it.toString() }.toSet()
     // Hand-built SPPF: `slot` is the start state of S, i.e. a nonterminal that is not collapsed like Alias/PointsTo.
     private val slot = PointsToGrammar().rsm
-    private fun leaf(from: Int, s: String, to: Int) = RangeSppfNode(InputRange(from, to), null, TerminalType(Term(s)))
-    private fun node(type: RangeType, vararg children: RangeSppfNode<Int>) =
-        RangeSppfNode<Int>(null, null, type).apply { this.children.addAll(children) }
+    private fun leaf(from: Int, s: String, to: Int): RangeSppfNode<Int> =
+        LeafSppfNode(InputRange(from, to), null, TerminalType(Term(s)))
+    // RangeSppfNode is sealed (PR #50): pick the subclass the same way SppfStorage.makeNode does.
+    private fun node(type: RangeType, vararg children: RangeSppfNode<Int>): RangeSppfNode<Int> =
+        when (type) {
+            is TerminalType<*>, is EpsilonNonterminalType, is EmptyType -> LeafSppfNode<Int>(null, null, type)
+            is IntermediateType<*> -> BinarySppfNode<Int>(null, null, type)
+            else -> VariadicSppfNode<Int>(null, null, type)
+        }.apply { children.forEach { addChild(it) } }
     private val ab = node(IntermediateType(slot, 1), leaf(0, "a", 1), leaf(1, "b", 2))
 
     @Test
