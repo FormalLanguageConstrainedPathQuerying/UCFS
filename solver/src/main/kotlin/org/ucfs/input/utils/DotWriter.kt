@@ -21,7 +21,7 @@ class DotWriter {
         for ((from, edges) in graph.edges) {
             for (edge in edges) {
                 val to = edge.targetVertex
-                val label = edge.label.terminal.toString()
+                val label = quote(edge.label.terminal.toString())
                 builder.append("    $from $connector $to [label = $label];\n")
             }
         }
@@ -29,4 +29,8 @@ class DotWriter {
         builder.append("}")
         return builder.toString()
     }
+
+    /** DOT label values must be quoted: [DotParser] only accepts quoted labels. */
+    private fun quote(label: String): String =
+        "\"" + label.replace("\\", "\\\\").replace("\"", "\\\"") + "\""
 }

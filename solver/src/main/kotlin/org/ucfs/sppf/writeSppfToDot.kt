@@ -21,7 +21,7 @@ fun <InputNode> getSppfDot(sppfNodes: Set<RangeSppfNode<InputNode>>, label: Stri
     sb.appendLine("labelloc=\"t\"")
     sb.appendLine("label=\"$label\"")
     var idx = 0
-    val results = sppfNodes.sortedWith(compareBy { it.toString() }).map { sppf -> getSppfDot(sppf.children[0], idx++.toString()) }
+    val results = sppfNodes.sortedWith(compareBy { it.toString() }).map { sppf -> getSppfDot(sppf.children.first(), idx++.toString()) }
     for (sppf in results.sorted()) {
         sb.appendLine(sppf)
     }
