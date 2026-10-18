@@ -86,7 +86,7 @@ interface IGll<InputNodeType, LabelType : ILabel> {
 
             //TODO why these parameters???
             newDescriptor = Descriptor(
-                rangeToPop.inputRange.to, descriptor.gssNode, destinationRsmState, newSppfNode
+                rangeToPop.inputRange!!.to, descriptor.gssNode, destinationRsmState, newSppfNode
             )
             ctx.descriptors.add(newDescriptor)
         }
