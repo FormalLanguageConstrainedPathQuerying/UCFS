@@ -28,6 +28,24 @@ data class RsmState(
 
     val nonterminalEdgesStorage = ArrayList<RsmEdge>()
 
+    /** Lazily built index terminal -> first edge with it; rebuilt when terminal edges were added. */
+    private var terminalIndex: HashMap<Symbol, RsmEdge>? = null
+    private var indexedTerminalEdges = -1
+
+    /**
+     * Returns the first outgoing terminal edge labelled with [terminal] (same result as
+     * `terminalEdgesStorage.find { it.symbol == terminal }`), in O(1) instead of O(#terminal edges).
+     */
+    fun getTerminalEdge(terminal: ITerminal): RsmEdge? {
+        if (indexedTerminalEdges != terminalEdgesStorage.size) {
+            val index = HashMap<Symbol, RsmEdge>(terminalEdgesStorage.size * 2)
+            for (edge in terminalEdgesStorage) index.putIfAbsent(edge.symbol, edge)
+            terminalIndex = index
+            indexedTerminalEdges = terminalEdgesStorage.size
+        }
+        return terminalIndex!![terminal]
+    }
+
 
     /**
      * Adds edge from current rsmState to given destinationState via given symbol, terminal or nonterminal
