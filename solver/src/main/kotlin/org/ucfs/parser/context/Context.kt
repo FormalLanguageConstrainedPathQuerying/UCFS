@@ -19,9 +19,11 @@ class Context<InputNodeType, LabelType : ILabel>(
      */
     val fictiveStartState: RsmState,
     val fictiveFinalState: RsmState,
-    val input: IInputGraph<InputNodeType, LabelType>
-
-
+    val input: IInputGraph<InputNodeType, LabelType>,
+    /**
+     * Derivation trees storage ([org.ucfs.sppf.ReachabilitySppfStorage] keeps only range nodes)
+     */
+    val sppfStorage: SppfStorage<InputNodeType> = SppfStorage(),
 ) {
 
     /**
@@ -29,10 +31,6 @@ class Context<InputNodeType, LabelType : ILabel>(
      */
     val descriptors: DescriptorsStorage<InputNodeType> = DescriptorsStorage()
 
-    /**
-     * Derivation trees storage
-     */
-    val sppfStorage: SppfStorage<InputNodeType> = SppfStorage()
 
     val gss: GraphStructuredStack<InputNodeType> = GraphStructuredStack()
 

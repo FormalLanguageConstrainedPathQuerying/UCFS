@@ -14,11 +14,11 @@ open class SppfStorage<InputEdgeType> {
      */
     private val createdSppfNodes: HashMap<RangeSppfNode<InputEdgeType>, RangeSppfNode<InputEdgeType>> = HashMap()
 
-    private fun addNode(node: RangeSppfNode<InputEdgeType>): RangeSppfNode<InputEdgeType> {
+    protected fun addNode(node: RangeSppfNode<InputEdgeType>): RangeSppfNode<InputEdgeType> {
         return createdSppfNodes.getOrPut(node, { node })
     }
 
-    private fun makeNode(
+    protected fun makeNode(
         input: InputRange<InputEdgeType>?,
         rsm: RsmRange?,
         type: RangeType
@@ -78,7 +78,7 @@ open class SppfStorage<InputEdgeType> {
         )
     }
 
-    private fun addNode(
+    protected open fun addNode(
         input: InputRange<InputEdgeType>,
         rsm: RsmRange,
         rangeType: RangeType,
@@ -98,4 +98,18 @@ open class SppfStorage<InputEdgeType> {
         }
         return rangeNode
     }
+}
+
+/**
+ * Reachability-only storage: keeps just the deduplicated range nodes (input range x RSM range), without value
+ * nodes and children. The parser's descriptors refer to range nodes only, so the set of descriptors and the parse
+ * results are the same as with [SppfStorage]; derivation trees (and paths) are not available.
+ */
+class ReachabilitySppfStorage<InputEdgeType> : SppfStorage<InputEdgeType>() {
+    override fun addNode(
+        input: InputRange<InputEdgeType>,
+        rsm: RsmRange,
+        rangeType: RangeType,
+        children: List<RangeSppfNode<InputEdgeType>>
+    ): RangeSppfNode<InputEdgeType> = addNode(makeNode(input, rsm, Range))
 }

@@ -28,9 +28,18 @@ class Gll<VertexType, LabelType : ILabel> private constructor(
          */
         fun <VertexType, LabelType : ILabel> gll(
             startState: RsmState, inputGraph: IInputGraph<VertexType, LabelType>
+        ): Gll<VertexType, LabelType> = gll(startState, inputGraph, reachabilityOnly = false)
+
+        /**
+         * @param reachabilityOnly - keep only range nodes of the SPPF ([org.ucfs.sppf.ReachabilitySppfStorage]):
+         * same results (reachability pairs), less memory, no derivation trees
+         */
+        fun <VertexType, LabelType : ILabel> gll(
+            startState: RsmState, inputGraph: IInputGraph<VertexType, LabelType>, reachabilityOnly: Boolean
         ): Gll<VertexType, LabelType> {
             val finalState = startState.outgoingEdges[0].destinationState
-            return Gll(Context(startState, finalState, inputGraph), IntersectionEngine)
+            val storage = if (reachabilityOnly) org.ucfs.sppf.ReachabilitySppfStorage<VertexType>() else org.ucfs.sppf.SppfStorage()
+            return Gll(Context(startState, finalState, inputGraph, storage), IntersectionEngine)
         }
     }
 
