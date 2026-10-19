@@ -22,9 +22,7 @@ object IntersectionEngine : IIntersectionEngine {
 
         for (inputEdge in gll.ctx.input.getEdges(descriptor.inputPosition)) {
             val inputTerminal = inputEdge.label.terminal
-            val rsmEdge = descriptor.rsmState.terminalEdgesStorage.find {
-                it.symbol == inputTerminal
-            }
+            val rsmEdge = inputTerminal?.let { descriptor.rsmState.getTerminalEdge(it) }
             if (rsmEdge != null) {
                 gll.handleTerminalEdge(
                     descriptor, inputEdge, rsmEdge.destinationState, rsmEdge.symbol as ITerminal
