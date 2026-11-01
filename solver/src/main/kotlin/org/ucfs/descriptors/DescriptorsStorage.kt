@@ -8,7 +8,7 @@ import java.util.LinkedList
  */
 open class DescriptorsStorage<VertexType> {
     /**
-     * Collection of already handled descriptors, accessible via descriptor's hashcode
+     * Descriptors already scheduled or explicitly marked as handled.
      */
     private val handledDescriptors = HashSet<Descriptor<VertexType>>()
 
@@ -22,7 +22,7 @@ open class DescriptorsStorage<VertexType> {
     }
 
     fun add(descriptor: Descriptor<VertexType>) {
-        if (!handledDescriptors.contains(descriptor)) {
+        if (handledDescriptors.add(descriptor)) {
             descriptorsToHandle.addLast(descriptor)
         }
     }
