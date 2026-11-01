@@ -39,6 +39,32 @@ data class LeafSppfNode<VertexType>(
     override fun addChild(child: RangeSppfNode<VertexType>) = throw UnsupportedOperationException()
 }
 
+/** Range key used only when derivation trees are not retained. */
+class ReachabilityRangeSppfNode<VertexType>(
+    override val inputRange: InputRange<VertexType>,
+    override val rsmRange: RsmRange,
+) : RangeSppfNode<VertexType>() {
+    override val type: RangeType = Range
+    override val children: Iterable<RangeSppfNode<VertexType>> = emptyList()
+
+    private val cachedHash = (inputRange.hashCode() * 31 + rsmRange.hashCode()) * 31 + Range.hashCode()
+
+    override fun hasChild(target: RangeSppfNode<VertexType>) = false
+
+    override fun addChild(child: RangeSppfNode<VertexType>): Unit = throw UnsupportedOperationException()
+
+    override fun hashCode() = cachedHash
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ReachabilityRangeSppfNode<*>) return false
+        return inputRange.from == other.inputRange.from &&
+                inputRange.to == other.inputRange.to &&
+                rsmRange.from == other.rsmRange.from &&
+                rsmRange.to == other.rsmRange.to
+    }
+}
+
 data class BinarySppfNode<VertexType>(
     override val inputRange: InputRange<VertexType>?,
     override val rsmRange: RsmRange?,

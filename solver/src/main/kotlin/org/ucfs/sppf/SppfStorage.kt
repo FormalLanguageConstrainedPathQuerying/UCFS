@@ -111,5 +111,5 @@ class ReachabilitySppfStorage<InputEdgeType> : SppfStorage<InputEdgeType>() {
         rsm: RsmRange,
         rangeType: RangeType,
         children: List<RangeSppfNode<InputEdgeType>>
-    ): RangeSppfNode<InputEdgeType> = addNode(makeNode(input, rsm, Range))
+    ): RangeSppfNode<InputEdgeType> = addNode(ReachabilityRangeSppfNode(input, rsm))
 }
