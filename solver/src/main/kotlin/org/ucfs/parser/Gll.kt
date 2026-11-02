@@ -58,6 +58,7 @@ class Gll<VertexType, LabelType : ILabel> private constructor(
     private fun handlePoppedGssEdge(
         poppedGssEdge: GssEdge<VertexType>, descriptor: Descriptor<VertexType>, childSppf: RangeSppfNode<VertexType>
     ) {
+        if (!ctx.canContinueAt(poppedGssEdge.state, descriptor.inputPosition)) return
         val leftRange = poppedGssEdge.matchedRange
         val startRsmState = if (poppedGssEdge.matchedRange.type is EmptyType) poppedGssEdge.gssNode.rsm
         else poppedGssEdge.matchedRange.rsmRange!!.to
