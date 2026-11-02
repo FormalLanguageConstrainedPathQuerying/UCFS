@@ -31,7 +31,7 @@ open class SppfStorage<InputEdgeType> {
     /**
      * Add nonterminal node after pop
      */
-    fun addNonterminalNode(
+    open fun addNonterminalNode(
         input: InputRange<InputEdgeType>,
         rsm: RsmRange,
         startState: RsmState,
@@ -41,7 +41,7 @@ open class SppfStorage<InputEdgeType> {
         else addNode(input, rsm, NonterminalType(startState), listOf(childSppf))
     }
 
-    fun addEpsilonNode(
+    open fun addEpsilonNode(
         input: InputRange<InputEdgeType>,
         rsmRange: RsmRange,
         rsmState: RsmState
@@ -54,13 +54,13 @@ open class SppfStorage<InputEdgeType> {
     /**
      * Add temrminal node
      */
-    fun addNode(
+    open fun addNode(
         input: InputRange<InputEdgeType>, rsm: RsmRange, terminal: ITerminal
     ): RangeSppfNode<InputEdgeType> {
         return addNode(input, rsm, TerminalType(terminal))
     }
 
-    fun addIntermediateNode(
+    open fun addIntermediateNode(
         leftSubtree: RangeSppfNode<InputEdgeType>,
         rightSubtree: RangeSppfNode<InputEdgeType>
     ): RangeSppfNode<InputEdgeType> {
@@ -106,10 +106,43 @@ open class SppfStorage<InputEdgeType> {
  * results are the same as with [SppfStorage]; derivation trees (and paths) are not available.
  */
 class ReachabilitySppfStorage<InputEdgeType> : SppfStorage<InputEdgeType>() {
+    private fun rangeNode(input: InputRange<InputEdgeType>, rsm: RsmRange): RangeSppfNode<InputEdgeType> =
+        addNode(ReachabilityRangeSppfNode(input, rsm))
+
+    override fun addNonterminalNode(
+        input: InputRange<InputEdgeType>,
+        rsm: RsmRange,
+        startState: RsmState,
+        childSppf: RangeSppfNode<InputEdgeType>?
+    ): RangeSppfNode<InputEdgeType> = rangeNode(input, rsm)
+
+    override fun addEpsilonNode(
+        input: InputRange<InputEdgeType>,
+        rsmRange: RsmRange,
+        rsmState: RsmState
+    ): RangeSppfNode<InputEdgeType> = rangeNode(input, rsmRange)
+
+    override fun addNode(
+        input: InputRange<InputEdgeType>,
+        rsm: RsmRange,
+        terminal: ITerminal
+    ): RangeSppfNode<InputEdgeType> = rangeNode(input, rsm)
+
+    override fun addIntermediateNode(
+        leftSubtree: RangeSppfNode<InputEdgeType>,
+        rightSubtree: RangeSppfNode<InputEdgeType>
+    ): RangeSppfNode<InputEdgeType> {
+        if (leftSubtree.type is EmptyType) return rightSubtree
+        return rangeNode(
+            InputRange(leftSubtree.inputRange!!.from, rightSubtree.inputRange!!.to),
+            RsmRange(leftSubtree.rsmRange!!.from, rightSubtree.rsmRange!!.to)
+        )
+    }
+
     override fun addNode(
         input: InputRange<InputEdgeType>,
         rsm: RsmRange,
         rangeType: RangeType,
         children: List<RangeSppfNode<InputEdgeType>>
-    ): RangeSppfNode<InputEdgeType> = addNode(ReachabilityRangeSppfNode(input, rsm))
+    ): RangeSppfNode<InputEdgeType> = rangeNode(input, rsm)
 }
