@@ -48,13 +48,22 @@ class ReachabilityRangeSppfNode<VertexType>(
     override val children: Iterable<RangeSppfNode<VertexType>> = emptyList()
 
     // The nested data-class hash used the same 31² coefficient for input.to
-    // and rsm.from. Mix the four coordinates separately to avoid structured
-    // collisions in large CFPQ graphs.
+    // and rsm.from. Mix coordinates sequentially: XOR of rotated coordinates
+    // would itself collide for correlated integer vertex ids.
     private val cachedHash: Int = run {
-        var h = (inputRange.from?.hashCode() ?: 0) xor
-                Integer.rotateLeft(inputRange.to?.hashCode() ?: 0, 7) xor
-                Integer.rotateLeft(rsmRange.from.hashCode(), 13) xor
-                Integer.rotateLeft(rsmRange.to.hashCode(), 19)
+        fun block(previous: Int, coordinate: Int): Int {
+            var k = coordinate * 0xcc9e2d51.toInt()
+            k = Integer.rotateLeft(k, 15) * 0x1b873593
+            var h = previous xor k
+            h = Integer.rotateLeft(h, 13)
+            return h * 5 + 0xe6546b64.toInt()
+        }
+        var h = 0x9747b28c.toInt()
+        h = block(h, inputRange.from?.hashCode() ?: 0)
+        h = block(h, inputRange.to?.hashCode() ?: 0)
+        h = block(h, rsmRange.from.hashCode())
+        h = block(h, rsmRange.to.hashCode())
+        h = h xor 16 // four 32-bit coordinates
         h = (h xor (h ushr 16)) * 0x7feb352d
         h = (h xor (h ushr 15)) * 0x846ca68b.toInt()
         h xor (h ushr 16)
