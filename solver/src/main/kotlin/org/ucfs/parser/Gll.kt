@@ -61,7 +61,8 @@ class Gll<VertexType, LabelType : ILabel> private constructor(
         val leftRange = poppedGssEdge.matchedRange
         val startRsmState = if (poppedGssEdge.matchedRange.type is EmptyType) poppedGssEdge.gssNode.rsm
         else poppedGssEdge.matchedRange.rsmRange!!.to
-        val rightRange = ctx.sppfStorage.addNonterminalNode(
+        val newRange = ctx.sppfStorage.addComposedNonterminalNode(
+            leftRange,
             InputRange(
                 descriptor.gssNode.inputPosition, descriptor.inputPosition
             ), RsmRange(
@@ -69,7 +70,6 @@ class Gll<VertexType, LabelType : ILabel> private constructor(
                 poppedGssEdge.state,
             ), descriptor.gssNode.rsm, childSppf
         )
-        val newRange = ctx.sppfStorage.addIntermediateNode(leftRange, rightRange)
         val newDescriptor = Descriptor(
             descriptor.inputPosition, poppedGssEdge.gssNode, poppedGssEdge.state, newRange
         )

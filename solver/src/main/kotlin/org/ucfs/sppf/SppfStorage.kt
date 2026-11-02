@@ -41,6 +41,16 @@ open class SppfStorage<InputEdgeType> {
         else addNode(input, rsm, NonterminalType(startState), listOf(childSppf))
     }
 
+    /** Combine a popped nonterminal with the range before its call. */
+    open fun addComposedNonterminalNode(
+        left: RangeSppfNode<InputEdgeType>,
+        rightInput: InputRange<InputEdgeType>,
+        rightRsm: RsmRange,
+        startState: RsmState,
+        childSppf: RangeSppfNode<InputEdgeType>?
+    ): RangeSppfNode<InputEdgeType> =
+        addIntermediateNode(left, addNonterminalNode(rightInput, rightRsm, startState, childSppf))
+
     open fun addEpsilonNode(
         input: InputRange<InputEdgeType>,
         rsmRange: RsmRange,
@@ -115,6 +125,20 @@ class ReachabilitySppfStorage<InputEdgeType> : SppfStorage<InputEdgeType>() {
         startState: RsmState,
         childSppf: RangeSppfNode<InputEdgeType>?
     ): RangeSppfNode<InputEdgeType> = rangeNode(input, rsm)
+
+    override fun addComposedNonterminalNode(
+        left: RangeSppfNode<InputEdgeType>,
+        rightInput: InputRange<InputEdgeType>,
+        rightRsm: RsmRange,
+        startState: RsmState,
+        childSppf: RangeSppfNode<InputEdgeType>?
+    ): RangeSppfNode<InputEdgeType> {
+        if (left.type is EmptyType) return rangeNode(rightInput, rightRsm)
+        return rangeNode(
+            InputRange(left.inputRange!!.from, rightInput.to),
+            RsmRange(left.rsmRange!!.from, rightRsm.to)
+        )
+    }
 
     override fun addEpsilonNode(
         input: InputRange<InputEdgeType>,
