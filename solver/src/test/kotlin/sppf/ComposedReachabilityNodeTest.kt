@@ -60,6 +60,25 @@ class ComposedReachabilityNodeTest {
         assertSame(child, nonterminal.children.single())
     }
 
+    @Test
+    fun scalarCoordinatesPreserveReachabilityAndFullSppf() {
+        val reach = ReachabilitySppfStorage<Int>()
+        val full = SppfStorage<Int>()
+        val reachLeft = reach.addNode(InputRange(1, 2), RsmRange(s0, s1), Term("a"))
+        val fullLeft = full.addNode(InputRange(1, 2), RsmRange(s0, s1), Term("a"))
+        val fullChild = full.addNode(InputRange(2, 3), RsmRange(s1, s2), Term("b"))
+
+        val reachResult = reach.addComposedNonterminalNode(reachLeft, 2, 3, s1, s2, s0, null)
+        val fullResult = full.addComposedNonterminalNode(fullLeft, 2, 3, s1, s2, s0, fullChild)
+
+        assertEquals(InputRange(1, 3), reachResult.inputRange)
+        assertEquals(RsmRange(s0, s2), reachResult.rsmRange)
+        assertSame(fullLeft, fullResult.children.single().children.first())
+        val right = fullResult.children.single().children.last()
+        val nonterminal = right.children.first { it.type is NonterminalType }
+        assertSame(fullChild, nonterminal.children.single())
+    }
+
     private fun internedCount(storage: ReachabilitySppfStorage<Int>): Int {
         val field = SppfStorage::class.java.getDeclaredField("createdSppfNodes")
         field.isAccessible = true

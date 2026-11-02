@@ -77,8 +77,9 @@ interface IGll<InputNodeType, LabelType : ILabel> {
             val leftSubRange = descriptor.sppfNode
             val newSppfNode = ctx.sppfStorage.addComposedNonterminalNode(
                 leftSubRange,
-                rangeToPop.inputRange!!,
-                RsmRange(descriptor.rsmState, destinationRsmState),
+                rangeToPop.inputRange!!.from,
+                rangeToPop.inputRange!!.to,
+                descriptor.rsmState, destinationRsmState,
                 rsmStartState,
                 rangeToPop
             )
