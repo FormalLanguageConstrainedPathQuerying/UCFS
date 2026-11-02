@@ -47,7 +47,18 @@ class ReachabilityRangeSppfNode<VertexType>(
     override val type: RangeType = Range
     override val children: Iterable<RangeSppfNode<VertexType>> = emptyList()
 
-    private val cachedHash = (inputRange.hashCode() * 31 + rsmRange.hashCode()) * 31 + Range.hashCode()
+    // The nested data-class hash used the same 31² coefficient for input.to
+    // and rsm.from. Mix the four coordinates separately to avoid structured
+    // collisions in large CFPQ graphs.
+    private val cachedHash: Int = run {
+        var h = (inputRange.from?.hashCode() ?: 0) xor
+                Integer.rotateLeft(inputRange.to?.hashCode() ?: 0, 7) xor
+                Integer.rotateLeft(rsmRange.from.hashCode(), 13) xor
+                Integer.rotateLeft(rsmRange.to.hashCode(), 19)
+        h = (h xor (h ushr 16)) * 0x7feb352d
+        h = (h xor (h ushr 15)) * 0x846ca68b.toInt()
+        h xor (h ushr 16)
+    }
 
     override fun hasChild(target: RangeSppfNode<VertexType>) = false
 
