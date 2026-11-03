@@ -23,6 +23,7 @@ class ReachabilityStorageTest {
         val firstRsm = RsmRange(start, middle)
 
         val terminal = storage.addNode(firstRange, firstRsm, Term("a"))
+        assertSame(terminal, storage.addNode(InputRange(1, 2), RsmRange(start, middle), Term("a")))
         assertSame(terminal, storage.addNonterminalNode(firstRange, firstRsm, start, terminal))
         assertSame(terminal, storage.addEpsilonNode(firstRange, firstRsm, start))
         assertTrue(terminal.children.none())

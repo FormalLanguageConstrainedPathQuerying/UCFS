@@ -80,8 +80,11 @@ class ComposedReachabilityNodeTest {
     }
 
     private fun internedCount(storage: ReachabilitySppfStorage<Int>): Int {
-        val field = SppfStorage::class.java.getDeclaredField("createdSppfNodes")
+        // This test checks that composed reachability creates no throwaway nodes.
+        val field = ReachabilitySppfStorage::class.java.getDeclaredField("internedReachabilityNodes")
         field.isAccessible = true
-        return (field.get(storage) as Map<*, *>).size
+        val slotsField = field.get(storage).javaClass.getDeclaredField("slots")
+        slotsField.isAccessible = true
+        return (slotsField.get(field.get(storage)) as Array<*>).count { it != null }
     }
 }

@@ -14,7 +14,7 @@ open class SppfStorage<InputEdgeType> {
      */
     private val createdSppfNodes: HashMap<RangeSppfNode<InputEdgeType>, RangeSppfNode<InputEdgeType>> = HashMap()
 
-    protected fun addNode(node: RangeSppfNode<InputEdgeType>): RangeSppfNode<InputEdgeType> {
+    protected open fun addNode(node: RangeSppfNode<InputEdgeType>): RangeSppfNode<InputEdgeType> {
         return createdSppfNodes.getOrPut(node, { node })
     }
 
@@ -130,6 +130,11 @@ open class SppfStorage<InputEdgeType> {
  * results are the same as with [SppfStorage]; derivation trees (and paths) are not available.
  */
 class ReachabilitySppfStorage<InputEdgeType> : SppfStorage<InputEdgeType>() {
+    private val internedReachabilityNodes = InternTable<RangeSppfNode<InputEdgeType>>()
+
+    protected override fun addNode(node: RangeSppfNode<InputEdgeType>): RangeSppfNode<InputEdgeType> =
+        internedReachabilityNodes.intern(node)
+
     private fun rangeNode(input: InputRange<InputEdgeType>, rsm: RsmRange): RangeSppfNode<InputEdgeType> =
         addNode(ReachabilityRangeSppfNode(input, rsm))
 
