@@ -28,4 +28,22 @@ class DescriptorsStorageTest {
         assertSame(first, storage.nextToHandle())
         assertNull(storage.nextToHandle())
     }
+
+    @Test
+    fun explicitlyHandledEquivalentIsNotQueuedButLaterDistinctDescriptorsKeepLifoOrder() {
+        val state = RsmState(Nonterminal("S"))
+        val gss = GssNode(state, 1)
+        val storage = DescriptorsStorage<Int>()
+        storage.addToHandled(Descriptor(1, gss, state, getEmptyRange()))
+        storage.add(Descriptor(1, gss, state, getEmptyRange()))
+        assertNull(storage.nextToHandle())
+
+        val first = Descriptor(2, gss, state, getEmptyRange<Int>())
+        val second = Descriptor(3, gss, state, getEmptyRange<Int>())
+        storage.add(first)
+        storage.add(second)
+        assertSame(second, storage.nextToHandle())
+        assertSame(first, storage.nextToHandle())
+        assertNull(storage.nextToHandle())
+    }
 }

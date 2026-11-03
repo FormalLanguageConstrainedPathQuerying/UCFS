@@ -50,7 +50,10 @@ class ReturnLookaheadTest {
     private fun handled(gll: Gll<Int, TerminalInputLabel>): Set<Descriptor<Int>> {
         val field = DescriptorsStorage::class.java.getDeclaredField("handledDescriptors")
         field.isAccessible = true
+        val table = field.get(gll.ctx.descriptors)
+        val slotsField = table.javaClass.getDeclaredField("slots")
+        slotsField.isAccessible = true
         @Suppress("UNCHECKED_CAST")
-        return field.get(gll.ctx.descriptors) as Set<Descriptor<Int>>
+        return (slotsField.get(table) as Array<*>).filterNotNull().map { it as Descriptor<Int> }.toSet()
     }
 }
