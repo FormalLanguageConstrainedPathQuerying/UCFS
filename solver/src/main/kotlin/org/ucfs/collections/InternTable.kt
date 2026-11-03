@@ -1,4 +1,4 @@
-package org.ucfs.sppf
+package org.ucfs.collections
 
 /** Canonicalizes immutable, non-null values without allocating one map entry object per value. */
 internal class InternTable<T : Any>(initialCapacity: Int = 16) {
@@ -15,20 +15,39 @@ internal class InternTable<T : Any>(initialCapacity: Int = 16) {
 
     @Suppress("UNCHECKED_CAST")
     fun intern(value: T): T {
+        val index = locate(value)
+        val existing = slots[index]
+        if (existing != null) return existing as T
+        insertNew(value, index)
+        return value
+    }
+
+    /** Returns true only when [value] was inserted as a new canonical key. */
+    fun addIfAbsent(value: T): Boolean {
+        val index = locate(value)
+        if (slots[index] != null) return false
+        insertNew(value, index)
+        return true
+    }
+
+    private fun locate(value: T): Int {
         var index = spread(value.hashCode()) and (slots.size - 1)
         while (true) {
             val existing = slots[index] ?: break
-            if (existing == value) return existing as T
+            if (existing == value) return index
             index = (index + 1) and (slots.size - 1)
         }
+        return index
+    }
 
+    private fun insertNew(value: T, originalIndex: Int) {
+        var index = originalIndex
         if (size + 1 > threshold) {
             grow()
             index = findEmpty(value, slots)
         }
         slots[index] = value
         size++
-        return value
     }
 
     private fun grow() {

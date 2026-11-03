@@ -1,5 +1,6 @@
 package org.ucfs.sppf
 
+import org.ucfs.collections.InternTable
 import org.ucfs.rsm.RsmState
 import org.ucfs.rsm.symbol.ITerminal
 import org.ucfs.sppf.node.*
