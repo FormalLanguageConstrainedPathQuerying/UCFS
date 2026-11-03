@@ -21,6 +21,10 @@ import org.ucfs.rsm.symbol.ITerminal
 sealed class RangeSppfNode<VertexType> {
     abstract val inputRange: InputRange<VertexType>?
     abstract val rsmRange: RsmRange?
+    open val inputFrom: VertexType get() = checkNotNull(inputRange).from
+    open val inputTo: VertexType get() = checkNotNull(inputRange).to
+    open val rsmFrom: RsmState get() = checkNotNull(rsmRange).from
+    open val rsmTo: RsmState get() = checkNotNull(rsmRange).to
     abstract val type: RangeType
     abstract fun hasChild(target: RangeSppfNode<VertexType>): Boolean
     abstract fun addChild(child: RangeSppfNode<VertexType>)
@@ -41,11 +45,18 @@ data class LeafSppfNode<VertexType>(
 
 /** Range key used only when derivation trees are not retained. */
 class ReachabilityRangeSppfNode<VertexType>(
-    override val inputRange: InputRange<VertexType>,
-    override val rsmRange: RsmRange,
+    override val inputFrom: VertexType,
+    override val inputTo: VertexType,
+    override val rsmFrom: RsmState,
+    override val rsmTo: RsmState,
 ) : RangeSppfNode<VertexType>() {
-    override val type: RangeType = Range
-    override val children: Iterable<RangeSppfNode<VertexType>> = emptyList()
+    constructor(inputRange: InputRange<VertexType>, rsmRange: RsmRange) :
+            this(inputRange.from, inputRange.to, rsmRange.from, rsmRange.to)
+
+    override val inputRange: InputRange<VertexType> get() = InputRange(inputFrom, inputTo)
+    override val rsmRange: RsmRange get() = RsmRange(rsmFrom, rsmTo)
+    override val type: RangeType get() = Range
+    override val children: Iterable<RangeSppfNode<VertexType>> get() = emptyList()
 
     // The nested data-class hash used the same 31² coefficient for input.to
     // and rsm.from. Mix coordinates sequentially: XOR of rotated coordinates
@@ -59,10 +70,10 @@ class ReachabilityRangeSppfNode<VertexType>(
             return h * 5 + 0xe6546b64.toInt()
         }
         var h = 0x9747b28c.toInt()
-        h = block(h, inputRange.from?.hashCode() ?: 0)
-        h = block(h, inputRange.to?.hashCode() ?: 0)
-        h = block(h, rsmRange.from.hashCode())
-        h = block(h, rsmRange.to.hashCode())
+        h = block(h, inputFrom?.hashCode() ?: 0)
+        h = block(h, inputTo?.hashCode() ?: 0)
+        h = block(h, rsmFrom.hashCode())
+        h = block(h, rsmTo.hashCode())
         h = h xor 16 // four 32-bit coordinates
         h = (h xor (h ushr 16)) * 0x7feb352d
         h = (h xor (h ushr 15)) * 0x846ca68b.toInt()
@@ -78,10 +89,10 @@ class ReachabilityRangeSppfNode<VertexType>(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is ReachabilityRangeSppfNode<*>) return false
-        return inputRange.from == other.inputRange.from &&
-                inputRange.to == other.inputRange.to &&
-                rsmRange.from == other.rsmRange.from &&
-                rsmRange.to == other.rsmRange.to
+        return inputFrom == other.inputFrom &&
+                inputTo == other.inputTo &&
+                rsmFrom == other.rsmFrom &&
+                rsmTo == other.rsmTo
     }
 }
 

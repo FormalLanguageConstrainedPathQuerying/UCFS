@@ -137,7 +137,7 @@ class ReachabilitySppfStorage<InputEdgeType> : SppfStorage<InputEdgeType>() {
         internedReachabilityNodes.intern(node)
 
     private fun rangeNode(input: InputRange<InputEdgeType>, rsm: RsmRange): RangeSppfNode<InputEdgeType> =
-        addNode(ReachabilityRangeSppfNode(input, rsm))
+        addNode(ReachabilityRangeSppfNode(input.from, input.to, rsm.from, rsm.to))
 
     override fun addNonterminalNode(
         input: InputRange<InputEdgeType>,
@@ -154,10 +154,9 @@ class ReachabilitySppfStorage<InputEdgeType> : SppfStorage<InputEdgeType>() {
         childSppf: RangeSppfNode<InputEdgeType>?
     ): RangeSppfNode<InputEdgeType> {
         if (left.type is EmptyType) return rangeNode(rightInput, rightRsm)
-        return rangeNode(
-            InputRange(left.inputRange!!.from, rightInput.to),
-            RsmRange(left.rsmRange!!.from, rightRsm.to)
-        )
+        return addNode(ReachabilityRangeSppfNode(
+            left.inputFrom, rightInput.to, left.rsmFrom, rightRsm.to
+        ))
     }
 
     override fun addComposedNonterminalNode(
@@ -170,12 +169,13 @@ class ReachabilitySppfStorage<InputEdgeType> : SppfStorage<InputEdgeType>() {
         childSppf: RangeSppfNode<InputEdgeType>?
     ): RangeSppfNode<InputEdgeType> {
         if (left.type is EmptyType) {
-            return rangeNode(InputRange(rightInputFrom, rightInputTo), RsmRange(rightRsmFrom, rightRsmTo))
+            return addNode(ReachabilityRangeSppfNode(
+                rightInputFrom, rightInputTo, rightRsmFrom, rightRsmTo
+            ))
         }
-        return rangeNode(
-            InputRange(left.inputRange!!.from, rightInputTo),
-            RsmRange(left.rsmRange!!.from, rightRsmTo)
-        )
+        return addNode(ReachabilityRangeSppfNode(
+            left.inputFrom, rightInputTo, left.rsmFrom, rightRsmTo
+        ))
     }
 
     override fun addEpsilonNode(
@@ -195,10 +195,10 @@ class ReachabilitySppfStorage<InputEdgeType> : SppfStorage<InputEdgeType>() {
         rightSubtree: RangeSppfNode<InputEdgeType>
     ): RangeSppfNode<InputEdgeType> {
         if (leftSubtree.type is EmptyType) return rightSubtree
-        return rangeNode(
-            InputRange(leftSubtree.inputRange!!.from, rightSubtree.inputRange!!.to),
-            RsmRange(leftSubtree.rsmRange!!.from, rightSubtree.rsmRange!!.to)
-        )
+        return addNode(ReachabilityRangeSppfNode(
+            leftSubtree.inputFrom, rightSubtree.inputTo,
+            leftSubtree.rsmFrom, rightSubtree.rsmTo
+        ))
     }
 
     override fun addNode(

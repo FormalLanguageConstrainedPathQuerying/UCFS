@@ -75,12 +75,12 @@ interface IGll<InputNodeType, LabelType : ILabel> {
         ctx.descriptors.add(newDescriptor)
 
         for (rangeToPop in positionToPops) {
-            val poppedEnd = rangeToPop.inputRange!!.to
+            val poppedEnd = rangeToPop.inputTo
             if (!ctx.canContinueAt(destinationRsmState, poppedEnd)) continue
             val leftSubRange = descriptor.sppfNode
             val newSppfNode = ctx.sppfStorage.addComposedNonterminalNode(
                 leftSubRange,
-                rangeToPop.inputRange!!.from,
+                rangeToPop.inputFrom,
                 poppedEnd,
                 descriptor.rsmState, destinationRsmState,
                 rsmStartState,

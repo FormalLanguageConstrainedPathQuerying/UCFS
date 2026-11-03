@@ -61,7 +61,7 @@ class Gll<VertexType, LabelType : ILabel> private constructor(
         if (!ctx.canContinueAt(poppedGssEdge.state, descriptor.inputPosition)) return
         val leftRange = poppedGssEdge.matchedRange
         val startRsmState = if (poppedGssEdge.matchedRange.type is EmptyType) poppedGssEdge.gssNode.rsm
-        else poppedGssEdge.matchedRange.rsmRange!!.to
+        else poppedGssEdge.matchedRange.rsmTo
         val newRange = ctx.sppfStorage.addComposedNonterminalNode(
             leftRange,
             descriptor.gssNode.inputPosition, descriptor.inputPosition,
@@ -75,9 +75,9 @@ class Gll<VertexType, LabelType : ILabel> private constructor(
     }
 
     private fun isParseResult(matchedRange: RangeSppfNode<VertexType>): Boolean {
-        return matchedRange.inputRange!!.from in ctx.input.getInputStartVertices()
-                && matchedRange.rsmRange!!.from == ctx.fictiveStartState
-                && matchedRange.rsmRange!!.to == ctx.fictiveFinalState
+        return matchedRange.inputFrom in ctx.input.getInputStartVertices()
+                && matchedRange.rsmFrom == ctx.fictiveStartState
+                && matchedRange.rsmTo == ctx.fictiveFinalState
     }
 
     /**
