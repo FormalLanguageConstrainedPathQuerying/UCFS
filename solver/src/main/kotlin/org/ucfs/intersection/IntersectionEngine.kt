@@ -20,13 +20,15 @@ object IntersectionEngine : IIntersectionEngine {
         descriptor: Descriptor<VertexType>,
     ) {
 
-        for (inputEdge in gll.ctx.input.getEdges(descriptor.inputPosition)) {
-            val inputTerminal = inputEdge.label.terminal
-            val rsmEdge = inputTerminal?.let { descriptor.rsmState.getTerminalEdge(it) }
-            if (rsmEdge != null) {
-                gll.handleTerminalEdge(
-                    descriptor, inputEdge, rsmEdge.destinationState, rsmEdge.symbol as ITerminal
-                )
+        if (descriptor.rsmState.terminalEdgesStorage.isNotEmpty()) {
+            for (inputEdge in gll.ctx.input.getEdges(descriptor.inputPosition)) {
+                val inputTerminal = inputEdge.label.terminal
+                val rsmEdge = inputTerminal?.let { descriptor.rsmState.getTerminalEdge(it) }
+                if (rsmEdge != null) {
+                    gll.handleTerminalEdge(
+                        descriptor, inputEdge, rsmEdge.destinationState, rsmEdge.symbol as ITerminal
+                    )
+                }
             }
         }
 
