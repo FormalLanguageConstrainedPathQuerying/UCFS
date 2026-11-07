@@ -66,7 +66,7 @@ internal class InternTable<T : Any>(initialCapacity: Int = 16) {
 
     private fun spread(hash: Int): Int = hash xor (hash ushr 16)
 
-    private fun threshold(capacity: Int): Int = (capacity.toLong() * 2 / 3).toInt()
+    private fun threshold(capacity: Int): Int = capacity / 2
 
     companion object {
         private const val MAX_CAPACITY = 1 shl 29
