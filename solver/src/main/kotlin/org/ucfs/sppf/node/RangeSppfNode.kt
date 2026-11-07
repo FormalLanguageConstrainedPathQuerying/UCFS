@@ -44,12 +44,16 @@ data class LeafSppfNode<VertexType>(
 }
 
 /** Range key used only when derivation trees are not retained. */
-class ReachabilityRangeSppfNode<VertexType>(
+class ReachabilityRangeSppfNode<VertexType> private constructor(
     override val inputFrom: VertexType,
     override val inputTo: VertexType,
     override val rsmFrom: RsmState,
     override val rsmTo: RsmState,
+    private val cachedHash: Int,
 ) : RangeSppfNode<VertexType>() {
+    constructor(inputFrom: VertexType, inputTo: VertexType, rsmFrom: RsmState, rsmTo: RsmState) :
+            this(inputFrom, inputTo, rsmFrom, rsmTo, coordinateHash(inputFrom, inputTo, rsmFrom, rsmTo))
+
     constructor(inputRange: InputRange<VertexType>, rsmRange: RsmRange) :
             this(inputRange.from, inputRange.to, rsmRange.from, rsmRange.to)
 
@@ -61,23 +65,30 @@ class ReachabilityRangeSppfNode<VertexType>(
     // The nested data-class hash used the same 31² coefficient for input.to
     // and rsm.from. Mix coordinates sequentially: XOR of rotated coordinates
     // would itself collide for correlated integer vertex ids.
-    private val cachedHash: Int = run {
-        fun block(previous: Int, coordinate: Int): Int {
-            var k = coordinate * 0xcc9e2d51.toInt()
-            k = Integer.rotateLeft(k, 15) * 0x1b873593
-            var h = previous xor k
-            h = Integer.rotateLeft(h, 13)
-            return h * 5 + 0xe6546b64.toInt()
+    companion object {
+        internal fun <VertexType> withHash(
+            inputFrom: VertexType, inputTo: VertexType, rsmFrom: RsmState, rsmTo: RsmState, hash: Int
+        ): ReachabilityRangeSppfNode<VertexType> =
+            ReachabilityRangeSppfNode(inputFrom, inputTo, rsmFrom, rsmTo, hash)
+
+        internal fun coordinateHash(inputFrom: Any?, inputTo: Any?, rsmFrom: RsmState, rsmTo: RsmState): Int {
+            fun block(previous: Int, coordinate: Int): Int {
+                var k = coordinate * 0xcc9e2d51.toInt()
+                k = Integer.rotateLeft(k, 15) * 0x1b873593
+                var h = previous xor k
+                h = Integer.rotateLeft(h, 13)
+                return h * 5 + 0xe6546b64.toInt()
+            }
+            var h = 0x9747b28c.toInt()
+            h = block(h, inputFrom?.hashCode() ?: 0)
+            h = block(h, inputTo?.hashCode() ?: 0)
+            h = block(h, rsmFrom.hashCode())
+            h = block(h, rsmTo.hashCode())
+            h = h xor 16 // four 32-bit coordinates
+            h = (h xor (h ushr 16)) * 0x7feb352d
+            h = (h xor (h ushr 15)) * 0x846ca68b.toInt()
+            return h xor (h ushr 16)
         }
-        var h = 0x9747b28c.toInt()
-        h = block(h, inputFrom?.hashCode() ?: 0)
-        h = block(h, inputTo?.hashCode() ?: 0)
-        h = block(h, rsmFrom.hashCode())
-        h = block(h, rsmTo.hashCode())
-        h = h xor 16 // four 32-bit coordinates
-        h = (h xor (h ushr 16)) * 0x7feb352d
-        h = (h xor (h ushr 15)) * 0x846ca68b.toInt()
-        h xor (h ushr 16)
     }
 
     override fun hasChild(target: RangeSppfNode<VertexType>) = false

@@ -131,13 +131,17 @@ open class SppfStorage<InputEdgeType> {
  * results are the same as with [SppfStorage]; derivation trees (and paths) are not available.
  */
 class ReachabilitySppfStorage<InputEdgeType> : SppfStorage<InputEdgeType>() {
-    private val internedReachabilityNodes = InternTable<RangeSppfNode<InputEdgeType>>()
+    private val internedReachabilityNodes = RangeInternTable<InputEdgeType>()
 
     protected override fun addNode(node: RangeSppfNode<InputEdgeType>): RangeSppfNode<InputEdgeType> =
-        internedReachabilityNodes.intern(node)
+        internedReachabilityNodes.intern(node.inputFrom, node.inputTo, node.rsmFrom, node.rsmTo)
+
+    private fun rangeNode(
+        inputFrom: InputEdgeType, inputTo: InputEdgeType, rsmFrom: RsmState, rsmTo: RsmState
+    ): RangeSppfNode<InputEdgeType> = internedReachabilityNodes.intern(inputFrom, inputTo, rsmFrom, rsmTo)
 
     private fun rangeNode(input: InputRange<InputEdgeType>, rsm: RsmRange): RangeSppfNode<InputEdgeType> =
-        addNode(ReachabilityRangeSppfNode(input.from, input.to, rsm.from, rsm.to))
+        rangeNode(input.from, input.to, rsm.from, rsm.to)
 
     override fun addNonterminalNode(
         input: InputRange<InputEdgeType>,
@@ -154,9 +158,7 @@ class ReachabilitySppfStorage<InputEdgeType> : SppfStorage<InputEdgeType>() {
         childSppf: RangeSppfNode<InputEdgeType>?
     ): RangeSppfNode<InputEdgeType> {
         if (left.type is EmptyType) return rangeNode(rightInput, rightRsm)
-        return addNode(ReachabilityRangeSppfNode(
-            left.inputFrom, rightInput.to, left.rsmFrom, rightRsm.to
-        ))
+        return rangeNode(left.inputFrom, rightInput.to, left.rsmFrom, rightRsm.to)
     }
 
     override fun addComposedNonterminalNode(
@@ -169,13 +171,9 @@ class ReachabilitySppfStorage<InputEdgeType> : SppfStorage<InputEdgeType>() {
         childSppf: RangeSppfNode<InputEdgeType>?
     ): RangeSppfNode<InputEdgeType> {
         if (left.type is EmptyType) {
-            return addNode(ReachabilityRangeSppfNode(
-                rightInputFrom, rightInputTo, rightRsmFrom, rightRsmTo
-            ))
+            return rangeNode(rightInputFrom, rightInputTo, rightRsmFrom, rightRsmTo)
         }
-        return addNode(ReachabilityRangeSppfNode(
-            left.inputFrom, rightInputTo, left.rsmFrom, rightRsmTo
-        ))
+        return rangeNode(left.inputFrom, rightInputTo, left.rsmFrom, rightRsmTo)
     }
 
     override fun addEpsilonNode(
@@ -195,10 +193,8 @@ class ReachabilitySppfStorage<InputEdgeType> : SppfStorage<InputEdgeType>() {
         rightSubtree: RangeSppfNode<InputEdgeType>
     ): RangeSppfNode<InputEdgeType> {
         if (leftSubtree.type is EmptyType) return rightSubtree
-        return addNode(ReachabilityRangeSppfNode(
-            leftSubtree.inputFrom, rightSubtree.inputTo,
-            leftSubtree.rsmFrom, rightSubtree.rsmTo
-        ))
+        return rangeNode(leftSubtree.inputFrom, rightSubtree.inputTo,
+            leftSubtree.rsmFrom, rightSubtree.rsmTo)
     }
 
     override fun addNode(
