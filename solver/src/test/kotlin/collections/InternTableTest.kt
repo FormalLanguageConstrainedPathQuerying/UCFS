@@ -2,12 +2,32 @@ package collections
 
 import org.junit.jupiter.api.Test
 import org.ucfs.collections.InternTable
+import kotlin.random.Random
 import kotlin.test.assertFalse
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class InternTableTest {
+    @Test
+    fun guardedInternKeepsCanonicalKeysAfterRepeatedGrowth() {
+        fun hash(id: Int) = when (id % 4) {
+            0 -> 7                       // distinct keys with the same full hash
+            1 -> id * 16 + 7             // distinct full hashes sharing low bits
+            2 -> Int.MIN_VALUE + id      // negative hashes
+            else -> id * 31
+        }
+        val table = InternTable<Key>(4, hashGuard = true)
+        val stored = (0 until 512).map { Key(it, hash(it)) }
+        stored.forEach { assertSame(it, table.intern(it)) }
+
+        stored.shuffled(Random(44)).forEach { original ->
+            val equivalent = Key(original.id, original.hash)
+            assertSame(original, table.intern(equivalent))
+            assertFalse(table.addIfAbsent(equivalent))
+        }
+    }
+
     @Test
     fun optionalHashGuardSkipsUnequalHashesButChecksRealCollisions() {
         val guarded = InternTable<CountedKey>(4, hashGuard = true)
