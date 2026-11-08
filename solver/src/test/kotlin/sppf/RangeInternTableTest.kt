@@ -21,6 +21,33 @@ class RangeInternTableTest {
         override fun equals(other: Any?): Boolean = other is CollidingVertex && id == other.id
     }
 
+    private class EqualsCounterVertex(val id: Int) {
+        var equalsCalls = 0
+        override fun hashCode(): Int = id
+        override fun equals(other: Any?): Boolean {
+            equalsCalls++
+            return other is EqualsCounterVertex && id == other.id
+        }
+    }
+
+    @Test
+    fun skipsCoordinateEqualityForDifferentHashesAtSameSlot() {
+        val start = RsmState(Nonterminal("S"), numId = 0)
+        val end = RsmState(Nonterminal("S"), numId = 1)
+        val first = EqualsCounterVertex(1)
+        val firstHash = ReachabilityRangeSppfNode.coordinateHash(first, 0, start, end)
+        fun slot(hash: Int): Int = (hash xor (hash ushr 16)) and 3
+        val second = (2..1000).map(::EqualsCounterVertex).first { vertex ->
+            val hash = ReachabilityRangeSppfNode.coordinateHash(vertex, 0, start, end)
+            hash != firstHash && slot(hash) == slot(firstHash)
+        }
+        val table = RangeInternTable<Any>(initialCapacity = 4)
+
+        table.intern(first, 0, start, end)
+        table.intern(second, 0, start, end)
+        assertEquals(0, first.equalsCalls)
+    }
+
     @Test
     fun canonicalizesByFourCoordinatesWithoutHashingTwiceOnMiss() {
         val start = RsmState(Nonterminal("S"), numId = 0)

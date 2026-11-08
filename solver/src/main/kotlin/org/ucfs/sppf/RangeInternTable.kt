@@ -21,7 +21,7 @@ internal class RangeInternTable<VertexType>(initialCapacity: Int = 16) {
         var index = spread(hash) and (slots.size - 1)
         while (true) {
             val existing = slots[index] ?: break
-            if (existing.inputFrom == inputFrom && existing.inputTo == inputTo &&
+            if (existing.hashCode() == hash && existing.inputFrom == inputFrom && existing.inputTo == inputTo &&
                     existing.rsmFrom == rsmFrom && existing.rsmTo == rsmTo) return existing
             index = (index + 1) and (slots.size - 1)
         }
