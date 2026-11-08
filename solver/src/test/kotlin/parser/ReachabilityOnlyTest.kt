@@ -14,6 +14,7 @@ import org.ucfs.sppf.node.RsmRange
 import kotlin.random.Random
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 /**
@@ -168,12 +169,31 @@ class ReachabilityOnlyTest {
         val previous = System.getProperty("ucfs.noSppfReachability")
         try {
             System.setProperty("ucfs.noSppfReachability", "true")
-            assertEquals(setOf(0 to 1), Gll.gll(start, graph).parse()
-                .map { it.inputRange!!.from to it.inputRange!!.to }.toSet())
+            val roots = Gll.gll(start, graph).parse()
+            assertEquals(setOf(0 to 1), roots.map { it.inputRange!!.from to it.inputRange!!.to }.toSet())
+            assertTrue(roots.single().children.any(), "full SPPF must retain its derivation")
         } finally {
             if (previous == null) System.clearProperty("ucfs.noSppfReachability")
             else System.setProperty("ucfs.noSppfReachability", previous)
         }
+    }
+
+    @Test
+    fun compactRejectsStaleContextAccessAndReplacement() {
+        val nt = Nonterminal("Root")
+        val start = RsmState(nt, isStart = true)
+        val final = RsmState(nt, isFinal = true)
+        nt.startState = start
+        start.addEdge(a, final)
+        val graph = InputGraph<Int, TerminalInputLabel>()
+        graph.addStartVertex(0)
+        graph.addEdge(0, TerminalInputLabel(a), 1)
+        val gll = Gll.gll(start, graph, reachabilityOnly = true, compactReachability = true)
+        val initialContext = gll.ctx
+        assertFailsWith<IllegalStateException> { gll.ctx = initialContext }
+        assertEquals(setOf(0 to 1), gll.parse().map { it.inputFrom to it.inputTo }.toSet())
+        val error = assertFailsWith<IllegalStateException> { gll.ctx.gss.nodes }
+        assertTrue(error.message!!.contains("compact reachability"))
     }
 
     @Test
