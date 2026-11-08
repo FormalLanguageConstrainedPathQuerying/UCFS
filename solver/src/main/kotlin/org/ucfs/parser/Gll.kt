@@ -16,8 +16,22 @@ import org.ucfs.sppf.node.*
  * @param LabelType - type of label on edges in input graph
  */
 class Gll<VertexType, LabelType : ILabel> private constructor(
-    override var ctx: Context<VertexType, LabelType>, private val engine: IIntersectionEngine
+    ctx: Context<VertexType, LabelType>, private val engine: IIntersectionEngine,
+    private val compactReachability: CompactReachabilityParser<VertexType, LabelType>? = null
 ) : IGll<VertexType, LabelType> {
+    private var compactParsed = false
+
+    override var ctx: Context<VertexType, LabelType> = ctx
+        get() {
+            check(!compactParsed) {
+                "compact reachability does not populate Gll.ctx; use parse() results or disable ucfs.noSppfReachability"
+            }
+            return field
+        }
+        set(value) {
+            check(compactReachability == null) { "compact reachability cannot replace Gll.ctx" }
+            field = value
+        }
 
     companion object {
         /**
@@ -28,10 +42,40 @@ class Gll<VertexType, LabelType : ILabel> private constructor(
          */
         fun <VertexType, LabelType : ILabel> gll(
             startState: RsmState, inputGraph: IInputGraph<VertexType, LabelType>
+        ): Gll<VertexType, LabelType> = gll(startState, inputGraph, reachabilityOnly = false)
+
+        /**
+         * @param reachabilityOnly - keep only range nodes of the SPPF ([org.ucfs.sppf.ReachabilitySppfStorage]):
+         * same results (reachability pairs), less memory, no derivation trees.
+         * The compact opt-in returns results only through [parse]; callers reading
+         * GSS pops or parse results from [ctx] must keep the regular engine.
+         */
+        fun <VertexType, LabelType : ILabel> gll(
+            startState: RsmState, inputGraph: IInputGraph<VertexType, LabelType>, reachabilityOnly: Boolean
+        ): Gll<VertexType, LabelType> = gll(
+            startState, inputGraph, reachabilityOnly,
+            compactReachability = reachabilityOnly && java.lang.Boolean.getBoolean("ucfs.noSppfReachability")
+        )
+
+        /** Explicit selection for testing the opt-in reachability engine. */
+        fun <VertexType, LabelType : ILabel> gll(
+            startState: RsmState, inputGraph: IInputGraph<VertexType, LabelType>,
+            reachabilityOnly: Boolean, compactReachability: Boolean
         ): Gll<VertexType, LabelType> {
+            require(reachabilityOnly || !compactReachability) { "compact reachability requires reachability-only mode" }
             val finalState = startState.outgoingEdges[0].destinationState
-            return Gll(Context(startState, finalState, inputGraph), IntersectionEngine)
+            val storage = if (reachabilityOnly) org.ucfs.sppf.ReachabilitySppfStorage<VertexType>() else org.ucfs.sppf.SppfStorage()
+            val context = Context(startState, finalState, inputGraph, storage)
+            val compact = if (compactReachability) CompactReachabilityParser(context, indexPoppedByTerminal = false) else null
+            return Gll(context, IntersectionEngine, compact)
         }
+    }
+
+    override fun parse(): Set<RangeSppfNode<VertexType>> {
+        val compact = compactReachability ?: return super<IGll>.parse()
+        val result = compact.parse()
+        compactParsed = true
+        return result
     }
 
     private fun getEpsilonRange(descriptor: Descriptor<VertexType>): RangeSppfNode<VertexType> {
@@ -49,18 +93,16 @@ class Gll<VertexType, LabelType : ILabel> private constructor(
     private fun handlePoppedGssEdge(
         poppedGssEdge: GssEdge<VertexType>, descriptor: Descriptor<VertexType>, childSppf: RangeSppfNode<VertexType>
     ) {
+        if (!ctx.canContinueAt(poppedGssEdge.state, descriptor.inputPosition)) return
         val leftRange = poppedGssEdge.matchedRange
         val startRsmState = if (poppedGssEdge.matchedRange.type is EmptyType) poppedGssEdge.gssNode.rsm
-        else poppedGssEdge.matchedRange.rsmRange!!.to
-        val rightRange = ctx.sppfStorage.addNonterminalNode(
-            InputRange(
-                descriptor.gssNode.inputPosition, descriptor.inputPosition
-            ), RsmRange(
-                startRsmState,
-                poppedGssEdge.state,
-            ), descriptor.gssNode.rsm, childSppf
+        else poppedGssEdge.matchedRange.rsmTo
+        val newRange = ctx.sppfStorage.addComposedNonterminalNode(
+            leftRange,
+            descriptor.gssNode.inputPosition, descriptor.inputPosition,
+            startRsmState, poppedGssEdge.state,
+            descriptor.gssNode.rsm, childSppf
         )
-        val newRange = ctx.sppfStorage.addIntermediateNode(leftRange, rightRange)
         val newDescriptor = Descriptor(
             descriptor.inputPosition, poppedGssEdge.gssNode, poppedGssEdge.state, newRange
         )
@@ -68,9 +110,9 @@ class Gll<VertexType, LabelType : ILabel> private constructor(
     }
 
     private fun isParseResult(matchedRange: RangeSppfNode<VertexType>): Boolean {
-        return matchedRange.inputRange!!.from in ctx.input.getInputStartVertices()
-                && matchedRange.rsmRange!!.from == ctx.fictiveStartState
-                && matchedRange.rsmRange.to == ctx.fictiveFinalState
+        return matchedRange.inputFrom in ctx.input.getInputStartVertices()
+                && matchedRange.rsmFrom == ctx.fictiveStartState
+                && matchedRange.rsmTo == ctx.fictiveFinalState
     }
 
     /**

@@ -1,5 +1,6 @@
 package org.ucfs.descriptors
 
+import org.ucfs.collections.InternTable
 import java.util.LinkedList
 
 /**
@@ -8,9 +9,9 @@ import java.util.LinkedList
  */
 open class DescriptorsStorage<VertexType> {
     /**
-     * Collection of already handled descriptors, accessible via descriptor's hashcode
+     * Descriptors already scheduled or explicitly marked as handled.
      */
-    private val handledDescriptors = HashSet<Descriptor<VertexType>>()
+    private val handledDescriptors = InternTable<Descriptor<VertexType>>()
 
     private val descriptorsToHandle = LinkedList<Descriptor<VertexType>>()
 
@@ -18,11 +19,11 @@ open class DescriptorsStorage<VertexType> {
 
 
     fun addToHandled(descriptor: Descriptor<VertexType>) {
-        handledDescriptors.add(descriptor)
+        handledDescriptors.addIfAbsent(descriptor)
     }
 
     fun add(descriptor: Descriptor<VertexType>) {
-        if (!handledDescriptors.contains(descriptor)) {
+        if (handledDescriptors.addIfAbsent(descriptor)) {
             descriptorsToHandle.addLast(descriptor)
         }
     }

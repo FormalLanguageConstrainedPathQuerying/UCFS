@@ -27,6 +27,7 @@ interface IGll<InputNodeType, LabelType : ILabel> {
      */
     fun parse(): Set<RangeSppfNode<InputNodeType>> {
         ctx.parseResults = HashSet()
+        ctx.resetContinuationCache()
         initDescriptors(ctx.input)
 
         var curDescriptor = ctx.descriptors.nextToHandle()
@@ -74,19 +75,21 @@ interface IGll<InputNodeType, LabelType : ILabel> {
         ctx.descriptors.add(newDescriptor)
 
         for (rangeToPop in positionToPops) {
+            val poppedEnd = rangeToPop.inputTo
+            if (!ctx.canContinueAt(destinationRsmState, poppedEnd)) continue
             val leftSubRange = descriptor.sppfNode
-            val rightSubRange = ctx.sppfStorage.addNonterminalNode(
-                rangeToPop.inputRange!!,
-                RsmRange(descriptor.rsmState, destinationRsmState),
+            val newSppfNode = ctx.sppfStorage.addComposedNonterminalNode(
+                leftSubRange,
+                rangeToPop.inputFrom,
+                poppedEnd,
+                descriptor.rsmState, destinationRsmState,
                 rsmStartState,
                 rangeToPop
             )
 
-            val newSppfNode = ctx.sppfStorage.addIntermediateNode(leftSubRange, rightSubRange)
-
             //TODO why these parameters???
             newDescriptor = Descriptor(
-                rangeToPop.inputRange.to, descriptor.gssNode, destinationRsmState, newSppfNode
+                poppedEnd, descriptor.gssNode, destinationRsmState, newSppfNode
             )
             ctx.descriptors.add(newDescriptor)
         }

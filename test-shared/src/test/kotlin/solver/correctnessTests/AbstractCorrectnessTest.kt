@@ -11,7 +11,7 @@ import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
-import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 
@@ -58,9 +58,8 @@ abstract class AbstractCorrectnessTest {
         if (expectedResult.isEmpty() || regenerate) {
             expectedFile.writeText(actualResult)
         } else {
-            assertEquals(
-                expectedResult,
-                actualResult,
+            assertTrue(
+                sameSppfDot(expectedResult, actualResult),
                 "for grammar ${grammar.javaClass.simpleName} at ${testCasesFolder.name}"
             )
         }
