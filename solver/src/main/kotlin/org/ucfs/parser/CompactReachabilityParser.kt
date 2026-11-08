@@ -44,7 +44,7 @@ internal class CompactReachabilityParser<V, L : ILabel>(
 ) {
     private val input = context.input
     private val gssNodes = HashMap<CompactGssNode<V>, CompactGssNode<V>>()
-    private val handled = InternTable<CompactDescriptor<V>>()
+    private val handled = InternTable<CompactDescriptor<V>>(hashGuard = true)
     private val queue = ArrayDeque<CompactDescriptor<V>>()
     private val results = HashSet<Pair<V, V>>()
     private val stats = CompactReachabilityStats.ifEnabled()

@@ -1,7 +1,7 @@
 package org.ucfs.collections
 
 /** Canonicalizes immutable, non-null values without allocating one map entry object per value. */
-internal class InternTable<T : Any>(initialCapacity: Int = 16) {
+internal class InternTable<T : Any>(initialCapacity: Int = 16, private val hashGuard: Boolean = false) {
     init {
         require(initialCapacity >= 4 && initialCapacity <= MAX_CAPACITY &&
                 initialCapacity and (initialCapacity - 1) == 0) {
@@ -31,10 +31,22 @@ internal class InternTable<T : Any>(initialCapacity: Int = 16) {
     }
 
     private fun locate(value: T): Int {
+        if (hashGuard) return locateWithHashGuard(value)
         var index = spread(value.hashCode()) and (slots.size - 1)
         while (true) {
             val existing = slots[index] ?: break
             if (existing == value) return index
+            index = (index + 1) and (slots.size - 1)
+        }
+        return index
+    }
+
+    private fun locateWithHashGuard(value: T): Int {
+        val hash = value.hashCode()
+        var index = spread(hash) and (slots.size - 1)
+        while (true) {
+            val existing = slots[index] ?: break
+            if (existing.hashCode() == hash && existing == value) return index
             index = (index + 1) and (slots.size - 1)
         }
         return index

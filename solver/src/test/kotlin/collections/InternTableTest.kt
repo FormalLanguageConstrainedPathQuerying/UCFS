@@ -3,10 +3,28 @@ package collections
 import org.junit.jupiter.api.Test
 import org.ucfs.collections.InternTable
 import kotlin.test.assertFalse
+import kotlin.test.assertEquals
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class InternTableTest {
+    @Test
+    fun optionalHashGuardSkipsUnequalHashesButChecksRealCollisions() {
+        val guarded = InternTable<CountedKey>(4, hashGuard = true)
+        val first = CountedKey(1, 0)
+        assertTrue(guarded.addIfAbsent(first))
+        assertTrue(guarded.addIfAbsent(CountedKey(2, 4)))
+        assertEquals(0, first.comparisons, "different hashes in the same slot skip equals")
+        assertFalse(guarded.addIfAbsent(CountedKey(1, 0)))
+        assertEquals(1, first.comparisons, "equal hashes still use equals")
+
+        val ordinary = InternTable<CountedKey>(4)
+        val ordinaryFirst = CountedKey(1, 0)
+        assertTrue(ordinary.addIfAbsent(ordinaryFirst))
+        assertTrue(ordinary.addIfAbsent(CountedKey(2, 4)))
+        assertEquals(1, ordinaryFirst.comparisons, "default table keeps its existing lookup path")
+    }
+
     @Test
     fun equalKeysAfterCollisionsReturnFirstStoredInstance() {
         val table = InternTable<Key>(4)
@@ -56,5 +74,14 @@ class InternTableTest {
     private class Key(val id: Int, val hash: Int) {
         override fun hashCode(): Int = hash
         override fun equals(other: Any?): Boolean = other is Key && id == other.id
+    }
+
+    private class CountedKey(val id: Int, val hash: Int) {
+        var comparisons = 0
+        override fun hashCode(): Int = hash
+        override fun equals(other: Any?): Boolean {
+            comparisons++
+            return other is CountedKey && id == other.id
+        }
     }
 }
