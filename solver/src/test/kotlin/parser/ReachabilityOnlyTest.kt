@@ -7,8 +7,13 @@ import org.ucfs.parser.Gll
 import org.ucfs.rsm.RsmState
 import org.ucfs.rsm.symbol.Nonterminal
 import org.ucfs.rsm.symbol.Term
+import org.ucfs.sppf.node.InputRange
+import org.ucfs.sppf.node.LeafSppfNode
+import org.ucfs.sppf.node.Range
+import org.ucfs.sppf.node.RsmRange
 import kotlin.random.Random
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 /**
@@ -57,6 +62,10 @@ class ReachabilityOnlyTest {
     private fun pairs(start: RsmState, g: InputGraph<Int, TerminalInputLabel>, reachOnly: Boolean) =
         Gll.gll(start, g, reachabilityOnly = reachOnly).parse().map { it.inputRange!!.from to it.inputRange!!.to }.toSet()
 
+    private fun compactPairs(start: RsmState, g: InputGraph<Int, TerminalInputLabel>) =
+        Gll.gll(start, g, reachabilityOnly = true, compactReachability = true)
+            .parse().map { it.inputRange!!.from to it.inputRange!!.to }.toSet()
+
     @Test
     fun sameResultsAsFullSppfOnRandomGraphs() {
         val rnd = Random(7)
@@ -69,5 +78,116 @@ class ReachabilityOnlyTest {
             if (full.isNotEmpty()) nonEmpty++
         }
         assertTrue(nonEmpty >= 30, "non-trivial cases: $nonEmpty")
+    }
+
+    @Test
+    fun compactReachabilityMatchesFullSppfOnRandomGraphs() {
+        val rnd = Random(17)
+        var nonEmpty = 0
+        repeat(60) { i ->
+            val (start, terms) = if (i % 2 == 0) dyck() to listOf(a, b, c, d) else ambiguous() to listOf(a, b)
+            val g = graph(rnd, 4 + rnd.nextInt(10), 5 + rnd.nextInt(30), terms)
+            val full = pairs(start, g, false)
+            val compact = compactPairs(start, g)
+            assertEquals(full, compact, "compact graph $i")
+            if (full.isNotEmpty()) nonEmpty++
+        }
+        assertTrue(nonEmpty >= 30, "non-trivial cases: $nonEmpty")
+    }
+
+    @Test
+    fun compactKeepsEpsilonAndTwoFinalStatesAtSameEndpoint() {
+        val epsilon = Nonterminal("E")
+        val epsilonStart = RsmState(epsilon, isStart = true, isFinal = true)
+        epsilon.startState = epsilonStart
+        val emptyGraph = InputGraph<Int, TerminalInputLabel>()
+        emptyGraph.addStartVertex(0)
+        assertEquals(setOf(0 to 0), compactPairs(fictive(epsilon), emptyGraph))
+
+        val twoFinals = Nonterminal("T")
+        val t0 = RsmState(twoFinals, isStart = true)
+        val t1 = RsmState(twoFinals, isFinal = true)
+        val t2 = RsmState(twoFinals, isFinal = true)
+        twoFinals.startState = t0
+        t0.addEdge(a, t1)
+        t0.addEdge(b, t2)
+        val graph = InputGraph<Int, TerminalInputLabel>()
+        graph.addStartVertex(0)
+        graph.addEdge(0, TerminalInputLabel(a), 1)
+        graph.addEdge(0, TerminalInputLabel(b), 1)
+        assertEquals(setOf(0 to 1), compactPairs(fictive(twoFinals), graph))
+    }
+
+    @Test
+    fun compactReplaysPopsWhenSecondCallerArrivesLater() {
+        val child = Nonterminal("child")
+        val c0 = RsmState(child, isStart = true)
+        val c1 = RsmState(child, isFinal = true)
+        child.startState = c0
+        c0.addEdge(c, c1)
+
+        val parent = Nonterminal("parent")
+        val p0 = RsmState(parent, isStart = true)
+        val afterA = RsmState(parent)
+        val afterB = RsmState(parent)
+        val returnA = RsmState(parent)
+        val returnB = RsmState(parent)
+        val final = RsmState(parent, isFinal = true)
+        parent.startState = p0
+        p0.addEdge(a, afterA)
+        p0.addEdge(b, afterB)
+        afterA.addEdge(child, returnA)
+        afterB.addEdge(child, returnB)
+        returnA.addEdge(d, final)
+        returnB.addEdge(a, final)
+
+        val graph = InputGraph<Int, TerminalInputLabel>()
+        for (v in 0..4) graph.addVertex(v)
+        graph.addStartVertex(0)
+        graph.addEdge(0, TerminalInputLabel(a), 1)
+        graph.addEdge(0, TerminalInputLabel(b), 1)
+        graph.addEdge(1, TerminalInputLabel(c), 2)
+        graph.addEdge(2, TerminalInputLabel(d), 3)
+        graph.addEdge(2, TerminalInputLabel(a), 4)
+        val start = fictive(parent)
+        val expected = setOf(0 to 3, 0 to 4)
+        assertEquals(expected, pairs(start, graph, true))
+        assertEquals(expected, compactPairs(start, graph))
+    }
+
+    @Test
+    fun compactPropertyDoesNotBreakFullSppfFactory() {
+        val nt = Nonterminal("Root")
+        val start = RsmState(nt, isStart = true)
+        val final = RsmState(nt, isFinal = true)
+        nt.startState = start
+        start.addEdge(a, final)
+        val graph = InputGraph<Int, TerminalInputLabel>()
+        graph.addStartVertex(0)
+        graph.addEdge(0, TerminalInputLabel(a), 1)
+        val previous = System.getProperty("ucfs.noSppfReachability")
+        try {
+            System.setProperty("ucfs.noSppfReachability", "true")
+            assertEquals(setOf(0 to 1), Gll.gll(start, graph).parse()
+                .map { it.inputRange!!.from to it.inputRange!!.to }.toSet())
+        } finally {
+            if (previous == null) System.clearProperty("ucfs.noSppfReachability")
+            else System.setProperty("ucfs.noSppfReachability", previous)
+        }
+    }
+
+    @Test
+    fun compactResultSetRejectsDifferentNodeClassWithSameCoordinates() {
+        val nt = Nonterminal("Root")
+        val start = RsmState(nt, isStart = true)
+        val final = RsmState(nt, isFinal = true)
+        nt.startState = start
+        start.addEdge(a, final)
+        val graph = InputGraph<Int, TerminalInputLabel>()
+        graph.addStartVertex(0)
+        graph.addEdge(0, TerminalInputLabel(a), 1)
+        val roots = Gll.gll(start, graph, true, true).parse()
+        assertEquals(1, roots.size)
+        assertFalse(roots.contains(LeafSppfNode(InputRange(0, 1), RsmRange(start, final), Range)))
     }
 }

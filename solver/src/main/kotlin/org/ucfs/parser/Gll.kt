@@ -16,7 +16,8 @@ import org.ucfs.sppf.node.*
  * @param LabelType - type of label on edges in input graph
  */
 class Gll<VertexType, LabelType : ILabel> private constructor(
-    override var ctx: Context<VertexType, LabelType>, private val engine: IIntersectionEngine
+    override var ctx: Context<VertexType, LabelType>, private val engine: IIntersectionEngine,
+    private val compactReachability: CompactReachabilityParser<VertexType, LabelType>? = null
 ) : IGll<VertexType, LabelType> {
 
     companion object {
@@ -36,12 +37,27 @@ class Gll<VertexType, LabelType : ILabel> private constructor(
          */
         fun <VertexType, LabelType : ILabel> gll(
             startState: RsmState, inputGraph: IInputGraph<VertexType, LabelType>, reachabilityOnly: Boolean
+        ): Gll<VertexType, LabelType> = gll(
+            startState, inputGraph, reachabilityOnly,
+            compactReachability = reachabilityOnly && java.lang.Boolean.getBoolean("ucfs.noSppfReachability")
+        )
+
+        /** Explicit selection for testing the opt-in reachability engine. */
+        fun <VertexType, LabelType : ILabel> gll(
+            startState: RsmState, inputGraph: IInputGraph<VertexType, LabelType>,
+            reachabilityOnly: Boolean, compactReachability: Boolean
         ): Gll<VertexType, LabelType> {
+            require(reachabilityOnly || !compactReachability) { "compact reachability requires reachability-only mode" }
             val finalState = startState.outgoingEdges[0].destinationState
             val storage = if (reachabilityOnly) org.ucfs.sppf.ReachabilitySppfStorage<VertexType>() else org.ucfs.sppf.SppfStorage()
-            return Gll(Context(startState, finalState, inputGraph, storage), IntersectionEngine)
+            val context = Context(startState, finalState, inputGraph, storage)
+            val compact = if (compactReachability) CompactReachabilityParser(context, indexPoppedByTerminal = false) else null
+            return Gll(context, IntersectionEngine, compact)
         }
     }
+
+    override fun parse(): Set<RangeSppfNode<VertexType>> =
+        compactReachability?.parse() ?: super<IGll>.parse()
 
     private fun getEpsilonRange(descriptor: Descriptor<VertexType>): RangeSppfNode<VertexType> {
         val input = InputRange(
